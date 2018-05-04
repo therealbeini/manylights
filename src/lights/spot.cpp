@@ -101,6 +101,21 @@ void SpotLight::Pdf_Le(const Ray &ray, const Normal3f &, Float *pdfPos,
                   : 0;
 }
 
+Vector3f SpotLight::Axis() const {
+	// TODO
+	// Calculate the Axis out of the Transformation Matrix?
+	// return LightToWorld.GetMatrix;
+	return Vector3f(0.f, 0.f, 0.f);
+}
+
+float SpotLight::Theta_o() const {
+	return 0;
+}
+
+float SpotLight::Theta_e() const {
+	return cosTotalWidth;
+}
+
 std::shared_ptr<SpotLight> CreateSpotLight(const Transform &l2w,
                                            const Medium *medium,
                                            const ParamSet &paramSet) {

@@ -65,6 +65,9 @@ class DiffuseAreaLight : public AreaLight {
                        Float *pdfDir) const;
     void Pdf_Le(const Ray &, const Normal3f &, Float *pdfPos,
                 Float *pdfDir) const;
+	Vector3f Axis() const;
+	float Theta_o() const;
+	float Theta_e() const;
 
   protected:
     // DiffuseAreaLight Protected Data

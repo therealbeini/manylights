@@ -145,4 +145,17 @@ std::shared_ptr<AreaLight> CreateDiffuseAreaLight(
                                               nSamples, shape, twoSided);
 }
 
+Vector3f DiffuseAreaLight::Axis() const {
+	// TODO: getting the correct axis
+	return Vector3f(0.f, 0.f, 0.f);
+}
+
+float DiffuseAreaLight::Theta_o() const {
+	return 0;
+}
+
+float DiffuseAreaLight::Theta_e() const {
+	return Pi / 2;
+}
+
 }  // namespace pbrt

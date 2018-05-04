@@ -77,11 +77,14 @@ class Light {
                                Float *pdfDir) const = 0;
     virtual void Pdf_Le(const Ray &ray, const Normal3f &nLight, Float *pdfPos,
                         Float *pdfDir) const = 0;
+	virtual Vector3f Axis() const { return Vector3f(0.f, 0.f, 0.f); }
+	virtual float Theta_o() const { return 0; }
+	virtual float Theta_e() const { return 0; }
 
     // Light Public Data
     const int flags;
     const int nSamples;
-    const MediumInterface mediumInterface;
+	const MediumInterface mediumInterface;
 
   protected:
     // Light Protected Data
