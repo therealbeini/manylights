@@ -80,6 +80,7 @@ class Light {
 	virtual Vector3f Axis() const { return Vector3f(0.f, 0.f, 0.f); }
 	virtual float Theta_o() const { return 0; }
 	virtual float Theta_e() const { return 0; }
+	virtual Bounds3f Bounds() const { return Bounds3f(); }
 
     // Light Public Data
     const int flags;

@@ -77,11 +77,18 @@ void PointLight::Pdf_Le(const Ray &, const Normal3f &, Float *pdfPos,
     *pdfDir = UniformSpherePdf();
 }
 
-Vector3f PointLight::Axis() const { return Vector3f(0.f, 0.f, 0.f); }
+Vector3f PointLight::Axis() const { return Vector3f(1.f, 0.f, 0.f); }
 
 float PointLight::Theta_o() const { return Pi; }
 
 float PointLight::Theta_e() const { return Pi / 2; }
+
+Bounds3f PointLight::Bounds() const {
+	float x = LightToWorld.GetMatrix.m[0][3];
+	float y = LightToWorld.GetMatrix.m[1][3];
+	float z = LightToWorld.GetMatrix.m[2][3];
+	return Bounds3f(Point3f(x, y, z), Point3f(x, y, z));
+}
 
 std::shared_ptr<PointLight> CreatePointLight(const Transform &light2world,
                                              const Medium *medium,

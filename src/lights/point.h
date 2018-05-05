@@ -66,6 +66,7 @@ class PointLight : public Light {
 	Vector3f Axis() const;
 	float Theta_o() const;
 	float Theta_e() const;
+	Bounds3f Bounds() const;
 
   private:
     // PointLight Private Data
