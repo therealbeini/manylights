@@ -46,11 +46,13 @@ namespace pbrt {
 		Bounds_o bounds_o;
 		Point3f centroid;
 
+		LBVHLightInfo() {}
+
 		LBVHLightInfo(size_t lightNumber, Light &light)
 			: lightNumber(lightNumber),
 			centroid(.5f * bounds_w.pMin + .5f * bounds_w.pMax) {
 
-			bounds_o = Bounds_o(light.Axis(), light.Theta_o(), light.Theta_e);
+			bounds_o = Bounds_o(light.Axis(), light.Theta_o(), light.Theta_e());
 			bounds_w = light.Bounds();
 		}
 	};
@@ -98,7 +100,7 @@ namespace pbrt {
 		lights(std::move(l)) {
 		ProfilePhase _(Prof::AccelConstruction);
 		if (lights.empty()) return;
-		// Build BVH from _primitives_
+		// Build LBVH from _lights_
 
 		// Initialize _lightInfo_ array for lights
 		std::vector<LBVHLightInfo> lightInfo(lights.size());
@@ -253,9 +255,9 @@ namespace pbrt {
 								leftmaxO = o;
 							}
 						}
-						// TODO: missing integral
-						float leftAngle = 2 * Pi * (1 - cos(leftmaxO));
-						float rightAngle = 2 * Pi * (1 - cos(rightmaxO));
+						// not sure if the integral is correct
+						float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO - cos(2 * leftmaxE + leftmaxO))));
+						float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO - cos(2 * rightmaxE + rightmaxO))));
 						// TODO: missing energy
 						cost[i] = 1 +
 							(count0 * b0.SurfaceArea() * leftAngle +
@@ -296,7 +298,7 @@ namespace pbrt {
 							int primNum = lightInfo[i].lightNumber;
 							orderedLights.push_back(lights[primNum]);
 						}
-						node->InitLeaf(firstPrimOffset, nLights, bounds_w);
+						node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o);
 						return node;
 					}
 				}
