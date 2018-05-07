@@ -27,7 +27,8 @@ namespace pbrt {
 		LBVHAccel(std::vector<std::shared_ptr<Light>> l,
 			int maxPrimsInNode = 1);
 		Bounds3f WorldBound() const;
-		~LBVHAccel();
+		bool Intersect(const Ray &ray, SurfaceInteraction *isect) const;
+		bool IntersectP(const Ray &ray) const;
 
 	private:
 		// BVHAccel Private Methods
@@ -35,26 +36,16 @@ namespace pbrt {
 			MemoryArena &arena, std::vector<LBVHLightInfo> &LightInfo,
 			int start, int end, int *totalNodes,
 			std::vector<std::shared_ptr<Light>> &orderedLights);
-		LBVHBuildNode *HLBVHBuild(
-			MemoryArena &arena, const std::vector<LBVHLightInfo> &LightInfo,
-			int *totalNodes,
-			std::vector<std::shared_ptr<Light>> &orderedLights) const;
-		LBVHBuildNode *emitLBVH(
-			LBVHBuildNode *&buildNodes,
-			const std::vector<LBVHLightInfo> &primitiveInfo,
-			MortonPrimitive *mortonPrims, int nPrimitives, int *totalNodes,
-			std::vector<std::shared_ptr<Light>> &orderedLights,
-			std::atomic<int> *orderedPrimsOffset, int bitIndex) const;
-		LBVHBuildNode *buildUpperSAH(MemoryArena &arena,
-			std::vector<LBVHBuildNode *> &treeletRoots,
-			int start, int end, int *totalNodes) const;
-		int flattenLBVHTree(LBVHBuildNode *node, int *offset);
 
 		// BVHAccel Private Data
 		const int maxLightsInNode;
 		std::vector<std::shared_ptr<Light>> lights;
 		LinearLBVHNode *nodes = nullptr;
 	};
-}
+
+std::shared_ptr<LBVHAccel> CreateLBVHAccelerator(
+	std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps);
+
+} // namespace pbrt
 
 #endif  // PBRT_ACCELERATORS_LBVH_H

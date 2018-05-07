@@ -43,6 +43,7 @@
 // API Additional Headers
 #include "accelerators/bvh.h"
 #include "accelerators/kdtreeaccel.h"
+#include "accelerators/lbvh.h"
 #include "cameras/environment.h"
 #include "cameras/orthographic.h"
 #include "cameras/perspective.h"
@@ -1576,6 +1577,8 @@ void pbrtObjectInstance(const std::string &name) {
         in.clear();
         in.push_back(accel);
     }
+	// TODO: only for testing purposes
+	CreateLBVHAccelerator(renderOptions->lights, renderOptions->AcceleratorParams);
     static_assert(MaxTransforms == 2,
                   "TransformCache assumes only two transforms");
     // Create _animatedInstanceToWorld_ transform for instance

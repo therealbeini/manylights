@@ -85,7 +85,7 @@ float PointLight::Theta_e() const { return Pi / 2; }
 
 Bounds3f PointLight::Bounds() const {
 	Point3f point = LightToWorld(Point3f(0.f, 0.f, 0.f));
-	return Bounds3f(point, point)
+	return Bounds3f(point, point);
 }
 
 std::shared_ptr<PointLight> CreatePointLight(const Transform &light2world,

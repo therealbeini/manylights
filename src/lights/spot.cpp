@@ -117,8 +117,7 @@ namespace pbrt {
 
 	Bounds3f SpotLight::Bounds() const {
 		Point3f point = LightToWorld(Point3f(0.f, 0.f, 0.f));
-		return Bounds3f(point, point)
-
+		return Bounds3f(point, point);
 	}
 
 	std::shared_ptr<SpotLight> CreateSpotLight(const Transform &l2w,

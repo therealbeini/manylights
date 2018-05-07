@@ -6,6 +6,7 @@
 #include "parallel.h"
 #include <algorithm>
 #include "core/light.h"
+#include <iostream>
 
 namespace pbrt {
 
@@ -86,13 +87,6 @@ namespace pbrt {
 		float energy;
 	};
 
-	Bounds_o Union_o(const Bounds_o &b1, const Bounds_o &b2) {
-		Vector3f axis;
-		float theta_o;
-		float theta_e;
-		return Bounds_o(axis, theta_o, theta_e);
-	}
-
 	// LBVHAccel Method Definitions
 	LBVHAccel::LBVHAccel(std::vector<std::shared_ptr<Light>> l,
 		int maxPrimsInNode)
@@ -123,14 +117,6 @@ namespace pbrt {
 			(1024.f * 1024.f),
 			float(arena.TotalAllocated()) /
 			(1024.f * 1024.f));
-
-		// Compute representation of depth-first traversal of LBVH tree
-		treeBytes += totalNodes * sizeof(LinearLBVHNode) + sizeof(*this) +
-			lights.size() * sizeof(lights[0]);
-		nodes = AllocAligned<LinearLBVHNode>(totalNodes);
-		int offset = 0;
-		flattenLBVHTree(root, &offset);
-		CHECK_EQ(totalNodes, offset);
 	}
 
 	struct BucketInfo {
@@ -234,6 +220,7 @@ namespace pbrt {
 						for (int j = 0; j <= i; ++j) {
 							b0 = Union(b0, buckets[j].bounds_w);
 							count0 += buckets[j].count;
+							// this code definitely doesn't work, I need to iterate through the lights and not the buckets
 							float e = 0.f;
 							float o = 0.f;
 							if ((e = AbsDot(axis, lightInfo[j].bounds_o.axis) + lightInfo[j].bounds_o.theta_e) > maxE) {
@@ -246,6 +233,7 @@ namespace pbrt {
 						for (int j = i + 1; j < nBuckets; ++j) {
 							b1 = Union(b1, buckets[j].bounds_w);
 							count1 += buckets[j].count;
+							// this code definitely doesn't work, I need to iterate through the lights and not the buckets
 							float e = 0.f;
 							float o = 0.f;
 							if ((e = AbsDot(axis, lightInfo[j].bounds_o.axis) + lightInfo[j].bounds_o.theta_e) > maxE) {
@@ -302,6 +290,7 @@ namespace pbrt {
 						return node;
 					}
 				}
+				std::cout << "help";
 				node->InitInterior(dim,
 					recursiveBuild(arena, lightInfo, start, mid,
 						totalNodes, orderedLights),
@@ -310,5 +299,24 @@ namespace pbrt {
 			}
 		}
 		return node;
+	}
+
+	bool LBVHAccel::Intersect(const Ray &ray, SurfaceInteraction *isect) const {
+		return false;
+	}
+
+	bool LBVHAccel::IntersectP(const Ray &ray) const {
+		return false;
+	}
+
+	Bounds3f LBVHAccel::WorldBound() const {
+		return Bounds3f();
+	}
+
+
+	std::shared_ptr<LBVHAccel> CreateLBVHAccelerator(
+		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps) {
+		int maxLightsInNode = ps.FindOneInt("maxnodeprims", 4);
+		return std::make_shared<LBVHAccel>(std::move(lights), maxLightsInNode);
 	}
 }
