@@ -1577,8 +1577,6 @@ void pbrtObjectInstance(const std::string &name) {
         in.clear();
         in.push_back(accel);
     }
-	// TODO: only for testing purposes
-	CreateLBVHAccelerator(renderOptions->lights, renderOptions->AcceleratorParams);
     static_assert(MaxTransforms == 2,
                   "TransformCache assumes only two transforms");
     // Create _animatedInstanceToWorld_ transform for instance
@@ -1658,8 +1656,10 @@ void pbrtWorldEnd() {
 Scene *RenderOptions::MakeScene() {
     std::shared_ptr<Primitive> accelerator =
         MakeAccelerator(AcceleratorName, std::move(primitives), AcceleratorParams);
+	// TODO: only for testing purposes
     if (!accelerator) accelerator = std::make_shared<BVHAccel>(primitives);
     Scene *scene = new Scene(accelerator, lights);
+	std::shared_ptr<LBVHAccel> accel = CreateLBVHAccelerator(lights, AcceleratorParams);
     // Erase primitives and lights from _RenderOptions_
     primitives.clear();
     lights.clear();

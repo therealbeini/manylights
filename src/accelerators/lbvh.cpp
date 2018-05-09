@@ -110,20 +110,14 @@ namespace pbrt {
 		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes, orderedLights);
 		lights.swap(orderedLights);
 		lightInfo.resize(0);
-		LOG(INFO) << StringPrintf("BVH created with %d nodes for %d "
-			"primitives (%.2f MB), arena allocated %.2f MB",
+		LOG(INFO) << StringPrintf("LBVH created with %d nodes for %d "
+			"lights (%.2f MB), arena allocated %.2f MB",
 			totalNodes, (int)lights.size(),
 			float(totalNodes * sizeof(LinearLBVHNode)) /
 			(1024.f * 1024.f),
 			float(arena.TotalAllocated()) /
 			(1024.f * 1024.f));
 	}
-
-	struct BucketInfo {
-		int count = 0;
-		Bounds3f bounds_w;
-		Bounds_o bounds_o;
-	};
 
 	LBVHBuildNode *LBVHAccel::recursiveBuild(
 		MemoryArena &arena, std::vector<LBVHLightInfo> &lightInfo, int start,
@@ -169,134 +163,92 @@ namespace pbrt {
 
 			// Partition lights into two sets and build children
 			int mid = (start + end) / 2;
-			if (centroidBounds.pMax[dim] == centroidBounds.pMin[dim]) {
-				// Create leaf _LBVHBuildNode_
-				int firstPrimOffset = orderedLights.size();
-				for (int i = start; i < end; ++i) {
-					int lightNum = lightInfo[i].lightNumber;
-					orderedLights.push_back(lights[lightNum]);
-				}
-				node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o);
-				return node;
+
+			// Partition primitives using approximate SAOH
+			if (nLights <= 2) {
+				// Partition primitives into equally-sized subsets
+				mid = (start + end) / 2;
+				std::nth_element(&lightInfo[start], &lightInfo[mid],
+					&lightInfo[end - 1] + 1,
+					[dim](const LBVHLightInfo &a,
+						const LBVHLightInfo &b) {
+					return a.centroid[dim] <
+						b.centroid[dim];
+				});
 			}
 			else {
-				// Partition primitives using approximate SAOH
-				if (nLights <= 2) {
-					// Partition primitives into equally-sized subsets
-					mid = (start + end) / 2;
-					std::nth_element(&lightInfo[start], &lightInfo[mid],
-						&lightInfo[end - 1] + 1,
-						[dim](const LBVHLightInfo &a,
-							const LBVHLightInfo &b) {
-						return a.centroid[dim] <
-							b.centroid[dim];
-					});
+				// Compute costs for splitting after each light
+				std::vector<float> cost(nLights - 1);
+				for (int i = 0; i < nLights - 1; i++) {
+					Bounds3f b0, b1;
+					float leftmaxE = 0, rightmaxE = 0;
+					float leftmaxO = 0, rightmaxO = 0;
+					for (int j = 0; j <= i; j++) {
+						b0 = Union(b0, lightInfo[start + j].bounds_w);
+						// this code definitely doesn't work, I need to iterate through the lights and not the buckets
+						float e = 0.f;
+						float o = 0.f;
+						if ((e = acos(AbsDot(axis, lightInfo[start + j].bounds_o.axis) + lightInfo[start + j].bounds_o.theta_e)) > leftmaxE) {
+							leftmaxE = e;
+						}
+						if ((o = e + lightInfo[start + j].bounds_o.theta_o) > leftmaxO) {
+							leftmaxO = o;
+						}
+					}
+					for (int j = i + 1; j < nLights; j++) {
+						b1 = Union(b1, lightInfo[start + j].bounds_w);
+						// this code definitely doesn't work, I need to iterate through the lights and not the buckets
+						float e = 0.f;
+						float o = 0.f;
+						if ((e = acos(AbsDot(axis, lightInfo[j].bounds_o.axis) + lightInfo[j].bounds_o.theta_e)) > rightmaxE) {
+							rightmaxE = e;
+						}
+						if ((o = e + lightInfo[j].bounds_o.theta_o) > rightmaxO) {
+							rightmaxO = o;
+						}
+					}
+					// not sure if the integral is correct
+					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO - cos(2 * leftmaxE + leftmaxO))) / 4);
+					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO - cos(2 * rightmaxE + rightmaxO))) / 4);
+					// TODO: missing energy
+					cost[i] = 1 +
+						((i + 1) * b0.SurfaceArea() * leftAngle +
+						(nLights - i - 1) * b1.SurfaceArea() * rightAngle) /
+						bounds_w.SurfaceArea();
+				}
+
+				// Find bucket to split at that minimizes SAH metric
+				Float minCost = cost[0];
+				int minCostSplitBucket = 0;
+				for (int i = 1; i < nLights - 1; i++) {
+					if (cost[i] < minCost) {
+						minCost = cost[i];
+						minCostSplitBucket = i;
+					}
+				}
+
+				// Either create leaf or split lights at selected SAH
+				// bucket
+				Float leafCost = nLights;
+				if (nLights > maxLightsInNode || minCost < leafCost) {
+					mid = start + minCostSplitBucket + 1;
 				}
 				else {
-					// Allocate _BucketInfo_ for SAH partition buckets
-					PBRT_CONSTEXPR int nBuckets = 12;
-					BucketInfo buckets[nBuckets];
-
-					// Initialize _BucketInfo_ for SAH partition buckets
+					// Create leaf _BVHBuildNode_
+					int firstPrimOffset = orderedLights.size();
 					for (int i = start; i < end; ++i) {
-						int b = nBuckets *
-							centroidBounds.Offset(
-								lightInfo[i].centroid)[dim];
-						if (b == nBuckets) b = nBuckets - 1;
-						CHECK_GE(b, 0);
-						CHECK_LT(b, nBuckets);
-						buckets[b].count++;
-						buckets[b].bounds_w =
-							Union(buckets[b].bounds_w, lightInfo[i].bounds_w);
+						int primNum = lightInfo[i].lightNumber;
+						orderedLights.push_back(lights[primNum]);
 					}
-
-					// Compute costs for splitting after each bucket
-					Float cost[nBuckets - 1];
-					for (int i = 0; i < nBuckets - 1; ++i) {
-						Bounds3f b0, b1;
-						int count0 = 0, count1 = 0;
-						float leftmaxE = 0, rightmaxE = 0;
-						float leftmaxO = 0, rightmaxO = 0;
-						for (int j = 0; j <= i; ++j) {
-							b0 = Union(b0, buckets[j].bounds_w);
-							count0 += buckets[j].count;
-							// this code definitely doesn't work, I need to iterate through the lights and not the buckets
-							float e = 0.f;
-							float o = 0.f;
-							if ((e = AbsDot(axis, lightInfo[j].bounds_o.axis) + lightInfo[j].bounds_o.theta_e) > maxE) {
-								leftmaxE = e;
-							}
-							if ((o = e + lightInfo[j].bounds_o.theta_o) > maxO) {
-								leftmaxO = o;
-							}
-						}
-						for (int j = i + 1; j < nBuckets; ++j) {
-							b1 = Union(b1, buckets[j].bounds_w);
-							count1 += buckets[j].count;
-							// this code definitely doesn't work, I need to iterate through the lights and not the buckets
-							float e = 0.f;
-							float o = 0.f;
-							if ((e = AbsDot(axis, lightInfo[j].bounds_o.axis) + lightInfo[j].bounds_o.theta_e) > maxE) {
-								leftmaxE = e;
-							}
-							if ((o = e + lightInfo[j].bounds_o.theta_o) > maxO) {
-								leftmaxO = o;
-							}
-						}
-						// not sure if the integral is correct
-						float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO - cos(2 * leftmaxE + leftmaxO))));
-						float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO - cos(2 * rightmaxE + rightmaxO))));
-						// TODO: missing energy
-						cost[i] = 1 +
-							(count0 * b0.SurfaceArea() * leftAngle +
-								count1 * b1.SurfaceArea() * rightAngle) /
-							bounds_w.SurfaceArea();
-					}
-
-					// Find bucket to split at that minimizes SAH metric
-					Float minCost = cost[0];
-					int minCostSplitBucket = 0;
-					for (int i = 1; i < nBuckets - 1; ++i) {
-						if (cost[i] < minCost) {
-							minCost = cost[i];
-							minCostSplitBucket = i;
-						}
-					}
-
-					// Either create leaf or split lights at selected SAH
-					// bucket
-					Float leafCost = nLights;
-					if (nLights > maxLightsInNode || minCost < leafCost) {
-						LBVHLightInfo *pmid = std::partition(
-							&lightInfo[start], &lightInfo[end - 1] + 1,
-							[=](const LBVHLightInfo &pi) {
-							int b = nBuckets *
-								centroidBounds.Offset(pi.centroid)[dim];
-							if (b == nBuckets) b = nBuckets - 1;
-							CHECK_GE(b, 0);
-							CHECK_LT(b, nBuckets);
-							return b <= minCostSplitBucket;
-						});
-						mid = pmid - &lightInfo[0];
-					}
-					else {
-						// Create leaf _BVHBuildNode_
-						int firstPrimOffset = orderedLights.size();
-						for (int i = start; i < end; ++i) {
-							int primNum = lightInfo[i].lightNumber;
-							orderedLights.push_back(lights[primNum]);
-						}
-						node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o);
-						return node;
-					}
+					node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o);
+					return node;
 				}
-				std::cout << "help";
-				node->InitInterior(dim,
-					recursiveBuild(arena, lightInfo, start, mid,
-						totalNodes, orderedLights),
-					recursiveBuild(arena, lightInfo, mid, end,
-						totalNodes, orderedLights), bounds_o);
 			}
+			node->InitInterior(dim,
+				recursiveBuild(arena, lightInfo, start,  mid,
+					totalNodes, orderedLights),
+				recursiveBuild(arena, lightInfo, mid, end,
+					totalNodes, orderedLights), bounds_o);
 		}
 		return node;
 	}
