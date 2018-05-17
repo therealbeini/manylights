@@ -43,7 +43,7 @@
 // API Additional Headers
 #include "accelerators/bvh.h"
 #include "accelerators/kdtreeaccel.h"
-#include "accelerators/lbvh.h"
+#include "accelerators/lightbvh.h"
 #include "cameras/environment.h"
 #include "cameras/orthographic.h"
 #include "cameras/perspective.h"
@@ -1659,7 +1659,7 @@ Scene *RenderOptions::MakeScene() {
 	// TODO: only for testing purposes
     if (!accelerator) accelerator = std::make_shared<BVHAccel>(primitives);
     Scene *scene = new Scene(accelerator, lights);
-	std::shared_ptr<LBVHAccel> accel = CreateLBVHAccelerator(lights, AcceleratorParams);
+	std::shared_ptr<LightBVHAccel> accel = CreateLBVHAccelerator(lights, AcceleratorParams);
     // Erase primitives and lights from _RenderOptions_
     primitives.clear();
     lights.clear();

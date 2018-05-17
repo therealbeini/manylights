@@ -6,25 +6,25 @@
 #ifndef PBRT_ACCELERATORS_LBVH_H
 #define PBRT_ACCELERATORS_LBVH_H
 
-// accelerators/lbvh.h*
+// accelerators/lightbvh.h*
 #include "pbrt.h"
 #include "primitive.h"
 #include <atomic>
 
 namespace pbrt {
 	struct Bounds_o;
-	struct LBVHBuildNode;
+	struct LightBVHBuildNode;
 
-	// LBVHAccel Forward Declarations
-	struct LBVHLightInfo;
+	// LightBVHAccel Forward Declarations
+	struct LightBVHLightInfo;
 	struct MortonPrimitive;
 	struct LinearLBVHNode;
 
-	class LBVHAccel : public Aggregate {
+	class LightBVHAccel : public Aggregate {
 	public:
 
 		// BVHAccel Public Methods
-		LBVHAccel(std::vector<std::shared_ptr<Light>> l,
+		LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
 			int maxPrimsInNode = 1);
 		Bounds3f WorldBound() const;
 		bool Intersect(const Ray &ray, SurfaceInteraction *isect) const;
@@ -32,8 +32,8 @@ namespace pbrt {
 
 	private:
 		// BVHAccel Private Methods
-		LBVHBuildNode * recursiveBuild(
-			MemoryArena &arena, std::vector<LBVHLightInfo> &LightInfo,
+		LightBVHBuildNode * recursiveBuild(
+			MemoryArena &arena, std::vector<LightBVHLightInfo> &LightInfo,
 			int start, int end, int *totalNodes,
 			std::vector<std::shared_ptr<Light>> &orderedLights);
 
@@ -43,7 +43,7 @@ namespace pbrt {
 		LinearLBVHNode *nodes = nullptr;
 	};
 
-std::shared_ptr<LBVHAccel> CreateLBVHAccelerator(
+std::shared_ptr<LightBVHAccel> CreateLBVHAccelerator(
 	std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps);
 
 } // namespace pbrt

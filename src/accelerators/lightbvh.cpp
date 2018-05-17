@@ -1,5 +1,5 @@
-// accelerators/lbvh.cpp*
-#include "accelerators/lbvh.h"
+// accelerators/lightbvh.cpp*
+#include "accelerators/lightbvh.h"
 #include "interaction.h"
 #include "paramset.h"
 #include "stats.h"
@@ -10,10 +10,10 @@
 
 namespace pbrt {
 
-	STAT_MEMORY_COUNTER("Memory/LBVH tree", treeBytes);
-	STAT_RATIO("LBVH/Lights per leaf node", totalLights, totalLeafNodes);
-	STAT_COUNTER("LBVH/Interior nodes", interiorNodes);
-	STAT_COUNTER("LBVH/Leaf nodes", leafNodes);
+	STAT_MEMORY_COUNTER("Memory/LightBVH tree", treeBytes);
+	STAT_RATIO("LightBVH/Lights per leaf node", totalLights, totalLeafNodes);
+	STAT_COUNTER("LightBVH/Interior nodes", interiorNodes);
+	STAT_COUNTER("LightBVH/Leaf nodes", leafNodes);
 
 	struct LinearLBVHNode {
 		Bounds3f bounds;
@@ -40,16 +40,16 @@ namespace pbrt {
 	};
 
 	// BVHAccel Local Declarations
-	struct LBVHLightInfo {
+	struct LightBVHLightInfo {
 
 		size_t lightNumber;
 		Bounds3f bounds_w;
 		Bounds_o bounds_o;
 		Point3f centroid;
 
-		LBVHLightInfo() {}
+		LightBVHLightInfo() {}
 
-		LBVHLightInfo(size_t lightNumber, Light &light)
+		LightBVHLightInfo(size_t lightNumber, Light &light)
 			: lightNumber(lightNumber),
 			centroid(.5f * bounds_w.pMin + .5f * bounds_w.pMax) {
 
@@ -58,8 +58,8 @@ namespace pbrt {
 		}
 	};
 
-	struct LBVHBuildNode {
-		// LBVHBuildNode Public Methods
+	struct LightBVHBuildNode {
+		// LightBVHBuildNode Public Methods
 		void InitLeaf(int first, int n, const Bounds3f &b_w, const Bounds_o &b_o) {
 			firstLightOffset = first;
 			nLights = n;
@@ -70,7 +70,7 @@ namespace pbrt {
 			++totalLeafNodes;
 			totalLights += n;
 		}
-		void InitInterior(int split, LBVHBuildNode *c0, LBVHBuildNode *c1, const Bounds_o &b_o) {
+		void InitInterior(int split, LightBVHBuildNode *c0, LightBVHBuildNode *c1, const Bounds_o &b_o) {
 			children[0] = c0;
 			children[1] = c1;
 			bounds_w = Union(c0->bounds_w, c1->bounds_w);
@@ -79,16 +79,31 @@ namespace pbrt {
 			nLights = 0;
 			++interiorNodes;
 		}
+		void PrintNode(int depth) {
+			std::string s;
+			for (int i = 0; i < depth; i++)  s += "-";
+			if (nLights != 0) {
+				for (int i = 0; i < nLights; i++) {
+					Point3f p = bounds_w.Corner(0);
+					std::cout << s << "x = " << p.x << ", y = " << p.y << ", z = " << p.z << std::endl;
+				}
+			}
+			else {
+				std::cout << s << std::endl;
+				children[0]->PrintNode(depth + 1);
+				children[1]->PrintNode(depth + 1);
+			}
+		}
 		Bounds3f bounds_w;
 		Bounds_o bounds_o;
-		LBVHBuildNode *children[2];
+		LightBVHBuildNode *children[2];
 		int splitAxis, firstLightOffset, nLights;
 		// TODO: initializing energy
 		float energy;
 	};
 
-	// LBVHAccel Method Definitions
-	LBVHAccel::LBVHAccel(std::vector<std::shared_ptr<Light>> l,
+	// LightBVHAccel Method Definitions
+	LightBVHAccel::LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
 		int maxPrimsInNode)
 		: maxLightsInNode(std::min(255, maxPrimsInNode)),
 		lights(std::move(l)) {
@@ -97,7 +112,7 @@ namespace pbrt {
 		// Build LBVH from _lights_
 
 		// Initialize _lightInfo_ array for lights
-		std::vector<LBVHLightInfo> lightInfo(lights.size());
+		std::vector<LightBVHLightInfo> lightInfo(lights.size());
 		for (size_t i = 0; i < lights.size(); ++i)
 			lightInfo[i] = { i, *lights[i] };
 
@@ -106,8 +121,9 @@ namespace pbrt {
 		int totalNodes = 0;
 		std::vector<std::shared_ptr<Light>> orderedLights;
 		orderedLights.reserve(lights.size());
-		LBVHBuildNode *root;
+		LightBVHBuildNode *root;
 		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes, orderedLights);
+		root->PrintNode(0);
 		lights.swap(orderedLights);
 		lightInfo.resize(0);
 		LOG(INFO) << StringPrintf("LBVH created with %d nodes for %d "
@@ -119,12 +135,12 @@ namespace pbrt {
 			(1024.f * 1024.f));
 	}
 
-	LBVHBuildNode *LBVHAccel::recursiveBuild(
-		MemoryArena &arena, std::vector<LBVHLightInfo> &lightInfo, int start,
+	LightBVHBuildNode *LightBVHAccel::recursiveBuild(
+		MemoryArena &arena, std::vector<LightBVHLightInfo> &lightInfo, int start,
 		int end, int *totalNodes,
 		std::vector<std::shared_ptr<Light>> &orderedLights) {
 		CHECK_NE(start, end);
-		LBVHBuildNode *node = arena.Alloc<LBVHBuildNode>();
+		LightBVHBuildNode *node = arena.Alloc<LightBVHBuildNode>();
 		(*totalNodes)++;
 		// Compute bounds of all lights in BVH node
 		Bounds3f bounds_w;
@@ -170,8 +186,8 @@ namespace pbrt {
 				mid = (start + end) / 2;
 				std::nth_element(&lightInfo[start], &lightInfo[mid],
 					&lightInfo[end - 1] + 1,
-					[dim](const LBVHLightInfo &a,
-						const LBVHLightInfo &b) {
+					[dim](const LightBVHLightInfo &a,
+						const LightBVHLightInfo &b) {
 					return a.centroid[dim] <
 						b.centroid[dim];
 				});
@@ -185,7 +201,6 @@ namespace pbrt {
 					float leftmaxO = 0, rightmaxO = 0;
 					for (int j = 0; j <= i; j++) {
 						b0 = Union(b0, lightInfo[start + j].bounds_w);
-						// this code definitely doesn't work, I need to iterate through the lights and not the buckets
 						float e = 0.f;
 						float o = 0.f;
 						if ((e = acos(AbsDot(axis, lightInfo[start + j].bounds_o.axis) + lightInfo[start + j].bounds_o.theta_e)) > leftmaxE) {
@@ -197,7 +212,6 @@ namespace pbrt {
 					}
 					for (int j = i + 1; j < nLights; j++) {
 						b1 = Union(b1, lightInfo[start + j].bounds_w);
-						// this code definitely doesn't work, I need to iterate through the lights and not the buckets
 						float e = 0.f;
 						float o = 0.f;
 						if ((e = acos(AbsDot(axis, lightInfo[j].bounds_o.axis) + lightInfo[j].bounds_o.theta_e)) > rightmaxE) {
@@ -253,22 +267,22 @@ namespace pbrt {
 		return node;
 	}
 
-	bool LBVHAccel::Intersect(const Ray &ray, SurfaceInteraction *isect) const {
+	bool LightBVHAccel::Intersect(const Ray &ray, SurfaceInteraction *isect) const {
 		return false;
 	}
 
-	bool LBVHAccel::IntersectP(const Ray &ray) const {
+	bool LightBVHAccel::IntersectP(const Ray &ray) const {
 		return false;
 	}
 
-	Bounds3f LBVHAccel::WorldBound() const {
+	Bounds3f LightBVHAccel::WorldBound() const {
 		return Bounds3f();
 	}
 
 
-	std::shared_ptr<LBVHAccel> CreateLBVHAccelerator(
+	std::shared_ptr<LightBVHAccel> CreateLBVHAccelerator(
 		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps) {
 		int maxLightsInNode = ps.FindOneInt("maxnodeprims", 4);
-		return std::make_shared<LBVHAccel>(std::move(lights), maxLightsInNode);
+		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
 	}
 }
