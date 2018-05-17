@@ -79,6 +79,7 @@ class Triangle : public Shape {
         triMeshBytes += sizeof(*this);
         faceIndex = mesh->faceIndices.size() ? mesh->faceIndices[triNumber] : 0;
     }
+	Normal3f Normal() const;
     Bounds3f ObjectBound() const;
     Bounds3f WorldBound() const;
     bool Intersect(const Ray &ray, Float *tHit, SurfaceInteraction *isect,

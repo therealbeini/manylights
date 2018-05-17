@@ -168,6 +168,13 @@ bool WritePlyFile(const std::string &filename, int nTriangles,
     return true;
 }
 
+Normal3f Triangle::Normal() const {
+	const Point3f &p0 = mesh->p[v[0]];
+	const Point3f &p1 = mesh->p[v[1]];
+	const Point3f &p2 = mesh->p[v[2]];
+	return Normal3f(Cross((p1 - p0), (p2 - p0)));
+}
+
 Bounds3f Triangle::ObjectBound() const {
     // Get triangle vertices in _p0_, _p1_, and _p2_
     const Point3f &p0 = mesh->p[v[0]];
