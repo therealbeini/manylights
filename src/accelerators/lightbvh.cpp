@@ -166,7 +166,9 @@ namespace pbrt {
 			}
 		}
 		Bounds_o bounds_o = Bounds_o(axis, maxE, maxO);
+		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO - cos(2 * maxE + maxO))) / 4);
 		int nLights = end - start;
+		float totalEnergy;
 		if (nLights == 1) {
 			// Create leaf _LBVHBuildNode_
 			int firstPrimOffset = orderedLights.size();
@@ -174,7 +176,7 @@ namespace pbrt {
 				int lightNum = lightInfo[i].lightNumber;
 				orderedLights.push_back(lights[lightNum]);
 			}
-			node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o);
+			node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o, lightInfo[0].energy);
 			return node;
 		}
 		else {
@@ -190,7 +192,6 @@ namespace pbrt {
 			// Partition primitives using approximate SAOH
 			if (nLights <= 2) {
 				// Partition primitives into equally-sized subsets
-				mid = (start + end) / 2;
 				std::nth_element(&lightInfo[start], &lightInfo[mid],
 					&lightInfo[end - 1] + 1,
 					[dim](const LightBVHLightInfo &a,
@@ -206,7 +207,7 @@ namespace pbrt {
 					Bounds3f b0, b1;
 					float leftmaxE = 0, rightmaxE = 0;
 					float leftmaxO = 0, rightmaxO = 0;
-					float leftEnergy = 0, rightEnergy = 0;
+					float leftEnergy =  0, rightEnergy = 0;
 					for (int j = 0; j <= i; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
 						b0 = Union(b0, l.bounds_w);
@@ -233,13 +234,14 @@ namespace pbrt {
 						}
 						rightEnergy += l.energy;
 					}
+					totalEnergy = leftEnergy + rightEnergy;
 					// not sure if the integral is correct
 					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO - cos(2 * leftmaxE + leftmaxO))) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO - cos(2 * rightmaxE + rightmaxO))) / 4);
 
 					cost[i] = ((i + 1) * b0.SurfaceArea() * leftAngle * leftEnergy +
 						(nLights - i - 1) * b1.SurfaceArea() * rightAngle * rightEnergy) /
-						bounds_w.SurfaceArea();
+						bounds_w.SurfaceArea() * totalAngle * totalEnergy;
 				}
 
 				// Find bucket to split at that minimizes SAH metric
@@ -265,7 +267,7 @@ namespace pbrt {
 						int primNum = lightInfo[i].lightNumber;
 						orderedLights.push_back(lights[primNum]);
 					}
-					node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o);
+					node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o, totalEnergy);
 					return node;
 				}
 			}
@@ -273,7 +275,7 @@ namespace pbrt {
 				recursiveBuild(arena, lightInfo, start,  mid,
 					totalNodes, orderedLights),
 				recursiveBuild(arena, lightInfo, mid, end,
-					totalNodes, orderedLights), bounds_o);
+					totalNodes, orderedLights), bounds_o, totalEnergy);
 		}
 		return node;
 	}
