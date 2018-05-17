@@ -46,6 +46,7 @@ namespace pbrt {
 		Bounds3f bounds_w;
 		Bounds_o bounds_o;
 		Point3f centroid;
+		float energy = 0.f;
 
 		LightBVHLightInfo() {}
 
@@ -55,12 +56,17 @@ namespace pbrt {
 
 			bounds_o = Bounds_o(light.Axis(), light.Theta_o(), light.Theta_e());
 			bounds_w = light.Bounds();
+			Spectrum s = light.Power();
+			int n = s.nSamples;
+			for (int i = 0; i < n; i++) {
+				energy += s[i];
+			}
 		}
 	};
 
 	struct LightBVHBuildNode {
 		// LightBVHBuildNode Public Methods
-		void InitLeaf(int first, int n, const Bounds3f &b_w, const Bounds_o &b_o) {
+		void InitLeaf(int first, int n, const Bounds3f &b_w, const Bounds_o &b_o, float e) {
 			firstLightOffset = first;
 			nLights = n;
 			bounds_w = b_w;
@@ -69,8 +75,9 @@ namespace pbrt {
 			++leafNodes;
 			++totalLeafNodes;
 			totalLights += n;
+			energy = e;
 		}
-		void InitInterior(int split, LightBVHBuildNode *c0, LightBVHBuildNode *c1, const Bounds_o &b_o) {
+		void InitInterior(int split, LightBVHBuildNode *c0, LightBVHBuildNode *c1, const Bounds_o &b_o, float e) {
 			children[0] = c0;
 			children[1] = c1;
 			bounds_w = Union(c0->bounds_w, c1->bounds_w);
@@ -78,6 +85,7 @@ namespace pbrt {
 			splitAxis = split;
 			nLights = 0;
 			++interiorNodes;
+			energy = e;
 		}
 		void PrintNode(int depth) {
 			std::string s;
@@ -98,7 +106,6 @@ namespace pbrt {
 		Bounds_o bounds_o;
 		LightBVHBuildNode *children[2];
 		int splitAxis, firstLightOffset, nLights;
-		// TODO: initializing energy
 		float energy;
 	};
 
@@ -199,35 +206,39 @@ namespace pbrt {
 					Bounds3f b0, b1;
 					float leftmaxE = 0, rightmaxE = 0;
 					float leftmaxO = 0, rightmaxO = 0;
+					float leftEnergy = 0, rightEnergy = 0;
 					for (int j = 0; j <= i; j++) {
-						b0 = Union(b0, lightInfo[start + j].bounds_w);
+						LightBVHLightInfo l = lightInfo[start + j];
+						b0 = Union(b0, l.bounds_w);
 						float e = 0.f;
 						float o = 0.f;
-						if ((e = acos(AbsDot(axis, lightInfo[start + j].bounds_o.axis) + lightInfo[start + j].bounds_o.theta_e)) > leftmaxE) {
+						if ((e = acos(AbsDot(axis, l.bounds_o.axis) + l.bounds_o.theta_e)) > leftmaxE) {
 							leftmaxE = e;
 						}
-						if ((o = e + lightInfo[start + j].bounds_o.theta_o) > leftmaxO) {
+						if ((o = e + l.bounds_o.theta_o) > leftmaxO) {
 							leftmaxO = o;
 						}
+						leftEnergy += l.energy;
 					}
 					for (int j = i + 1; j < nLights; j++) {
-						b1 = Union(b1, lightInfo[start + j].bounds_w);
+						LightBVHLightInfo l = lightInfo[start + j];
+						b1 = Union(b1, l.bounds_w);
 						float e = 0.f;
 						float o = 0.f;
-						if ((e = acos(AbsDot(axis, lightInfo[j].bounds_o.axis) + lightInfo[j].bounds_o.theta_e)) > rightmaxE) {
+						if ((e = acos(AbsDot(axis, l.bounds_o.axis) + l.bounds_o.theta_e)) > rightmaxE) {
 							rightmaxE = e;
 						}
-						if ((o = e + lightInfo[j].bounds_o.theta_o) > rightmaxO) {
+						if ((o = e + l.bounds_o.theta_o) > rightmaxO) {
 							rightmaxO = o;
 						}
+						rightEnergy += l.energy;
 					}
 					// not sure if the integral is correct
 					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO - cos(2 * leftmaxE + leftmaxO))) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO - cos(2 * rightmaxE + rightmaxO))) / 4);
-					// TODO: missing energy
-					cost[i] = 1 +
-						((i + 1) * b0.SurfaceArea() * leftAngle +
-						(nLights - i - 1) * b1.SurfaceArea() * rightAngle) /
+
+					cost[i] = ((i + 1) * b0.SurfaceArea() * leftAngle * leftEnergy +
+						(nLights - i - 1) * b1.SurfaceArea() * rightAngle * rightEnergy) /
 						bounds_w.SurfaceArea();
 				}
 
