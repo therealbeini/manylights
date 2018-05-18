@@ -202,6 +202,8 @@ namespace pbrt {
 			}
 			else {
 				// Compute costs for splitting after each light
+				// This part has some problems. If I use the median of to calculate the axis, then I have to fully sort the lights.
+				// Working on potential fix?
 				std::vector<float> cost(nLights - 1);
 				for (int i = 0; i < nLights - 1; i++) {
 					Bounds3f b0, b1;
