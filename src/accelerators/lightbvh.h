@@ -20,15 +20,12 @@ namespace pbrt {
 	struct MortonPrimitive;
 	struct LinearLBVHNode;
 
-	class LightBVHAccel : public Aggregate {
+	class LightBVHAccel {
 	public:
 
 		// BVHAccel Public Methods
 		LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
 			int maxPrimsInNode = 1);
-		Bounds3f WorldBound() const;
-		bool Intersect(const Ray &ray, SurfaceInteraction *isect) const;
-		bool IntersectP(const Ray &ray) const;
 
 	private:
 		// BVHAccel Private Methods

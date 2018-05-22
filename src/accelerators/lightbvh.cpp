@@ -282,19 +282,6 @@ namespace pbrt {
 		return node;
 	}
 
-	bool LightBVHAccel::Intersect(const Ray &ray, SurfaceInteraction *isect) const {
-		return false;
-	}
-
-	bool LightBVHAccel::IntersectP(const Ray &ray) const {
-		return false;
-	}
-
-	Bounds3f LightBVHAccel::WorldBound() const {
-		return Bounds3f();
-	}
-
-
 	std::shared_ptr<LightBVHAccel> CreateLBVHAccelerator(
 		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps) {
 		int maxLightsInNode = ps.FindOneInt("maxnodeprims", 4);
