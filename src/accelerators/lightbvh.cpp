@@ -148,13 +148,26 @@ namespace pbrt {
 		CHECK_NE(start, end);
 		LightBVHBuildNode *node = arena.Alloc<LightBVHBuildNode>();
 		(*totalNodes)++;
+		// Compute bound of light centroids, choose split dimension _dim_
+		Bounds3f centroidBounds;
+		for (int i = start; i < end; ++i)
+			centroidBounds = Union(centroidBounds, lightInfo[i].centroid);
+		int dim = centroidBounds.MaximumExtent();
 		// Compute bounds of all lights in BVH node
-		Bounds3f bounds_w;
-		Vector3f axis = lightInfo[(start + end) / 2].bounds_o.axis;
+		Bounds3f totalBounds_w;
+		int mid = (start + end) / 2;
+		std::nth_element(&lightInfo[start], &lightInfo[mid],
+			&lightInfo[end - 1] + 1,
+			[dim](const LightBVHLightInfo &a,
+				const LightBVHLightInfo &b) {
+			return a.bounds_o.axis[dim] <
+				b.bounds_o.axis[dim];
+		});
+		Vector3f axis = lightInfo[mid].bounds_o.axis;
 		float maxE = 0.f;
 		float maxO = 0.f;
 		for (int i = start; i < end; ++i) {
-			bounds_w = Union(bounds_w, lightInfo[i].bounds_w);
+			totalBounds_w = Union(totalBounds_w, lightInfo[i].bounds_w);
 			float e = 0.f;
 			float o = 0.f;
 			if ((e = AbsDot(axis, lightInfo[i].bounds_o.axis) + lightInfo[i].bounds_o.theta_e) > maxE) {
@@ -167,7 +180,7 @@ namespace pbrt {
 		Bounds_o bounds_o = Bounds_o(axis, maxE, maxO);
 		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO - cos(2 * maxE + maxO))) / 4);
 		int nLights = end - start;
-		float totalEnergy;
+		float totalEnergy = 0;
 		if (nLights == 1) {
 			// Create leaf _LBVHBuildNode_
 			int firstPrimOffset = orderedLights.size();
@@ -175,19 +188,11 @@ namespace pbrt {
 				int lightNum = lightInfo[i].lightNumber;
 				orderedLights.push_back(lights[lightNum]);
 			}
-			node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o, lightInfo[0].energy);
+			node->InitLeaf(firstPrimOffset, nLights, totalBounds_w, bounds_o, lightInfo[0].energy);
 			return node;
 		}
 		else {
-			// Compute bound of light centroids, choose split dimension _dim_
-			Bounds3f centroidBounds;
-			for (int i = start; i < end; ++i)
-				centroidBounds = Union(centroidBounds, lightInfo[i].centroid);
-			int dim = 1;
-
 			// Partition lights into two sets and build children
-			int mid = (start + end) / 2;
-
 			// Partition primitives using approximate SAOH
 			if (nLights <= 2) {
 				// Partition primitives into equally-sized subsets
@@ -198,18 +203,17 @@ namespace pbrt {
 					return a.centroid[dim] <
 						b.centroid[dim];
 				});
+				// TODO: calculate totalEnergy?
 			}
 			else {
 				// split the lights in 12 intervals with the same size and compute the cost for each split
 				// 11 splitindices = 12 splits
-				int buckets = 12;
+				int buckets = std::min(12, nLights);
 				std::vector<float> cost(buckets - 1);
-				float lightsPerInterval = (float)nLights / 12;
+				float lightsPerInterval = (float)nLights / buckets;
 				for (int i = 0; i < buckets - 1; i++) {
-					int first = (int)lightsPerInterval * i;
-					int nth = (int)lightsPerInterval * (i + 1);
-					int last = end - 1;
-					std::nth_element(&lightInfo[(int)lightsPerInterval * i], &lightInfo[(int)lightsPerInterval * (i + 1)],
+
+					std::nth_element(&lightInfo[(int)(lightsPerInterval * i)], &lightInfo[(int)(lightsPerInterval * (i + 1))],
 						&lightInfo[end - 1] + 1,
 						[dim](const LightBVHLightInfo &a,
 							const LightBVHLightInfo &b) {
@@ -222,9 +226,9 @@ namespace pbrt {
 					float leftmaxE = 0, rightmaxE = 0;
 					float leftmaxO = 0, rightmaxO = 0;
 					float leftEnergy = 0, rightEnergy = 0;
-					int intervalEnd = (int)lightsPerInterval * (i + 1);
-					std::nth_element(&lightInfo[start], &lightInfo[intervalEnd / 2],
-						&lightInfo[intervalEnd] + 1,
+					int intervalEnd = (int)(lightsPerInterval * (i + 1));
+					std::nth_element(&lightInfo[start], &lightInfo[start + intervalEnd / 2],
+						&lightInfo[start + intervalEnd] + 1,
 						[dim](const LightBVHLightInfo &a,
 							const LightBVHLightInfo &b) {
 						return a.bounds_o.axis[dim] <
@@ -270,9 +274,9 @@ namespace pbrt {
 					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO - cos(2 * leftmaxE + leftmaxO))) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO - cos(2 * rightmaxE + rightmaxO))) / 4);
 
-					cost[i] = ((i + 1) * b0.SurfaceArea() * leftAngle * leftEnergy +
-						(nLights - i - 1) * b1.SurfaceArea() * rightAngle * rightEnergy) /
-						bounds_w.SurfaceArea() * totalAngle * totalEnergy;
+					cost[i] = (b0.SurfaceArea() * leftAngle * leftEnergy +
+						b1.SurfaceArea() * rightAngle * rightEnergy) /
+						totalBounds_w.SurfaceArea() * totalAngle * totalEnergy;
 				}
 
 
@@ -299,7 +303,7 @@ namespace pbrt {
 						int primNum = lightInfo[i].lightNumber;
 						orderedLights.push_back(lights[primNum]);
 					}
-					node->InitLeaf(firstPrimOffset, nLights, bounds_w, bounds_o, totalEnergy);
+					node->InitLeaf(firstPrimOffset, nLights, totalBounds_w, bounds_o, totalEnergy);
 					return node;
 				}
 			}
