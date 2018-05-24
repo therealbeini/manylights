@@ -51,11 +51,10 @@ namespace pbrt {
 		LightBVHLightInfo() {}
 
 		LightBVHLightInfo(size_t lightNumber, Light &light)
-			: lightNumber(lightNumber),
-			centroid(.5f * bounds_w.pMin + .5f * bounds_w.pMax) {
-
+			: lightNumber(lightNumber) {
 			bounds_o = Bounds_o(light.Axis(), light.Theta_o(), light.Theta_e());
 			bounds_w = light.Bounds();
+			centroid = .5f * bounds_w.pMin + .5f * bounds_w.pMax;
 			Spectrum s = light.Power();
 			int n = s.nSamples;
 			for (int i = 0; i < n; i++) {
@@ -184,7 +183,7 @@ namespace pbrt {
 			Bounds3f centroidBounds;
 			for (int i = start; i < end; ++i)
 				centroidBounds = Union(centroidBounds, lightInfo[i].centroid);
-			int dim = centroidBounds.MaximumExtent();
+			int dim = 1;
 
 			// Partition lights into two sets and build children
 			int mid = (start + end) / 2;
@@ -201,16 +200,46 @@ namespace pbrt {
 				});
 			}
 			else {
-				// Compute costs for splitting after each light
-				// This part has some problems. If I use the median of to calculate the axis, then I have to fully sort the lights.
-				// Working on potential fix?
-				std::vector<float> cost(nLights - 1);
-				for (int i = 0; i < nLights - 1; i++) {
+				// split the lights in 12 intervals with the same size and compute the cost for each split
+				// 11 splitindices = 12 splits
+				int buckets = 12;
+				std::vector<float> cost(buckets - 1);
+				float lightsPerInterval = (float)nLights / 12;
+				for (int i = 0; i < buckets - 1; i++) {
+					int first = (int)lightsPerInterval * i;
+					int nth = (int)lightsPerInterval * (i + 1);
+					int last = end - 1;
+					std::nth_element(&lightInfo[(int)lightsPerInterval * i], &lightInfo[(int)lightsPerInterval * (i + 1)],
+						&lightInfo[end - 1] + 1,
+						[dim](const LightBVHLightInfo &a,
+							const LightBVHLightInfo &b) {
+						return a.centroid[dim] <
+							b.centroid[dim];
+					});
+				}
+				for (int i = 0; i < buckets - 1; i++) {
 					Bounds3f b0, b1;
 					float leftmaxE = 0, rightmaxE = 0;
 					float leftmaxO = 0, rightmaxO = 0;
-					float leftEnergy =  0, rightEnergy = 0;
-					for (int j = 0; j <= i; j++) {
+					float leftEnergy = 0, rightEnergy = 0;
+					int intervalEnd = (int)lightsPerInterval * (i + 1);
+					std::nth_element(&lightInfo[start], &lightInfo[intervalEnd / 2],
+						&lightInfo[intervalEnd] + 1,
+						[dim](const LightBVHLightInfo &a,
+							const LightBVHLightInfo &b) {
+						return a.bounds_o.axis[dim] <
+							b.bounds_o.axis[dim];
+					});
+					Vector3f leftAxis = lightInfo[mid].bounds_o.axis;
+					std::nth_element(&lightInfo[intervalEnd + 1], &lightInfo[intervalEnd + 1 + (end - 1 - (intervalEnd + 1)) / 2],
+						&lightInfo[end - 1] + 1,
+						[dim](const LightBVHLightInfo &a,
+							const LightBVHLightInfo &b) {
+						return a.bounds_o.axis[dim] <
+							b.bounds_o.axis[dim];
+					});
+					Vector3f rightAxis = lightInfo[intervalEnd + 1 + (end - 1 - (intervalEnd + 1)) / 2].bounds_o.axis;
+					for (int j = i * lightsPerInterval; j <= (i + 1) * lightsPerInterval; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
 						b0 = Union(b0, l.bounds_w);
 						float e = 0.f;
@@ -223,7 +252,7 @@ namespace pbrt {
 						}
 						leftEnergy += l.energy;
 					}
-					for (int j = i + 1; j < nLights; j++) {
+					for (int j = (i + 1) * lightsPerInterval + 1; j < nLights; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
 						b1 = Union(b1, l.bounds_w);
 						float e = 0.f;
@@ -246,10 +275,11 @@ namespace pbrt {
 						bounds_w.SurfaceArea() * totalAngle * totalEnergy;
 				}
 
+
 				// Find bucket to split at that minimizes SAH metric
 				Float minCost = cost[0];
 				int minCostSplitBucket = 0;
-				for (int i = 1; i < nLights - 1; i++) {
+				for (int i = 1; i < buckets - 1; i++) {
 					if (cost[i] < minCost) {
 						minCost = cost[i];
 						minCostSplitBucket = i;
@@ -274,7 +304,7 @@ namespace pbrt {
 				}
 			}
 			node->InitInterior(dim,
-				recursiveBuild(arena, lightInfo, start,  mid,
+				recursiveBuild(arena, lightInfo, start, mid,
 					totalNodes, orderedLights),
 				recursiveBuild(arena, lightInfo, mid, end,
 					totalNodes, orderedLights), bounds_o, totalEnergy);
