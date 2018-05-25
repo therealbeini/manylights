@@ -170,7 +170,7 @@ namespace pbrt {
 			totalBounds_w = Union(totalBounds_w, lightInfo[i].bounds_w);
 			float e = 0.f;
 			float o = 0.f;
-			if ((e = AbsDot(axis, lightInfo[i].bounds_o.axis) + lightInfo[i].bounds_o.theta_e) > maxE) {
+			if ((e = acos(AbsDot(axis, lightInfo[i].bounds_o.axis)) + lightInfo[i].bounds_o.theta_e) > maxE) {
 				maxE = e;
 			}
 			if ((o = e + lightInfo[i].bounds_o.theta_o) > maxO) {
@@ -178,7 +178,7 @@ namespace pbrt {
 			}
 		}
 		Bounds_o bounds_o = Bounds_o(axis, maxE, maxO);
-		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO - cos(2 * maxE + maxO))) / 4);
+		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4);
 		int nLights = end - start;
 		float totalEnergy = 0;
 		if (nLights == 1) {
@@ -243,12 +243,12 @@ namespace pbrt {
 							b.bounds_o.axis[dim];
 					});
 					Vector3f rightAxis = lightInfo[intervalEnd + 1 + (end - 1 - (intervalEnd + 1)) / 2].bounds_o.axis;
-					for (int j = i * lightsPerInterval; j <= (i + 1) * lightsPerInterval; j++) {
+					for (int j = 0; j <= (i + 1) * lightsPerInterval; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
 						b0 = Union(b0, l.bounds_w);
 						float e = 0.f;
 						float o = 0.f;
-						if ((e = acos(AbsDot(axis, l.bounds_o.axis) + l.bounds_o.theta_e)) > leftmaxE) {
+						if ((e = acos(AbsDot(leftAxis, l.bounds_o.axis)) + l.bounds_o.theta_e) > leftmaxE) {
 							leftmaxE = e;
 						}
 						if ((o = e + l.bounds_o.theta_o) > leftmaxO) {
@@ -261,7 +261,7 @@ namespace pbrt {
 						b1 = Union(b1, l.bounds_w);
 						float e = 0.f;
 						float o = 0.f;
-						if ((e = acos(AbsDot(axis, l.bounds_o.axis) + l.bounds_o.theta_e)) > rightmaxE) {
+						if ((e = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_e) > rightmaxE) {
 							rightmaxE = e;
 						}
 						if ((o = e + l.bounds_o.theta_o) > rightmaxO) {
@@ -271,9 +271,8 @@ namespace pbrt {
 					}
 					totalEnergy = leftEnergy + rightEnergy;
 					// not sure if the integral is correct
-					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO - cos(2 * leftmaxE + leftmaxO))) / 4);
-					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO - cos(2 * rightmaxE + rightmaxO))) / 4);
-
+					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO) - cos(2 * leftmaxE + leftmaxO)) / 4);
+					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO) - cos(2 * rightmaxE + rightmaxO)) / 4);
 					cost[i] = (b0.SurfaceArea() * leftAngle * leftEnergy +
 						b1.SurfaceArea() * rightAngle * rightEnergy) /
 						totalBounds_w.SurfaceArea() * totalAngle * totalEnergy;
