@@ -86,19 +86,19 @@ namespace pbrt {
 			++interiorNodes;
 			energy = e;
 		}
-		void PrintNode(int depth) {
+		void PrintNode(int depth, std::vector<LightBVHLightInfo> &lightInfo) {
 			std::string s;
 			for (int i = 0; i < depth; i++)  s += "-";
 			if (nLights != 0) {
 				for (int i = 0; i < nLights; i++) {
-					Point3f p = bounds_w.Corner(0);
+					Point3f p = lightInfo[firstLightOffset + i].centroid;
 					std::cout << s << "x = " << p.x << ", y = " << p.y << ", z = " << p.z << std::endl;
 				}
 			}
 			else {
 				std::cout << s << std::endl;
-				children[0]->PrintNode(depth + 1);
-				children[1]->PrintNode(depth + 1);
+				children[0]->PrintNode(depth + 1, lightInfo);
+				children[1]->PrintNode(depth + 1, lightInfo);
 			}
 		}
 		Bounds3f bounds_w;
@@ -129,7 +129,7 @@ namespace pbrt {
 		orderedLights.reserve(lights.size());
 		LightBVHBuildNode *root;
 		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes, orderedLights);
-		root->PrintNode(0);
+		root->PrintNode(0, lightInfo);
 		lights.swap(orderedLights);
 		lightInfo.resize(0);
 		LOG(INFO) << StringPrintf("LBVH created with %d nodes for %d "
