@@ -293,7 +293,7 @@ namespace pbrt {
 				// bucket
 				Float leafCost = nLights;
 				if (nLights > maxLightsInNode || minCost < leafCost) {
-					mid = start + minCostSplitBucket + 1;
+					mid = start + (int) ((minCostSplitBucket + 1) * lightsPerInterval);
 				}
 				else {
 					// Create leaf _BVHBuildNode_
