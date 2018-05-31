@@ -1658,8 +1658,8 @@ Scene *RenderOptions::MakeScene() {
         MakeAccelerator(AcceleratorName, std::move(primitives), AcceleratorParams);
 	// TODO: only for testing purposes
     if (!accelerator) accelerator = std::make_shared<BVHAccel>(primitives);
-    Scene *scene = new Scene(accelerator, lights);
 	std::shared_ptr<LightBVHAccel> accel = CreateLBVHAccelerator(lights, AcceleratorParams);
+    Scene *scene = new Scene(accelerator, lights, accel);
     // Erase primitives and lights from _RenderOptions_
     primitives.clear();
     lights.clear();

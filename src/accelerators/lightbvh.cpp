@@ -293,7 +293,7 @@ namespace pbrt {
 				// bucket
 				Float leafCost = nLights;
 				if (nLights > maxLightsInNode || minCost < leafCost) {
-					mid = start + (int) ((minCostSplitBucket + 1) * lightsPerInterval);
+					mid = start + (int) ((minCostSplitBucket + 1) * lightsPerInterval) + 1;
 				}
 				else {
 					// Create leaf _BVHBuildNode_
@@ -319,5 +319,11 @@ namespace pbrt {
 		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps) {
 		int maxLightsInNode = ps.FindOneInt("maxnodeprims", 4);
 		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
+	}
+
+	Spectrum LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
+		MemoryArena &arena, Sampler &sampler,
+		bool handleMedia, const Distribution1D *lightDistrib) {
+		return *lights[0]->Power;
 	}
 }
