@@ -321,9 +321,9 @@ namespace pbrt {
 		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
 	}
 
-	Spectrum LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
+	int LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
 		MemoryArena &arena, Sampler &sampler,
 		bool handleMedia, const Distribution1D *lightDistrib) {
-		return *lights[0]->Power;
+		return 0;
 	}
 }

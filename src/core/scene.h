@@ -43,6 +43,7 @@
 #include "geometry.h"
 #include "primitive.h"
 #include "light.h"
+#include "accelerators\lightbvh.h"
 
 namespace pbrt {
 

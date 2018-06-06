@@ -26,7 +26,7 @@ namespace pbrt {
 		// BVHAccel Public Methods
 		LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
 			int maxPrimsInNode = 1);
-		Spectrum LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
+		int LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
 			MemoryArena &arena, Sampler &sampler,
 			bool handleMedia, const Distribution1D *lightDistrib);
 

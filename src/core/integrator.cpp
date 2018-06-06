@@ -115,7 +115,8 @@ Spectrum TreeSampleOneLight(const Interaction &it, const Scene &scene,
 	int lightNum;
 	Float lightPdf;
 	if (lightDistrib) {
-		return scene.accel.Sample(it, scene, arena, sampler, handleMedia, lightDistrib);
+		lightNum = scene.accel->Sample(it, scene, arena, sampler, handleMedia, lightDistrib);
+		if (lightPdf == 0) return Spectrum(0.f);
 	}
 	else {
 		lightNum = std::min((int)(sampler.Get1D() * nLights), nLights - 1);
