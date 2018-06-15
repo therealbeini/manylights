@@ -119,7 +119,7 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
         if (isect.bsdf->NumComponents(BxDFType(BSDF_ALL & ~BSDF_SPECULAR)) >
             0) {
             ++totalPaths;
-            Spectrum Ld = beta * UniformSampleOneLight(isect, scene, arena,
+            Spectrum Ld = beta * TreeSampleOneLight(isect, scene, arena,
                                                        sampler, false, distrib);
             VLOG(2) << "Sampled direct lighting Ld = " << Ld;
             if (Ld.IsBlack()) ++zeroRadiancePaths;

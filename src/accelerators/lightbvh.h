@@ -29,6 +29,10 @@ namespace pbrt {
 		int LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
 			MemoryArena &arena, Sampler &sampler,
 			bool handleMedia, const Distribution1D *lightDistrib);
+		int LightBVHAccel::TraverseNode(LightBVHBuildNode node, float sample1D, const Interaction &it, const Scene &scene,
+			MemoryArena &arena, Sampler &sampler,
+			bool handleMedia, const Distribution1D *lightDistrib);
+		float LightBVHAccel::calculateImportance(Point3f o, LightBVHBuildNode* node);
 
 	private:
 		// BVHAccel Private Methods
@@ -41,6 +45,7 @@ namespace pbrt {
 		const int maxLightsInNode;
 		std::vector<std::shared_ptr<Light>> lights;
 		LinearLBVHNode *nodes = nullptr;
+		LightBVHBuildNode *root = nullptr;
 	};
 
 std::shared_ptr<LightBVHAccel> CreateLBVHAccelerator(

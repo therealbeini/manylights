@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "core/light.h"
 #include <iostream>
+#include "sampler.h"
 
 namespace pbrt {
 
@@ -75,6 +76,7 @@ namespace pbrt {
 			++totalLeafNodes;
 			totalLights += n;
 			energy = e;
+			centroid = .5f * bounds_w.pMin + .5f * bounds_w.pMax;
 		}
 		void InitInterior(int split, LightBVHBuildNode *c0, LightBVHBuildNode *c1, const Bounds_o &b_o, float e) {
 			children[0] = c0;
@@ -85,6 +87,7 @@ namespace pbrt {
 			nLights = 0;
 			++interiorNodes;
 			energy = e;
+			centroid = .5f * bounds_w.pMin + .5f * bounds_w.pMax;
 		}
 		void PrintNode(int depth, std::vector<LightBVHLightInfo> &lightInfo) {
 			std::string s;
@@ -103,6 +106,7 @@ namespace pbrt {
 		}
 		Bounds3f bounds_w;
 		Bounds_o bounds_o;
+		Point3f centroid;
 		LightBVHBuildNode *children[2];
 		int splitAxis, firstLightOffset, nLights;
 		float energy;
@@ -127,7 +131,6 @@ namespace pbrt {
 		int totalNodes = 0;
 		std::vector<std::shared_ptr<Light>> orderedLights;
 		orderedLights.reserve(lights.size());
-		LightBVHBuildNode *root;
 		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes, orderedLights);
 		root->PrintNode(0, lightInfo);
 		lights.swap(orderedLights);
@@ -270,7 +273,6 @@ namespace pbrt {
 						rightEnergy += l.energy;
 					}
 					totalEnergy = leftEnergy + rightEnergy;
-					// not sure if the integral is correct
 					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO) - cos(2 * leftmaxE + leftmaxO)) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO) - cos(2 * rightmaxE + rightmaxO)) / 4);
 					cost[i] = (b0.SurfaceArea() * leftAngle * leftEnergy +
@@ -293,7 +295,7 @@ namespace pbrt {
 				// bucket
 				Float leafCost = nLights;
 				if (nLights > maxLightsInNode || minCost < leafCost) {
-					mid = start + (int) ((minCostSplitBucket + 1) * lightsPerInterval) + 1;
+					mid = start + (int)((minCostSplitBucket + 1) * lightsPerInterval) + 1;
 				}
 				else {
 					// Create leaf _BVHBuildNode_
@@ -324,6 +326,114 @@ namespace pbrt {
 	int LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
 		MemoryArena &arena, Sampler &sampler,
 		bool handleMedia, const Distribution1D *lightDistrib) {
-		return 0;
+		float sample1D = sampler.Get1D();
+		return TraverseNode(*root, sample1D, it, scene, arena, sampler, handleMedia, lightDistrib);
+	}
+
+	int LightBVHAccel::TraverseNode(LightBVHBuildNode node, float sample1D, const Interaction &it, const Scene &scene, MemoryArena &arena, Sampler &sampler, bool handleMedia, const Distribution1D *lightDistrib) {
+		if (node.nLights != 0) {
+			return floor(sample1D * node.nLights);
+		}
+		Point3f o = it.p;
+		float firstImportance = calculateImportance(o, node.children[0]);
+		float secondImportance = calculateImportance(o, node.children[1]);
+		firstImportance = firstImportance / (firstImportance + secondImportance);
+		secondImportance = secondImportance / (firstImportance + secondImportance);
+		if (sample1D < firstImportance) {
+			return TraverseNode(node, sample1D / firstImportance, it, scene, arena, sampler, handleMedia, lightDistrib);
+		}
+		return TraverseNode(node, (sample1D - firstImportance) / secondImportance, it, scene, arena, sampler, handleMedia, lightDistrib);
+	}
+
+	float LightBVHAccel::calculateImportance(Point3f o, LightBVHBuildNode* node) {
+		float theta_e = node->bounds_o.theta_e;
+		float theta_o = node->bounds_o.theta_o;
+		Vector3f d = node->centroid - o;
+		float distance = d.Length();
+		float theta = acos(Dot(node->bounds_o.axis, -d));
+		float theta_u;
+		// numeric inaccuracies?
+		float ep = 0.0001;
+
+		float t0 = -std::numeric_limits<float>::infinity(), t1 = std::numeric_limits<float>::infinity();
+		for (int i = 0; i < 3; ++i) {
+			// Update interval for _i_th bounding box slab
+			float invRayDir = 1 / d[i];
+			float tNear = (node->bounds_w.pMin[i] - o[i]) * invRayDir;
+			float tFar = (node->bounds_w.pMax[i] - o[i]) * invRayDir;
+
+			// Update parametric interval from slab intersection $t$ values
+			if (tNear > tFar) std::swap(tNear, tFar);
+
+			// Update _tFar_ to ensure robust ray--bounds intersection
+			tFar *= 1 + 2 * gamma(3);
+			t0 = tNear > t0 ? tNear : t0;
+			t1 = tFar < t1 ? tFar : t1;
+		}
+
+		// shading point is already in the box -> can always find a theta_u with 0
+		if (t0 < 0 || t1 < 0) {
+			theta_u = 0;
+		}
+		else {
+			Point3f is = o + d * t0;
+			int side;
+			Point3f pMin = node->bounds_w.pMin;
+			Point3f pMax = node->bounds_w.pMax;
+			for (int i = 0; i < 3; i++) {
+				if (abs(is[i] - node->bounds_w.pMin[i]) < ep) {
+					side = i * 2;
+				}
+				else if (abs(is[i] - node->bounds_w.pMax[i]) < ep) {
+					side = i * 2 + 1;
+				}
+			}
+			Point3f c[4];
+			// ugly code defining the corners to check
+			switch (side) {
+			case 0:
+				c[0] = Point3f(pMin.x, pMin.y, pMin.z);
+				c[1] = Point3f(pMin.x, pMin.y, pMax.z);
+				c[2] = Point3f(pMin.x, pMax.y, pMin.z);
+				c[3] = Point3f(pMin.x, pMax.y, pMax.z);
+				break;
+			case 1:
+				c[0] = Point3f(pMax.x, pMin.y, pMin.z);
+				c[1] = Point3f(pMax.x, pMin.y, pMax.z);
+				c[2] = Point3f(pMax.x, pMax.y, pMin.z);
+				c[3] = Point3f(pMax.x, pMax.y, pMax.z);
+				break;
+			case 2:
+				c[0] = Point3f(pMin.x, pMin.y, pMin.z);
+				c[1] = Point3f(pMax.x, pMin.y, pMin.z);
+				c[2] = Point3f(pMin.x, pMin.y, pMax.z);
+				c[3] = Point3f(pMax.x, pMin.y, pMax.z);
+				break;
+			case 3:
+				c[0] = Point3f(pMin.x, pMax.y, pMin.z);
+				c[1] = Point3f(pMax.x, pMax.y, pMin.z);
+				c[2] = Point3f(pMin.x, pMax.y, pMax.z);
+				c[3] = Point3f(pMax.x, pMax.y, pMax.z);
+				break;
+			case 4:
+				c[0] = Point3f(pMin.x, pMin.y, pMin.z);
+				c[1] = Point3f(pMax.x, pMin.y, pMin.z);
+				c[2] = Point3f(pMin.x, pMax.y, pMin.z);
+				c[3] = Point3f(pMax.x, pMax.y, pMin.z);
+				break;
+			case 5:
+				c[0] = Point3f(pMin.x, pMin.y, pMax.z);
+				c[1] = Point3f(pMax.x, pMin.y, pMax.z);
+				c[2] = Point3f(pMin.x, pMax.y, pMax.z);
+				c[3] = Point3f(pMax.x, pMax.y, pMax.z);
+				break;
+			}
+			// setting theta_u to the maximum angle
+			for (int i = 0; i < 4; i++) {
+				theta_u = std::max(theta_u, acos(Dot(d, c[i] - o)));
+			}
+		}
+
+		return node->energy * cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e))) / (distance * distance);
 	}
 }

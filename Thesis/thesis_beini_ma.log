@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.6)  6 JUN 2018 19:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  14 JUN 2018 16:55
 entering extended mode
 **./thesis_beini_ma.tex
 (thesis_beini_ma.tex
@@ -2036,9 +2036,6 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 143.
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
 Package biblatex Warning: Please (re)run Biber on the file:
 (biblatex)                thesis_beini_ma
 (biblatex)                and rerun LaTeX afterwards.
@@ -2049,8 +2046,8 @@ Package logreq Info: Writing requests to 'thesis_beini_ma.run.xml'.
  ) 
 Here is how much of TeX's memory you used:
  24520 strings out of 493305
- 461519 string characters out of 3129803
- 1035865 words of memory out of 3000000
+ 461883 string characters out of 3129802
+ 1036006 words of memory out of 3000000
  27631 multiletter control sequences out of 15000+200000
  162596 words of font info for 146 fonts, out of 3000000 for 9000
  1143 hyphenation exceptions out of 8191
@@ -2077,7 +2074,7 @@ rams/MiKTeX 2.9/fonts/type1/public/newtx/txexs.pfb><C:/Users/beini/AppData/Loca
 l/Programs/MiKTeX 2.9/fonts/type1/public/newtx/txsys.pfb><C:/Users/beini/AppDat
 a/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/zxlr.pfb><C:/Users/beini/A
 ppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/zxlri.pfb>
-Output written on thesis_beini_ma.pdf (27 pages, 416324 bytes).
+Output written on thesis_beini_ma.pdf (27 pages, 416643 bytes).
 PDF statistics:
  203 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
