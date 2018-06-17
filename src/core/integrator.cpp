@@ -42,6 +42,7 @@
 #include "progressreporter.h"
 #include "camera.h"
 #include "stats.h"
+#include "accelerators\lightbvh.h"
 
 namespace pbrt {
 
@@ -117,7 +118,7 @@ namespace pbrt {
 		int lightNum;
 		Float lightPdf;
 		if (lightDistrib) {
-			lightNum = scene.accel->Sample(it, scene, arena, sampler, handleMedia, lightDistrib);
+			lightNum = scene.lightAccel->Sample(it, scene, sampler, handleMedia, lightDistrib);
 		}
 		else {
 			lightNum = std::min((int)(sampler.Get1D() * nLights), nLights - 1);

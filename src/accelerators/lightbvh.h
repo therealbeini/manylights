@@ -13,44 +13,40 @@
 
 namespace pbrt {
 	struct Bounds_o;
-	struct LightBVHBuildNode;
+	struct LightBVHNode;
 
 	// LightBVHAccel Forward Declarations
 	struct LightBVHLightInfo;
-	struct MortonPrimitive;
-	struct LinearLBVHNode;
 
 	class LightBVHAccel {
 	public:
 
+		LightBVHNode * root = nullptr;
+
 		// BVHAccel Public Methods
 		LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
 			int maxPrimsInNode = 1);
-		int LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
-			MemoryArena &arena, Sampler &sampler,
+		int Sample(const Interaction &it, const Scene &scene, Sampler &sampler,
 			bool handleMedia, const Distribution1D *lightDistrib);
-		int LightBVHAccel::TraverseNode(LightBVHBuildNode node, float sample1D, const Interaction &it, const Scene &scene,
-			MemoryArena &arena, Sampler &sampler,
-			bool handleMedia, const Distribution1D *lightDistrib);
-		float LightBVHAccel::calculateImportance(Point3f o, LightBVHBuildNode* node);
 
 	private:
 		// BVHAccel Private Methods
-		LightBVHBuildNode * recursiveBuild(
+		LightBVHNode* recursiveBuild(
 			MemoryArena &arena, std::vector<LightBVHLightInfo> &LightInfo,
 			int start, int end, int *totalNodes,
 			std::vector<std::shared_ptr<Light>> &orderedLights);
+		int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, const Scene &scene, Sampler &sampler,
+			bool handleMedia, const Distribution1D *lightDistrib);
+		float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node);
 
 		// BVHAccel Private Data
 		const int maxLightsInNode;
 		std::vector<std::shared_ptr<Light>> lights;
-		LinearLBVHNode *nodes = nullptr;
-		LightBVHBuildNode *root = nullptr;
 	};
 
-std::shared_ptr<LightBVHAccel> CreateLBVHAccelerator(
-	std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps);
+	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
+		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps);
 
 } // namespace pbrt
 
-#endif  // PBRT_ACCELERATORS_LBVH_H
+#endif  // PBRT_ACCELERATORS_LIGHTBVH_H

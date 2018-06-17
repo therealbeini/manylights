@@ -16,17 +16,6 @@ namespace pbrt {
 	STAT_COUNTER("LightBVH/Interior nodes", interiorNodes);
 	STAT_COUNTER("LightBVH/Leaf nodes", leafNodes);
 
-	struct LinearLBVHNode {
-		Bounds3f bounds;
-		union {
-			int primitivesOffset;   // leaf
-			int secondChildOffset;  // interior
-		};
-		uint16_t nPrimitives;  // 0 -> interior node
-		uint8_t axis;          // interior node: xyz
-		uint8_t pad[1];        // ensure 32 byte total size
-	};
-
 	struct Bounds_o {
 		Vector3f axis;
 		float theta_o;
@@ -64,8 +53,8 @@ namespace pbrt {
 		}
 	};
 
-	struct LightBVHBuildNode {
-		// LightBVHBuildNode Public Methods
+	struct LightBVHNode {
+		// LightBVHNode Public Methods
 		void InitLeaf(int first, int n, const Bounds3f &b_w, const Bounds_o &b_o, float e) {
 			firstLightOffset = first;
 			nLights = n;
@@ -78,7 +67,7 @@ namespace pbrt {
 			energy = e;
 			centroid = .5f * bounds_w.pMin + .5f * bounds_w.pMax;
 		}
-		void InitInterior(int split, LightBVHBuildNode *c0, LightBVHBuildNode *c1, const Bounds_o &b_o, float e) {
+		void InitInterior(int split, LightBVHNode *c0, LightBVHNode *c1, const Bounds_o &b_o, float e) {
 			children[0] = c0;
 			children[1] = c1;
 			bounds_w = Union(c0->bounds_w, c1->bounds_w);
@@ -107,7 +96,7 @@ namespace pbrt {
 		Bounds3f bounds_w;
 		Bounds_o bounds_o;
 		Point3f centroid;
-		LightBVHBuildNode *children[2];
+		LightBVHNode *children[2];
 		int splitAxis, firstLightOffset, nLights;
 		float energy;
 	};
@@ -126,30 +115,24 @@ namespace pbrt {
 		for (size_t i = 0; i < lights.size(); ++i)
 			lightInfo[i] = { i, *lights[i] };
 
-		// Build LBVH tree for lights using _lightInfo_
-		MemoryArena arena(1024 * 1024);
+		// Build LightBVH tree for lights using _lightInfo_
 		int totalNodes = 0;
 		std::vector<std::shared_ptr<Light>> orderedLights;
 		orderedLights.reserve(lights.size());
+		MemoryArena arena(1024 * 1024);
 		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes, orderedLights);
 		root->PrintNode(0, lightInfo);
 		lights.swap(orderedLights);
 		lightInfo.resize(0);
-		LOG(INFO) << StringPrintf("LBVH created with %d nodes for %d "
-			"lights (%.2f MB), arena allocated %.2f MB",
-			totalNodes, (int)lights.size(),
-			float(totalNodes * sizeof(LinearLBVHNode)) /
-			(1024.f * 1024.f),
-			float(arena.TotalAllocated()) /
-			(1024.f * 1024.f));
 	}
 
-	LightBVHBuildNode *LightBVHAccel::recursiveBuild(
+	LightBVHNode* LightBVHAccel::recursiveBuild(
 		MemoryArena &arena, std::vector<LightBVHLightInfo> &lightInfo, int start,
 		int end, int *totalNodes,
 		std::vector<std::shared_ptr<Light>> &orderedLights) {
 		CHECK_NE(start, end);
-		LightBVHBuildNode *node = arena.Alloc<LightBVHBuildNode>();
+		// TODO: Change malloc back to arena allocation when I know what the problem is
+		LightBVHNode* node = (LightBVHNode*) malloc(sizeof LightBVHNode);
 		(*totalNodes)++;
 		// Compute bound of light centroids, choose split dimension _dim_
 		Bounds3f centroidBounds;
@@ -281,7 +264,7 @@ namespace pbrt {
 				}
 
 
-				// Find bucket to split at that minimizes SAH metric
+				// Find bucket to split at that minimizes SAOH metric
 				Float minCost = cost[0];
 				int minCostSplitBucket = 0;
 				for (int i = 1; i < buckets - 1; i++) {
@@ -291,7 +274,7 @@ namespace pbrt {
 					}
 				}
 
-				// Either create leaf or split lights at selected SAH
+				// Either create leaf or split lights at selected SAOH
 				// bucket
 				Float leafCost = nLights;
 				if (nLights > maxLightsInNode || minCost < leafCost) {
@@ -317,35 +300,40 @@ namespace pbrt {
 		return node;
 	}
 
-	std::shared_ptr<LightBVHAccel> CreateLBVHAccelerator(
+	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
 		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps) {
 		int maxLightsInNode = ps.FindOneInt("maxnodeprims", 4);
 		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
 	}
 
-	int LightBVHAccel::Sample(const Interaction &it, const Scene &scene,
-		MemoryArena &arena, Sampler &sampler,
+	int LightBVHAccel::Sample(const Interaction &it, const Scene &scene, Sampler &sampler,
 		bool handleMedia, const Distribution1D *lightDistrib) {
 		float sample1D = sampler.Get1D();
-		return TraverseNode(*root, sample1D, it, scene, arena, sampler, handleMedia, lightDistrib);
+		return TraverseNode(root, sample1D, it, scene, sampler, handleMedia, lightDistrib);
 	}
 
-	int LightBVHAccel::TraverseNode(LightBVHBuildNode node, float sample1D, const Interaction &it, const Scene &scene, MemoryArena &arena, Sampler &sampler, bool handleMedia, const Distribution1D *lightDistrib) {
-		if (node.nLights != 0) {
-			return floor(sample1D * node.nLights);
+	int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, const Scene &scene, Sampler &sampler, bool handleMedia, const Distribution1D *lightDistrib) {
+		// im already at a leaf of the tree
+		std::cout << node->energy << "stfu";
+		if (node->nLights != 0) {
+			return floor(sample1D * node->nLights);
 		}
+		// finding out if I have to take the left or the right path
 		Point3f o = it.p;
-		float firstImportance = calculateImportance(o, node.children[0]);
-		float secondImportance = calculateImportance(o, node.children[1]);
+		float firstImportance = calculateImportance(o, node->children[0]);
+		float secondImportance = calculateImportance(o, node->children[1]);
+		// normalize the importance
 		firstImportance = firstImportance / (firstImportance + secondImportance);
 		secondImportance = secondImportance / (firstImportance + secondImportance);
+		// left side traversal
 		if (sample1D < firstImportance) {
-			return TraverseNode(node, sample1D / firstImportance, it, scene, arena, sampler, handleMedia, lightDistrib);
+			return TraverseNode(node, sample1D / firstImportance, it, scene, sampler, handleMedia, lightDistrib);
 		}
-		return TraverseNode(node, (sample1D - firstImportance) / secondImportance, it, scene, arena, sampler, handleMedia, lightDistrib);
+		// right side traversal
+		return TraverseNode(node, (sample1D - firstImportance) / secondImportance, it, scene, sampler, handleMedia, lightDistrib);
 	}
 
-	float LightBVHAccel::calculateImportance(Point3f o, LightBVHBuildNode* node) {
+	float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {
 		float theta_e = node->bounds_o.theta_e;
 		float theta_o = node->bounds_o.theta_o;
 		Vector3f d = node->centroid - o;
@@ -427,6 +415,7 @@ namespace pbrt {
 				c[2] = Point3f(pMin.x, pMax.y, pMax.z);
 				c[3] = Point3f(pMax.x, pMax.y, pMax.z);
 				break;
+			default: std::cout << "There has been an issue finding the side of the bounds that was hit";
 			}
 			// setting theta_u to the maximum angle
 			for (int i = 0; i < 4; i++) {

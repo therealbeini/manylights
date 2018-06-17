@@ -52,8 +52,8 @@ class Scene {
   public:
     // Scene Public Methods
     Scene(std::shared_ptr<Primitive> aggregate,
-          const std::vector<std::shared_ptr<Light>> &lights, const std::shared_ptr<LightBVHAccel> &accel)
-        : lights(lights), aggregate(aggregate), accel(accel) {
+          const std::vector<std::shared_ptr<Light>> &lights, const std::shared_ptr<LightBVHAccel> &lightAccel)
+        : lights(lights), aggregate(aggregate), lightAccel(lightAccel) {
         // Scene Constructor Implementation
         worldBound = aggregate->WorldBound();
         for (const auto &light : lights) {
@@ -73,7 +73,7 @@ class Scene {
     // Store infinite light sources separately for cases where we only want
     // to loop over them.
     std::vector<std::shared_ptr<Light>> infiniteLights;
-	std::shared_ptr<LightBVHAccel> accel;
+	std::shared_ptr<LightBVHAccel> lightAccel;
 
   private:
     // Scene Private Data
