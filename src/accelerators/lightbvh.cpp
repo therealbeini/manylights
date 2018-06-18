@@ -83,8 +83,8 @@ namespace pbrt {
 			for (int i = 0; i < depth; i++)  s += "-";
 			if (nLights != 0) {
 				for (int i = 0; i < nLights; i++) {
-					Point3f p = lightInfo[firstLightOffset + i].centroid;
-					std::cout << s << "x = " << p.x << ", y = " << p.y << ", z = " << p.z << std::endl;
+					Point3f p = centroid;
+					std::cout << s << "n = " << nLights << ", " << "x = " << p.x << ", y = " << p.y << ", z = " << p.z << std::endl;
 				}
 			}
 			else {
@@ -99,6 +99,7 @@ namespace pbrt {
 		LightBVHNode *children[2];
 		int splitAxis, firstLightOffset, nLights;
 		float energy;
+		// TODO: number of emitters under this node required?
 	};
 
 	// LightBVHAccel Method Definitions
@@ -132,7 +133,7 @@ namespace pbrt {
 		std::vector<std::shared_ptr<Light>> &orderedLights) {
 		CHECK_NE(start, end);
 		// TODO: Change malloc back to arena allocation when I know what the problem is
-		LightBVHNode* node = (LightBVHNode*) malloc(sizeof LightBVHNode);
+		LightBVHNode* node = (LightBVHNode*)malloc(sizeof LightBVHNode);
 		(*totalNodes)++;
 		// Compute bound of light centroids, choose split dimension _dim_
 		Bounds3f centroidBounds;
@@ -166,6 +167,7 @@ namespace pbrt {
 		Bounds_o bounds_o = Bounds_o(axis, maxE, maxO);
 		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4);
 		int nLights = end - start;
+		// total energy for the node
 		float totalEnergy = 0;
 		if (nLights == 1) {
 			// Create leaf _LBVHBuildNode_
@@ -274,22 +276,8 @@ namespace pbrt {
 					}
 				}
 
-				// Either create leaf or split lights at selected SAOH
-				// bucket
-				Float leafCost = nLights;
-				if (nLights > maxLightsInNode || minCost < leafCost) {
-					mid = start + (int)((minCostSplitBucket + 1) * lightsPerInterval) + 1;
-				}
-				else {
-					// Create leaf _BVHBuildNode_
-					int firstPrimOffset = orderedLights.size();
-					for (int i = start; i < end; ++i) {
-						int primNum = lightInfo[i].lightNumber;
-						orderedLights.push_back(lights[primNum]);
-					}
-					node->InitLeaf(firstPrimOffset, nLights, totalBounds_w, bounds_o, totalEnergy);
-					return node;
-				}
+				// split lights at selected SAOH bucket
+				mid = start + (int)((minCostSplitBucket + 1) * lightsPerInterval) + 1;
 			}
 			node->InitInterior(dim,
 				recursiveBuild(arena, lightInfo, start, mid,
@@ -302,7 +290,8 @@ namespace pbrt {
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
 		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps) {
-		int maxLightsInNode = ps.FindOneInt("maxnodeprims", 4);
+		// TODO: max lights in node?
+		int maxLightsInNode = 1;
 		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
 	}
 
