@@ -116,19 +116,12 @@ namespace pbrt {
 		int nLights = int(scene.lights.size());
 		if (nLights == 0) return Spectrum(0.f);
 		int lightNum;
-		Float lightPdf;
-		if (lightDistrib) {
-			lightNum = scene.lightAccel->Sample(it, scene, sampler, handleMedia, lightDistrib);
-		}
-		else {
-			lightNum = std::min((int)(sampler.Get1D() * nLights), nLights - 1);
-			lightPdf = Float(1) / nLights;
-		}
+		lightNum = scene.lightAccel->Sample(it, scene, sampler, handleMedia, lightDistrib);
 		const std::shared_ptr<Light> &light = scene.lights[lightNum];
 		Point2f uLight = sampler.Get2D();
 		Point2f uScattering = sampler.Get2D();
 		return EstimateDirect(it, uScattering, *light, uLight,
-			scene, sampler, arena, handleMedia) / lightPdf;
+			scene, sampler, arena, handleMedia);
 	}
 
 	Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,

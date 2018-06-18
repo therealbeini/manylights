@@ -55,7 +55,7 @@ namespace pbrt {
 
 	struct LightBVHNode {
 		// LightBVHNode Public Methods
-		void InitLeaf(int first, int n, const Bounds3f &b_w, const Bounds_o &b_o, float e) {
+		void InitLeaf(int first, int n, const Bounds3f &b_w, const Bounds_o &b_o, float e, int num) {
 			firstLightOffset = first;
 			nLights = n;
 			bounds_w = b_w;
@@ -66,6 +66,7 @@ namespace pbrt {
 			totalLights += n;
 			energy = e;
 			centroid = .5f * bounds_w.pMin + .5f * bounds_w.pMax;
+			lightNum = num;
 		}
 		void InitInterior(int split, LightBVHNode *c0, LightBVHNode *c1, const Bounds_o &b_o, float e) {
 			children[0] = c0;
@@ -97,7 +98,7 @@ namespace pbrt {
 		Bounds_o bounds_o;
 		Point3f centroid;
 		LightBVHNode *children[2];
-		int splitAxis, firstLightOffset, nLights;
+		int splitAxis, firstLightOffset, nLights, lightNum;
 		float energy;
 		// TODO: number of emitters under this node required?
 	};
@@ -172,11 +173,9 @@ namespace pbrt {
 		if (nLights == 1) {
 			// Create leaf _LBVHBuildNode_
 			int firstPrimOffset = orderedLights.size();
-			for (int i = start; i < end; ++i) {
-				int lightNum = lightInfo[i].lightNumber;
-				orderedLights.push_back(lights[lightNum]);
-			}
-			node->InitLeaf(firstPrimOffset, nLights, totalBounds_w, bounds_o, lightInfo[0].energy);
+			int lightNum = lightInfo[start].lightNumber;
+			orderedLights.push_back(lights[lightNum]);
+			node->InitLeaf(firstPrimOffset, nLights, totalBounds_w, bounds_o, lightInfo[start].energy, lightNum);
 			return node;
 		}
 		else {
@@ -303,23 +302,23 @@ namespace pbrt {
 
 	int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, const Scene &scene, Sampler &sampler, bool handleMedia, const Distribution1D *lightDistrib) {
 		// im already at a leaf of the tree
-		std::cout << node->energy << "stfu";
-		if (node->nLights != 0) {
-			return floor(sample1D * node->nLights);
+		if (node->nLights == 1) {
+			return node->lightNum;
 		}
 		// finding out if I have to take the left or the right path
 		Point3f o = it.p;
 		float firstImportance = calculateImportance(o, node->children[0]);
 		float secondImportance = calculateImportance(o, node->children[1]);
 		// normalize the importance
-		firstImportance = firstImportance / (firstImportance + secondImportance);
-		secondImportance = secondImportance / (firstImportance + secondImportance);
-		// left side traversal
+		float totalImportance = firstImportance + secondImportance;
+		firstImportance = firstImportance / totalImportance;
+		secondImportance = secondImportance / totalImportance;
+		// left child traversal
 		if (sample1D < firstImportance) {
-			return TraverseNode(node, sample1D / firstImportance, it, scene, sampler, handleMedia, lightDistrib);
+			return TraverseNode(node->children[0], sample1D / firstImportance, it, scene, sampler, handleMedia, lightDistrib);
 		}
-		// right side traversal
-		return TraverseNode(node, (sample1D - firstImportance) / secondImportance, it, scene, sampler, handleMedia, lightDistrib);
+		// right child traversal
+		return TraverseNode(node->children[1], (sample1D - firstImportance) / secondImportance, it, scene, sampler, handleMedia, lightDistrib);
 	}
 
 	float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {

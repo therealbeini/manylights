@@ -1533,7 +1533,7 @@ void pbrtObjectBegin(const std::string &name) {
         printf("%*sObjectBegin \"%s\"\n", catIndentCount, "", name.c_str());
 }
 
-STAT_COUNTER("Scene/Object instances created", nObjectInstancesCreated);
+STAT_COUNTER("/Object instances created", nObjectInstancesCreated);
 
 void pbrtObjectEnd() {
     VERIFY_WORLD("ObjectEnd");

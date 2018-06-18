@@ -22,6 +22,7 @@ namespace pbrt {
 	public:
 
 		LightBVHNode * root = nullptr;
+		std::vector<std::shared_ptr<Light>> lights;
 
 		// BVHAccel Public Methods
 		LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
@@ -41,7 +42,6 @@ namespace pbrt {
 
 		// BVHAccel Private Data
 		const int maxLightsInNode;
-		std::vector<std::shared_ptr<Light>> lights;
 	};
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
