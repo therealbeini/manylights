@@ -190,7 +190,7 @@ namespace pbrt {
 					return a.centroid[dim] <
 						b.centroid[dim];
 				});
-				// TODO: calculate totalEnergy?
+				totalEnergy = lightInfo[start].energy + lightInfo[start + 1].energy;
 			}
 			else {
 				// split the lights in 12 intervals with the same size and compute the cost for each split
@@ -347,11 +347,9 @@ namespace pbrt {
 			t1 = tFar < t1 ? tFar : t1;
 		}
 
-		// shading point is already in the box -> can always find a theta_u with 0
-		if (t0 < 0 || t1 < 0) {
-			theta_u = 0;
-		}
-		else {
+		// shading point is already in the box -> can always find a theta_u with 0 --> angleImportance is always 1
+		float angleImportance = 1;
+		if (t0 > 0 && t1 < 0) {
 			Point3f is = o + d * t0;
 			int side;
 			Point3f pMin = node->bounds_w.pMin;
@@ -409,8 +407,8 @@ namespace pbrt {
 			for (int i = 0; i < 4; i++) {
 				theta_u = std::max(theta_u, acos(Dot(d, c[i] - o)));
 			}
+			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
 		}
-
-		return node->energy * cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e))) / (distance * distance);
+		return node->energy * angleImportance / (distance * distance);
 	}
 }
