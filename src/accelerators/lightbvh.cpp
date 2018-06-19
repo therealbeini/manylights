@@ -324,9 +324,9 @@ namespace pbrt {
 	float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {
 		float theta_e = node->bounds_o.theta_e;
 		float theta_o = node->bounds_o.theta_o;
-		Vector3f d = node->centroid - o;
+		Vector3f d = Normalize(node->centroid - o);
 		float distance = d.Length();
-		float theta = acos(Dot(node->bounds_o.axis, -d));
+		float theta = acos(AbsDot(node->bounds_o.axis, -d));
 		float theta_u;
 		// numeric inaccuracies?
 		float ep = 0.0001;
@@ -349,7 +349,7 @@ namespace pbrt {
 
 		// shading point is already in the box -> can always find a theta_u with 0 --> angleImportance is always 1
 		float angleImportance = 1;
-		if (t0 > 0 && t1 < 0) {
+		if (t0 > 0 && t1 > 0) {
 			Point3f is = o + d * t0;
 			int side;
 			Point3f pMin = node->bounds_w.pMin;
@@ -405,7 +405,7 @@ namespace pbrt {
 			}
 			// setting theta_u to the maximum angle
 			for (int i = 0; i < 4; i++) {
-				theta_u = std::max(theta_u, acos(Dot(d, c[i] - o)));
+				theta_u = std::max(theta_u, acos(AbsDot(d, c[i] - o)));
 			}
 			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
 		}
