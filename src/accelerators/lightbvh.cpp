@@ -156,13 +156,15 @@ namespace pbrt {
 		float maxO = 0.f;
 		for (int i = start; i < end; ++i) {
 			totalBounds_w = Union(totalBounds_w, lightInfo[i].bounds_w);
-			float e = 0.f;
 			float o = 0.f;
-			if ((e = acos(AbsDot(axis, lightInfo[i].bounds_o.axis)) + lightInfo[i].bounds_o.theta_e) > maxE) {
-				maxE = e;
-			}
-			if ((o = e + lightInfo[i].bounds_o.theta_o) > maxO) {
+			if ((o = acos(AbsDot(axis, lightInfo[i].bounds_o.axis)) + lightInfo[i].bounds_o.theta_o) > maxO) {
 				maxO = o;
+			}
+		}
+		for (int i = start; i < end; ++i) {
+			float e = 0.f;
+			if ((e = acos(AbsDot(axis, lightInfo[i].bounds_o.axis)) + lightInfo[i].bounds_o.theta_e - maxO) > maxE) {
+				maxE = e;
 			}
 		}
 		Bounds_o bounds_o = Bounds_o(axis, maxE, maxO);
@@ -221,7 +223,6 @@ namespace pbrt {
 						return a.bounds_o.axis[dim] <
 							b.bounds_o.axis[dim];
 					});
-					Vector3f leftAxis = lightInfo[mid].bounds_o.axis;
 					std::nth_element(&lightInfo[intervalEnd + 1], &lightInfo[intervalEnd + 1 + (end - 1 - (intervalEnd + 1)) / 2],
 						&lightInfo[end - 1] + 1,
 						[dim](const LightBVHLightInfo &a,
@@ -229,33 +230,45 @@ namespace pbrt {
 						return a.bounds_o.axis[dim] <
 							b.bounds_o.axis[dim];
 					});
+					Vector3f leftAxis = lightInfo[mid].bounds_o.axis;
 					Vector3f rightAxis = lightInfo[intervalEnd + 1 + (end - 1 - (intervalEnd + 1)) / 2].bounds_o.axis;
 					for (int j = 0; j <= (i + 1) * lightsPerInterval; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
 						b0 = Union(b0, l.bounds_w);
-						float e = 0.f;
 						float o = 0.f;
-						if ((e = acos(AbsDot(leftAxis, l.bounds_o.axis)) + l.bounds_o.theta_e) > leftmaxE) {
-							leftmaxE = e;
-						}
-						if ((o = e + l.bounds_o.theta_o) > leftmaxO) {
+						if ((o = acos(AbsDot(leftAxis, l.bounds_o.axis)) + l.bounds_o.theta_o) > leftmaxO) {
 							leftmaxO = o;
 						}
 						leftEnergy += l.energy;
 					}
+					for (int j = 0; j <= (i + 1) * lightsPerInterval; j++) {
+						LightBVHLightInfo l = lightInfo[start + j];
+						b0 = Union(b0, l.bounds_w);
+						float e = 0.f;
+						if ((e = acos(AbsDot(leftAxis, l.bounds_o.axis)) + l.bounds_o.theta_e - leftmaxO) > leftmaxE) {
+							leftmaxE = e;
+						}
+					}
+
+
 					for (int j = (i + 1) * lightsPerInterval + 1; j < nLights; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
-						b1 = Union(b1, l.bounds_w);
-						float e = 0.f;
+						b0 = Union(b0, l.bounds_w);
 						float o = 0.f;
-						if ((e = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_e) > rightmaxE) {
-							rightmaxE = e;
-						}
-						if ((o = e + l.bounds_o.theta_o) > rightmaxO) {
+						if ((o = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_o) > rightmaxO) {
 							rightmaxO = o;
 						}
 						rightEnergy += l.energy;
 					}
+					for (int j = (i + 1) * lightsPerInterval + 1; j < nLights; j++) {
+						LightBVHLightInfo l = lightInfo[start + j];
+						b0 = Union(b0, l.bounds_w);
+						float e = 0.f;
+						if ((e = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_e - rightmaxO) > rightmaxE) {
+							rightmaxE = e;
+						}
+					}
+
 					totalEnergy = leftEnergy + rightEnergy;
 					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO) - cos(2 * leftmaxE + leftmaxO)) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO) - cos(2 * rightmaxE + rightmaxO)) / 4);
@@ -324,10 +337,11 @@ namespace pbrt {
 	float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {
 		float theta_e = node->bounds_o.theta_e;
 		float theta_o = node->bounds_o.theta_o;
-		Vector3f d = Normalize(node->centroid - o);
+		Vector3f d = node->centroid - o;
 		float distance = d.Length();
+		d = Normalize(d);
 		float theta = acos(AbsDot(node->bounds_o.axis, -d));
-		float theta_u;
+		float theta_u = 0;
 		// numeric inaccuracies?
 		float ep = 0.0001;
 
@@ -405,7 +419,7 @@ namespace pbrt {
 			}
 			// setting theta_u to the maximum angle
 			for (int i = 0; i < 4; i++) {
-				theta_u = std::max(theta_u, acos(AbsDot(d, c[i] - o)));
+				theta_u = std::max(theta_u, acos(AbsDot(d, Normalize(c[i] - o))));
 			}
 			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
 		}
