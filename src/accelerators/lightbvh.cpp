@@ -157,15 +157,17 @@ namespace pbrt {
 		for (int i = start; i < end; ++i) {
 			totalBounds_w = Union(totalBounds_w, lightInfo[i].bounds_w);
 			float o = 0.f;
-			if ((o = acos(AbsDot(axis, lightInfo[i].bounds_o.axis)) + lightInfo[i].bounds_o.theta_o) > maxO) {
+			float e = 0.f;
+			float angle = acos(AbsDot(axis, lightInfo[i].bounds_o.axis));
+			if ((o = angle + lightInfo[i].bounds_o.theta_o) > maxO) {
 				maxO = o;
+			}
+			if ((e = angle + lightInfo[i].bounds_o.theta_e - maxO) > maxE) {
+				maxE = e;
 			}
 		}
 		for (int i = start; i < end; ++i) {
-			float e = 0.f;
-			if ((e = acos(AbsDot(axis, lightInfo[i].bounds_o.axis)) + lightInfo[i].bounds_o.theta_e - maxO) > maxE) {
-				maxE = e;
-			}
+
 		}
 		Bounds_o bounds_o = Bounds_o(axis, maxO, maxE);
 		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4);
@@ -201,22 +203,20 @@ namespace pbrt {
 				std::vector<float> cost(buckets - 1);
 				float lightsPerInterval = (float)nLights / buckets;
 				for (int i = 0; i < buckets - 1; i++) {
-					std::nth_element(&lightInfo[(int)(lightsPerInterval * i)], &lightInfo[(int)(lightsPerInterval * (i + 1))],
+					std::nth_element(&lightInfo[(int)(start + lightsPerInterval * i)], &lightInfo[(int)(start + lightsPerInterval * (i + 1))],
 						&lightInfo[end - 1] + 1,
 						[dim](const LightBVHLightInfo &a,
 							const LightBVHLightInfo &b) {
 						return a.centroid[dim] <
 							b.centroid[dim];
 					});
-				}
-				for (int i = 0; i < buckets - 1; i++) {
 					Bounds3f b0, b1;
 					float leftmaxE = 0, rightmaxE = 0;
 					float leftmaxO = 0, rightmaxO = 0;
 					float leftEnergy = 0, rightEnergy = 0;
-					int intervalEnd = (int)(lightsPerInterval * (i + 1));
-					std::nth_element(&lightInfo[start], &lightInfo[start + intervalEnd / 2],
-						&lightInfo[start + intervalEnd] + 1,
+					int intervalEnd = start + (int)(lightsPerInterval * (i + 1));
+					std::nth_element(&lightInfo[start], &lightInfo[start + (intervalEnd - 1 - start) / 2],
+						&lightInfo[intervalEnd] + 1,
 						[dim](const LightBVHLightInfo &a,
 							const LightBVHLightInfo &b) {
 						return a.bounds_o.axis[dim] <
@@ -231,41 +231,38 @@ namespace pbrt {
 					});
 					Vector3f leftAxis = lightInfo[mid].bounds_o.axis;
 					Vector3f rightAxis = lightInfo[intervalEnd + (end - 1 - intervalEnd) / 2].bounds_o.axis;
-					for (int j = 0; j <= (i + 1) * lightsPerInterval; j++) {
-						LightBVHLightInfo l = lightInfo[start + j];
+					for (int j = start; j <= intervalEnd; j++) {
+						LightBVHLightInfo l = lightInfo[j];
 						b0 = Union(b0, l.bounds_w);
 						float o = 0.f;
-						if ((o = acos(AbsDot(leftAxis, l.bounds_o.axis)) + l.bounds_o.theta_o) > leftmaxO) {
+						float e = 0.f;
+						float angle = acos(AbsDot(leftAxis, l.bounds_o.axis));
+						if ((o = angle + l.bounds_o.theta_o) > leftmaxO) {
 							leftmaxO = o;
+						}
+						if ((e = angle + l.bounds_o.theta_e) > leftmaxE) {
+							leftmaxE = e;
 						}
 						leftEnergy += l.energy;
 					}
-					for (int j = 0; j <= (i + 1) * lightsPerInterval; j++) {
-						LightBVHLightInfo l = lightInfo[start + j];
-						float e = 0.f;
-						if ((e = acos(AbsDot(leftAxis, l.bounds_o.axis)) + l.bounds_o.theta_e - leftmaxO) > leftmaxE) {
-							leftmaxE = e;
-						}
-					}
 
 
-					for (int j = (i + 1) * lightsPerInterval + 1; j < nLights; j++) {
-						LightBVHLightInfo l = lightInfo[start + j];
+					for (int j = intervalEnd + 1; j < nLights; j++) {
+						LightBVHLightInfo l = lightInfo[j];
 						b1 = Union(b1, l.bounds_w);
 						float o = 0.f;
-						if ((o = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_o) > rightmaxO) {
+						float e = 0.f;
+						float angle = acos(AbsDot(rightAxis, l.bounds_o.axis));
+						if ((o = angle + l.bounds_o.theta_o) > rightmaxO) {
 							rightmaxO = o;
+						}
+						if ((e = angle + l.bounds_o.theta_e) > rightmaxE) {
+							rightmaxE = e;
 						}
 						rightEnergy += l.energy;
 					}
-					for (int j = (i + 1) * lightsPerInterval + 1; j < nLights; j++) {
-						LightBVHLightInfo l = lightInfo[start + j];
-						float e = 0.f;
-						if ((e = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_e - rightmaxO) > rightmaxE) {
-							rightmaxE = e;
-						}
-					}
-
+					leftmaxE -= leftmaxO;
+					rightmaxE -= rightmaxO;
 					totalEnergy = leftEnergy + rightEnergy;
 					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO) - cos(2 * leftmaxE + leftmaxO)) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO) - cos(2 * rightmaxE + rightmaxO)) / 4);
