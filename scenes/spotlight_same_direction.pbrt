@@ -5,7 +5,7 @@ Camera "perspective" "float fov" 45
 
 Sampler "halton" "integer pixelsamples" 32
 Integrator "path"
-Film "image" "string filename" "spotlight_same_direction_old.png"
+Film "image" "string filename" "spotlight_same_direction.png"
      "integer xresolution" [800] "integer yresolution" [800]
 
 WorldBegin

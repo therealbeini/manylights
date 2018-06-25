@@ -167,7 +167,7 @@ namespace pbrt {
 				maxE = e;
 			}
 		}
-		Bounds_o bounds_o = Bounds_o(axis, maxE, maxO);
+		Bounds_o bounds_o = Bounds_o(axis, maxO, maxE);
 		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4);
 		int nLights = end - start;
 		// total energy for the node
@@ -201,7 +201,6 @@ namespace pbrt {
 				std::vector<float> cost(buckets - 1);
 				float lightsPerInterval = (float)nLights / buckets;
 				for (int i = 0; i < buckets - 1; i++) {
-
 					std::nth_element(&lightInfo[(int)(lightsPerInterval * i)], &lightInfo[(int)(lightsPerInterval * (i + 1))],
 						&lightInfo[end - 1] + 1,
 						[dim](const LightBVHLightInfo &a,
@@ -223,7 +222,7 @@ namespace pbrt {
 						return a.bounds_o.axis[dim] <
 							b.bounds_o.axis[dim];
 					});
-					std::nth_element(&lightInfo[intervalEnd + 1], &lightInfo[intervalEnd + 1 + (end - 1 - (intervalEnd + 1)) / 2],
+					std::nth_element(&lightInfo[intervalEnd], &lightInfo[intervalEnd + (end - 1 - intervalEnd) / 2],
 						&lightInfo[end - 1] + 1,
 						[dim](const LightBVHLightInfo &a,
 							const LightBVHLightInfo &b) {
@@ -231,7 +230,7 @@ namespace pbrt {
 							b.bounds_o.axis[dim];
 					});
 					Vector3f leftAxis = lightInfo[mid].bounds_o.axis;
-					Vector3f rightAxis = lightInfo[intervalEnd + 1 + (end - 1 - (intervalEnd + 1)) / 2].bounds_o.axis;
+					Vector3f rightAxis = lightInfo[intervalEnd + (end - 1 - intervalEnd) / 2].bounds_o.axis;
 					for (int j = 0; j <= (i + 1) * lightsPerInterval; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
 						b0 = Union(b0, l.bounds_w);
@@ -243,7 +242,6 @@ namespace pbrt {
 					}
 					for (int j = 0; j <= (i + 1) * lightsPerInterval; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
-						b0 = Union(b0, l.bounds_w);
 						float e = 0.f;
 						if ((e = acos(AbsDot(leftAxis, l.bounds_o.axis)) + l.bounds_o.theta_e - leftmaxO) > leftmaxE) {
 							leftmaxE = e;
@@ -253,7 +251,7 @@ namespace pbrt {
 
 					for (int j = (i + 1) * lightsPerInterval + 1; j < nLights; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
-						b0 = Union(b0, l.bounds_w);
+						b1 = Union(b1, l.bounds_w);
 						float o = 0.f;
 						if ((o = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_o) > rightmaxO) {
 							rightmaxO = o;
@@ -262,7 +260,6 @@ namespace pbrt {
 					}
 					for (int j = (i + 1) * lightsPerInterval + 1; j < nLights; j++) {
 						LightBVHLightInfo l = lightInfo[start + j];
-						b0 = Union(b0, l.bounds_w);
 						float e = 0.f;
 						if ((e = acos(AbsDot(rightAxis, l.bounds_o.axis)) + l.bounds_o.theta_e - rightmaxO) > rightmaxE) {
 							rightmaxE = e;
@@ -272,9 +269,11 @@ namespace pbrt {
 					totalEnergy = leftEnergy + rightEnergy;
 					float leftAngle = 2 * Pi * (1 - cos(leftmaxO) + (2 * sin(leftmaxO) * leftmaxE + cos(leftmaxO) - cos(2 * leftmaxE + leftmaxO)) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightmaxO) + (2 * sin(rightmaxO) * rightmaxE + cos(rightmaxO) - cos(2 * rightmaxE + rightmaxO)) / 4);
-					cost[i] = (b0.SurfaceArea() * leftAngle * leftEnergy +
-						b1.SurfaceArea() * rightAngle * rightEnergy) /
-						totalBounds_w.SurfaceArea() * totalAngle * totalEnergy;
+					float left = b0.SurfaceArea() * leftAngle * leftEnergy;
+					float right = b1.SurfaceArea() * rightAngle * rightEnergy;
+					// TODO: calculate once?
+					float total = totalBounds_w.SurfaceArea() * totalAngle * totalEnergy;
+					cost[i] = (left + right) / total;
 				}
 
 
