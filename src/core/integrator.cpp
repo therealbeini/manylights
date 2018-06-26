@@ -112,11 +112,8 @@ namespace pbrt {
 		MemoryArena &arena, Sampler &sampler,
 		bool handleMedia, const Distribution1D *lightDistrib) {
 		ProfilePhase p(Prof::DirectLighting);
-		// Randomly choose a single light to sample, _light_
-		int nLights = int(scene.lights.size());
-		if (nLights == 0) return Spectrum(0.f);
-		int lightNum;
-		lightNum = scene.lightAccel->Sample(it, scene, sampler, handleMedia, lightDistrib);
+		// Choose the light according to the lightBVH data structure
+		int lightNum = scene.lightAccel->Sample(it, scene, sampler, handleMedia, lightDistrib);
 		const std::shared_ptr<Light> &light = scene.lights[lightNum];
 		Point2f uLight = sampler.Get2D();
 		Point2f uScattering = sampler.Get2D();

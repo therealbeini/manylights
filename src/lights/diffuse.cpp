@@ -159,4 +159,8 @@ float DiffuseAreaLight::Theta_e() const {
 	return Pi / 2;
 }
 
+Bounds3f DiffuseAreaLight::Bounds() const {
+	return dynamic_cast<Triangle*>(shape.get())->WorldBound();
+}
+
 }  // namespace pbrt

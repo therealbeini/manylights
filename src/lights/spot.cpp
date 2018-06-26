@@ -112,7 +112,7 @@ namespace pbrt {
 	}
 
 	float SpotLight::Theta_e() const {
-		return cos(totalWidth);
+		return totalWidth / 180 * Pi;
 	}
 
 	Bounds3f SpotLight::Bounds() const {

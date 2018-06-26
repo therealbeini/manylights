@@ -68,6 +68,7 @@ class DiffuseAreaLight : public AreaLight {
 	Vector3f Axis() const;
 	float Theta_o() const;
 	float Theta_e() const;
+	Bounds3f Bounds() const;
 
   protected:
     // DiffuseAreaLight Protected Data

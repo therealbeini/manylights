@@ -36,9 +36,10 @@ namespace pbrt {
 			MemoryArena &arena, std::vector<LightBVHLightInfo> &LightInfo,
 			int start, int end, int *totalNodes,
 			std::vector<std::shared_ptr<Light>> &orderedLights);
+		void calculateThetas(std::vector<LightBVHLightInfo> &lightInfo, int startIndex, int endIndex, Vector3f axis, float *theta_o, float *theta_e);
 		int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, const Scene &scene, Sampler &sampler,
 			bool handleMedia, const Distribution1D *lightDistrib);
-		float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node);
+		float calculateImportance(Point3f o, LightBVHNode* node);
 
 		// BVHAccel Private Data
 		const int maxLightsInNode;
