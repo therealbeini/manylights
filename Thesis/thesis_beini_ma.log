@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  14 JUN 2018 16:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  26 JUN 2018 22:50
 entering extended mode
 **./thesis_beini_ma.tex
 (thesis_beini_ma.tex
@@ -1956,51 +1956,20 @@ Package tocbasic Info: character protrusion at lot deactivated on input line 11
 chapter 1.
 LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/b/n' will be
 (Font)              scaled to size 15.89755pt on input line 16.
-
-LaTeX Warning: Citation 'becker2008a' on page 1 undefined on input line 32.
-
-
-LaTeX Warning: Reference `sec:Introduction:Figures' on page 1 undefined on inpu
-t line 32.
-
-<logos/sdqlogo.pdf, id=55, 558.085pt x 280.24701pt>
-File: logos/sdqlogo.pdf Graphic file (type pdf)
-<use logos/sdqlogo.pdf>
-Package pdftex.def Info: logos/sdqlogo.pdf  used on input line 36.
-(pdftex.def)             Requested size: 113.81102pt x 57.15167pt.
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-LaTeX Font Info:    Try loading font information for T1+fvm on input line 42.
-("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\bera\t1fvm.fd"
-File: t1fvm.fd 2004/09/07 scalable font definitions for T1/fvm.
-)
-LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
-(Font)              scaled to size 9.35999pt on input line 42.
+) (sections/preliminaries.tex [1
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[1
+] [2
 
 
-]) (sections/preliminaries.tex [2 <./logos/sdqlogo.pdf>]
+]
 chapter 2.
-) (sections/content.tex [3
-
-
-] [4
+) (sections/datastructures.tex [3] [4
 
 
 ]
 chapter 3.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/b/n' will be
-(Font)              scaled to size 13.24796pt on input line 34.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/sb/n' will be
-(Font)              scaled to size 13.24796pt on input line 34.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/sb/n' will be
-(Font)              scaled to size 11.03998pt on input line 39.
-[5] [6
+) (sections/algorithm.tex [5] [6
 
 
 ]
@@ -2017,66 +1986,37 @@ chapter 5.
 chapter 6.
 )
 
-LaTeX Warning: Empty bibliography on input line 135.
+LaTeX Warning: Empty bibliography on input line 137.
 
-(sections/appendix.tex [11] [12
-
-
-]
-chapter A.
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 143.
- [13]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 143.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 144.
+[11]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 144.
  (thesis_beini_ma.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 143.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 143.
-
-
-LaTeX Warning: There were undefined references.
-
-
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                thesis_beini_ma
-(biblatex)                and rerun LaTeX afterwards.
-
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 144.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 144.
 Package logreq Info: Writing requests to 'thesis_beini_ma.run.xml'.
 \openout1 = `thesis_beini_ma.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 24520 strings out of 493305
- 461883 string characters out of 3129802
- 1036006 words of memory out of 3000000
- 27631 multiletter control sequences out of 15000+200000
- 162596 words of font info for 146 fonts, out of 3000000 for 9000
+ 24247 strings out of 493305
+ 456782 string characters out of 3129802
+ 1034641 words of memory out of 3000000
+ 27398 multiletter control sequences out of 15000+200000
+ 121869 words of font info for 107 fonts, out of 3000000 for 9000
  1143 hyphenation exceptions out of 8191
  61i,20n,75p,9097b,2269s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/sourcesansp
-ro/a_ggs4wk.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvi
-ps/libertine/lbtn_oexx6f.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/
-fonts/enc/dvips/newtx/libertinealt.enc}{C:/Users/beini/AppData/Local/Programs/M
-iKTeX 2.9/fonts/enc/dvips/base/8r.enc}{C:/Users/beini/AppData/Local/Programs/Mi
-KTeX 2.9/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{C:/Users/beini/AppData/Loca
-l/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{C:/Users/beini
-/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}<C
-:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/libertine/Li
-nLibertineT.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/p
-ublic/libertine/LinLibertineTB.pfb><C:/Users/beini/AppData/Local/Programs/MiKTe
-X 2.9/fonts/type1/public/libertine/LinLibertineTI.pfb><C:/Users/beini/AppData/L
-ocal/Programs/MiKTeX 2.9/fonts/type1/adobe/sourcesanspro/SourceSansPro-Bold.pfb
-><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/adobe/sourcesans
-pro/SourceSansPro-Semibold.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.
-9/fonts/type1/bera/fvmr8a.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9
-/fonts/type1/public/txfonts/rtxmi.pfb><C:/Users/beini/AppData/Local/Programs/Mi
-KTeX 2.9/fonts/type1/public/txfonts/rtxr.pfb><C:/Users/beini/AppData/Local/Prog
-rams/MiKTeX 2.9/fonts/type1/public/newtx/txexs.pfb><C:/Users/beini/AppData/Loca
-l/Programs/MiKTeX 2.9/fonts/type1/public/newtx/txsys.pfb><C:/Users/beini/AppDat
-a/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/zxlr.pfb><C:/Users/beini/A
-ppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/zxlri.pfb>
-Output written on thesis_beini_ma.pdf (27 pages, 416643 bytes).
+{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/l
+btn_nh77jq.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvip
+s/libertine/lbtn_76gpa5.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/f
+onts/enc/dvips/sourcesanspro/a_ggs4wk.enc}<C:/Users/beini/AppData/Local/Program
+s/MiKTeX 2.9/fonts/type1/public/libertine/LinLibertineT.pfb><C:/Users/beini/App
+Data/Local/Programs/MiKTeX 2.9/fonts/type1/public/libertine/LinLibertineTB.pfb>
+<C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/adobe/sourcesansp
+ro/SourceSansPro-Bold.pfb>
+Output written on thesis_beini_ma.pdf (25 pages, 246455 bytes).
 PDF statistics:
- 203 PDF objects out of 1000 (max. 8388607)
+ 104 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

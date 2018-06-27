@@ -143,8 +143,15 @@ namespace pbrt {
 		int dim = centroidBounds.MaximumExtent();
 		int nLights = end - start;
 
-		// index of the last element of the first part
+		// index of the last element of the first part and partial sort for median axis
 		int mid = (end + start - 1) / 2;
+		std::nth_element(&lightInfo[start], &lightInfo[mid],
+			&lightInfo[end - 1] + 1,
+			[dim](const LightBVHLightInfo &a,
+				const LightBVHLightInfo &b) {
+			return a.bounds_o.axis[dim] <
+				b.bounds_o.axis[dim];
+		});
 
 		// calculate theta_o and theta_e for the node before the possible split
 		Vector3f axis = lightInfo[mid].bounds_o.axis;
@@ -278,6 +285,7 @@ namespace pbrt {
 						b.centroid[dim];
 				});
 			}
+			// recursively build children
 			node->InitInterior(dim,
 				recursiveBuild(arena, lightInfo, start, mid + 1,
 					totalNodes, orderedLights),
@@ -292,7 +300,7 @@ namespace pbrt {
 			LightBVHLightInfo l = lightInfo[j];
 			float o = 0.f;
 			float e = 0.f;
-			float angle = acos(AbsDot(axis, l.bounds_o.axis));
+			float angle = acos(Dot(axis, l.bounds_o.axis));
 			if ((o = angle + l.bounds_o.theta_o) > *theta_o) {
 				*theta_o = o;
 			}
@@ -343,7 +351,7 @@ namespace pbrt {
 		Vector3f d = node->centroid - o;
 		float distance = d.Length();
 		d = Normalize(d);
-		float theta = acos(AbsDot(node->bounds_o.axis, -d));
+		float theta = acos(Dot(node->bounds_o.axis, -d));
 		float theta_u = 0;
 		// numeric inaccuracies?
 		float ep = 0.0001;
@@ -366,6 +374,7 @@ namespace pbrt {
 
 		// shading point is already in the box -> can always find a theta_u with 0 --> angleImportance is always 1
 		float angleImportance = 1;
+		// shading point is not in the box
 		if (t0 > 0 && t1 > 0) {
 			Point3f is = o + d * t0;
 			int side;
@@ -422,7 +431,7 @@ namespace pbrt {
 			}
 			// setting theta_u to the maximum angle
 			for (int i = 0; i < 4; i++) {
-				theta_u = std::max(theta_u, acos(AbsDot(d, Normalize(c[i] - o))));
+				theta_u = std::max(theta_u, acos(Dot(d, Normalize(c[i] - o))));
 			}
 			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
 		}
