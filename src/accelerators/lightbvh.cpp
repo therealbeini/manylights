@@ -433,7 +433,10 @@ namespace pbrt {
 			for (int i = 0; i < 4; i++) {
 				theta_u = std::max(theta_u, acos(Dot(d, Normalize(c[i] - o))));
 			}
-			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
+			// experimental: test if point is in the cone of the sampled light
+			if (theta - theta_o - theta_u - theta_e > 0) {
+				angleImportance = std::max(0.f, cos(theta - theta_o - theta_u));
+			}
 		}
 		return node->energy * angleImportance / (distance * distance);
 	}
