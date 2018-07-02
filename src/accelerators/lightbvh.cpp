@@ -335,8 +335,8 @@ namespace pbrt {
 		float secondImportance = calculateImportance(o, node->children[1]);
 		// normalize the importance
 		float totalImportance = firstImportance + secondImportance;
-		firstImportance = firstImportance / totalImportance;
-		secondImportance = secondImportance / totalImportance;
+		firstImportance /= totalImportance;
+		secondImportance /= totalImportance;
 		// left child traversal
 		if (sample1D < firstImportance) {
 			return TraverseNode(node->children[0], sample1D / firstImportance, it, scene, sampler, handleMedia, lightDistrib);
