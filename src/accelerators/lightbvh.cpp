@@ -318,13 +318,12 @@ namespace pbrt {
 		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
 	}
 
-	int LightBVHAccel::Sample(const Interaction &it, const Scene &scene, Sampler &sampler,
-		bool handleMedia, const Distribution1D *lightDistrib) {
+	int LightBVHAccel::Sample(const Interaction &it, Sampler &sampler, float *pdf) {
 		float sample1D = sampler.Get1D();
-		return TraverseNode(root, sample1D, it, scene, sampler, handleMedia, lightDistrib);
+		return TraverseNode(root, sample1D, it, pdf);
 	}
 
-	int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, const Scene &scene, Sampler &sampler, bool handleMedia, const Distribution1D *lightDistrib) {
+	int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, float *pdf) {
 		// im already at a leaf of the tree
 		if (node->nLights == 1) {
 			return node->lightNum;
@@ -335,14 +334,20 @@ namespace pbrt {
 		float secondImportance = calculateImportance(o, node->children[1]);
 		// normalize the importance
 		float totalImportance = firstImportance + secondImportance;
+		// return -1 when the contribution of the sampled light will be zero (because of orientation)
+		if (totalImportance == 0) {
+			return -1;
+		}
 		firstImportance /= totalImportance;
 		secondImportance /= totalImportance;
 		// left child traversal
 		if (sample1D < firstImportance) {
-			return TraverseNode(node->children[0], sample1D / firstImportance, it, scene, sampler, handleMedia, lightDistrib);
+			*pdf *= firstImportance;
+			return TraverseNode(node->children[0], sample1D / firstImportance, it, pdf);
 		}
 		// right child traversal
-		return TraverseNode(node->children[1], (sample1D - firstImportance) / secondImportance, it, scene, sampler, handleMedia, lightDistrib);
+		*pdf *= secondImportance;
+		return TraverseNode(node->children[1], (sample1D - firstImportance) / secondImportance, it, pdf);
 	}
 
 	float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {
@@ -372,7 +377,7 @@ namespace pbrt {
 			t1 = tFar < t1 ? tFar : t1;
 		}
 
-		// shading point is already in the box -> can always find a theta_u with 0 --> angleImportance is always 1
+		// shading point is already in the box -> can always find a theta_u with 1 --> angleImportance is always 1
 		float angleImportance = 1;
 		// shading point is not in the box
 		if (t0 > 0 && t1 > 0) {

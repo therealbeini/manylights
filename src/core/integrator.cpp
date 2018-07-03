@@ -113,13 +113,17 @@ namespace pbrt {
 		bool handleMedia, const Distribution1D *lightDistrib) {
 		ProfilePhase p(Prof::DirectLighting);
 		// Choose the light according to the lightBVH data structure
-		int lightNum = scene.lightAccel->Sample(it, scene, sampler, handleMedia, lightDistrib);
+		float pdf = 1;
+		int lightNum = scene.lightAccel->Sample(it, sampler, &pdf);
+		// negative return means that the contribution will be zero (because of orientation)
+		if (lightNum < 0) {
+			return Spectrum(0.f);
+		}
 		const std::shared_ptr<Light> &light = scene.lights[lightNum];
 		Point2f uLight = sampler.Get2D();
 		Point2f uScattering = sampler.Get2D();
-		float c = lightDistrib->cdf[lightNum + 1] - lightDistrib->cdf[lightNum];
 		return EstimateDirect(it, uScattering, *light, uLight,
-			scene, sampler, arena, handleMedia) / c;
+			scene, sampler, arena, handleMedia) / pdf;
 	}
 
 	Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
