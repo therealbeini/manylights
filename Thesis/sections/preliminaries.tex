@@ -13,6 +13,39 @@
 \chapter{Preliminaries}
 \label{ch:preliminaries}
 
+\section{Probability Theory Basics}
+\label{ch:preliminaries:ptb}
+
+In this section we will be discussing basic ideas and define certain terms from the probability theory. We will assume that the reader is already familiar with most of the concepts and therefore will only give a short introduction. If the reader struggles following the key parts of this section, he is heavily adviced to read more extensive literature about this subject. We suggest E. T. Jaynes \textit{Probability Theory: The Logic of Science} for this matter. \cite{PTTLS}
+
+\subsection{Random Variable}
+
+A random variable $X$ is a variable whose values are numerical outcomes chosen by a random process. There are discrete random variables, which can only take a countable set of possible outcomes and continuous random variables with an uncountable number of possible results. For instance, flipping a coin would be a random variable drawn from a discrete domain which can only result to heads or tails, while sampling a random direction over a unit sphere can produce infinite different directions. In rendering and particularly in ray tracing, we are often sampling certain directions or light sources in order to illuminate the scene, therefore we will be handling both discrete and continuous random variables, albeit with the latter in the most cases.
+
+The so-called canonical uniform random variable $\xi$ is a special continuous random variable that is especially important for us. Every interval in its domain [0, 1) with equal length are assigned the same probability. This random variable makes it very easy to generate samples from arbitrary distributions. For example, if we would need to sample a direction to estimate the incident lighting on a point, we could draw two samples from $\xi$ and scale these two values with appropriate transformations so they reflect the polar coordinates of direction to sample.
+
+\subsection{Probability Density Function}
+
+For continuous random variables, probability density functions (PDF) illustrate how the possible outcomes of the random experiment are distributed across the domain. They must be nonnegative and integrate to 1 over the domain. $p:\varsigma \rightarrow \mathbb{R}$ is a pdf when
+\begin{equation}
+\int_{\varsigma}p(x)\mathrm{d}x = 1.
+\end{equation}
+Integrating over a certain interval $[a, b]$ gives the possibility that the random experiment returns a result that lies inside of given interval:
+\begin{equation}
+\int_{a}^{b}p(x)\mathrm{d}x = P(x \in [a, b])
+\end{equation}
+It is evident, that $P(x \in [a, a]) = 0$ which reflects the fundamental idea of continuous random variables: The possibility of getting a sample that exactly equals a certain number is zero. Therefore, PDFs are only meaningful when regarded over a interval and not over a single point.
+
+
+\section{Monte Carlo Integration}
+\label{ch:preliminaries:mci}
+
+\section{Importance Sampling}
+\label{ch:preliminaries:is}
+
+\section{Multiple Importance Sampling}
+\label{ch:preliminaries:mis}
+
 \section{Bounding Volume Hierarchies}
 \label{sec:preliminaries:bvh}
 

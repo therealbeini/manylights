@@ -15,11 +15,23 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {2}Preliminaries}{3}{chapter.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.1}Bounding Volume Hierarchies}{3}{section.2.1}
+\contentsline {section}{\numberline {2.1}Probability Theory Basics}{3}{section.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.2}Surface Area Heuristics}{3}{section.2.2}
+\contentsline {subsection}{\numberline {2.1.1}Random Variable}{3}{subsection.2.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.3}The algorithms for comparison}{3}{section.2.3}
+\contentsline {subsection}{\numberline {2.1.2}Probability Density Function}{3}{subsection.2.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}Monte Carlo Integration}{4}{section.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.3}Importance Sampling}{4}{section.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.4}Multiple Importance Sampling}{4}{section.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.5}Bounding Volume Hierarchies}{4}{section.2.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.6}Surface Area Heuristics}{4}{section.2.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.7}The algorithms for comparison}{4}{section.2.7}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {3}Own Data Structures}{5}{chapter.3}
 \defcounter {refsection}{0}\relax 
@@ -40,3 +52,5 @@
 \contentsline {chapter}{\numberline {6}Conclusion}{11}{chapter.6}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{Bibliography}{11}{chapter.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Bibliography}{13}{chapter*.6}
