@@ -25,34 +25,34 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.2}Monte Carlo Integration}{4}{section.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.3}Importance Sampling}{4}{section.2.3}
+\contentsline {section}{\numberline {2.3}Importance Sampling}{5}{section.2.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.4}Multiple Importance Sampling}{4}{section.2.4}
+\contentsline {section}{\numberline {2.4}Multiple Importance Sampling}{5}{section.2.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.5}Bounding Volume Hierarchies}{4}{section.2.5}
+\contentsline {section}{\numberline {2.5}Bounding Volume Hierarchies}{5}{section.2.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.6}Surface Area Heuristics}{4}{section.2.6}
+\contentsline {section}{\numberline {2.6}Surface Area Heuristics}{5}{section.2.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.7}The algorithms for comparison}{4}{section.2.7}
+\contentsline {section}{\numberline {2.7}The algorithms for comparison}{5}{section.2.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}Own Data Structures}{5}{chapter.3}
+\contentsline {chapter}{\numberline {3}Own Data Structures}{7}{chapter.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Node}{5}{section.3.1}
+\contentsline {section}{\numberline {3.1}Node}{7}{section.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{5}{section.3.2}
+\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{7}{section.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Our Algorithm}{7}{chapter.4}
+\contentsline {chapter}{\numberline {4}Our Algorithm}{9}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.1}General Idea}{7}{section.4.1}
+\contentsline {section}{\numberline {4.1}General Idea}{9}{section.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.2}Tree Construction}{7}{section.4.2}
+\contentsline {section}{\numberline {4.2}Tree Construction}{9}{section.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.3}Tree Traversal}{7}{section.4.3}
+\contentsline {section}{\numberline {4.3}Tree Traversal}{9}{section.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Evaluation}{9}{chapter.5}
+\contentsline {chapter}{\numberline {5}Evaluation}{11}{chapter.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {6}Conclusion}{11}{chapter.6}
+\contentsline {chapter}{\numberline {6}Conclusion}{13}{chapter.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Bibliography}{11}{chapter.6}
+\contentsline {chapter}{Bibliography}{13}{chapter.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{13}{chapter*.6}
+\contentsline {chapter}{\nonumberline Bibliography}{15}{chapter*.6}

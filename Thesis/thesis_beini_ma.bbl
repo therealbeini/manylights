@@ -19,76 +19,6 @@
 
 \refsection{0}
   \datalist[entry]{anyt/global//global/global}
-    \entry{MLA}{inproceedings}{}
-      \name{author}{2}{}{%
-        {{hash=5369b95a4694ecdb5fde735a2b99f1f6}{%
-           family={Conty},
-           familyi={C\bibinitperiod},
-           given={A.},
-           giveni={A\bibinitperiod}}}%
-        {{hash=a6bb0c5c083125ebb19a06aff95d1dc7}{%
-           family={Kulla},
-           familyi={K\bibinitperiod},
-           given={C.},
-           giveni={C\bibinitperiod}}}%
-      }
-      \strng{namehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{fullhash}{21cf11d445db59805d128253faadfbe9}
-      \strng{bibnamehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{authorbibnamehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{authornamehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{authorfullhash}{21cf11d445db59805d128253faadfbe9}
-      \field{labelalpha}{CK17}
-      \field{sortinit}{C}
-      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
-      \field{extraalpha}{1}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{booktitle}{SIGGRAPH '17 Talks}
-      \field{title}{{Importance Sampling of many Lights with Adaptive Tree Splitting}}
-      \field{year}{2017}
-      \verb{urlraw}
-      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NjNmMDkxZmRjZDQ5NWY0MQ
-      \endverb
-      \verb{url}
-      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NjNmMDkxZmRjZDQ5NWY0MQ
-      \endverb
-    \endentry
-    \entry{MLS}{misc}{}
-      \name{author}{2}{}{%
-        {{hash=5369b95a4694ecdb5fde735a2b99f1f6}{%
-           family={Conty},
-           familyi={C\bibinitperiod},
-           given={A.},
-           giveni={A\bibinitperiod}}}%
-        {{hash=a6bb0c5c083125ebb19a06aff95d1dc7}{%
-           family={Kulla},
-           familyi={K\bibinitperiod},
-           given={C.},
-           giveni={C\bibinitperiod}}}%
-      }
-      \strng{namehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{fullhash}{21cf11d445db59805d128253faadfbe9}
-      \strng{bibnamehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{authorbibnamehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{authornamehash}{21cf11d445db59805d128253faadfbe9}
-      \strng{authorfullhash}{21cf11d445db59805d128253faadfbe9}
-      \field{labelalpha}{CK17}
-      \field{sortinit}{C}
-      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
-      \field{extraalpha}{2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{howpublished}{Presentation in SIGGRAPH '17}
-      \field{title}{{Importance Sampling of many Lights with Adaptive Tree Splitting Slides}}
-      \field{year}{2017}
-      \verb{urlraw}
-      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NWM0NmU2YWVlNjE3ODk1Yw
-      \endverb
-      \verb{url}
-      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NWM0NmU2YWVlNjE3ODk1Yw
-      \endverb
-    \endentry
     \entry{PTTLS}{book}{}
       \name{author}{1}{}{%
         {{hash=60cf9e44033fe2d5e8d20578f696e158}{%
@@ -115,91 +45,27 @@
       \field{title}{Probability Theory: The Logic of Science}
       \field{year}{2003}
     \endentry
-    \entry{PBR}{book}{}
-      \name{author}{3}{}{%
-        {{hash=a2006d70c19e09c81fc664505c12247d}{%
-           family={Pharr},
-           familyi={P\bibinitperiod},
-           given={M.},
-           giveni={M\bibinitperiod}}}%
-        {{hash=9cbbff396ca703a70d9b53875d732735}{%
-           family={Jakob},
-           familyi={J\bibinitperiod},
-           given={W.},
-           giveni={W\bibinitperiod}}}%
-        {{hash=6613319527e4f1f8ce39c6693f4cb8d8}{%
-           family={Humphreys},
-           familyi={H\bibinitperiod},
-           given={G.},
-           giveni={G\bibinitperiod}}}%
+    \entry{RMCM}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=c0b11f85a4d5b80efa92f13d616b84ea}{%
+           family={Veach},
+           familyi={V\bibinitperiod},
+           given={E.},
+           giveni={E\bibinitperiod}}}%
       }
-      \list{publisher}{1}{%
-        {Morgan Kaufmann Publishers}%
-      }
-      \strng{namehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
-      \strng{fullhash}{ba07ec7ea251f8a07cc1c8a86185bf33}
-      \strng{bibnamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
-      \strng{authorbibnamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
-      \strng{authornamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
-      \strng{authorfullhash}{ba07ec7ea251f8a07cc1c8a86185bf33}
-      \field{labelalpha}{PJH16}
-      \field{sortinit}{P}
-      \field{sortinithash}{8d51b3d5b78d75b54308d706b9bbe285}
+      \strng{namehash}{c0b11f85a4d5b80efa92f13d616b84ea}
+      \strng{fullhash}{c0b11f85a4d5b80efa92f13d616b84ea}
+      \strng{bibnamehash}{c0b11f85a4d5b80efa92f13d616b84ea}
+      \strng{authorbibnamehash}{c0b11f85a4d5b80efa92f13d616b84ea}
+      \strng{authornamehash}{c0b11f85a4d5b80efa92f13d616b84ea}
+      \strng{authorfullhash}{c0b11f85a4d5b80efa92f13d616b84ea}
+      \field{labelalpha}{Vea97}
+      \field{sortinit}{V}
+      \field{sortinithash}{75dd7385c90b2252c3ae853a80ca853b}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{edition}{3}
-      \field{title}{{Physically Based Rendering, From Theory to Implementation}}
-      \field{year}{2016}
-    \endentry
-    \entry{LCT}{proceedings}{}
-      \name{author}{6}{}{%
-        {{hash=2f8b2bda8393e2558e1508c9f1eda1c6}{%
-           family={Walter},
-           familyi={W\bibinitperiod},
-           given={B.},
-           giveni={B\bibinitperiod}}}%
-        {{hash=7c706cc0d4de44a20cc9f83a9fad3e5b}{%
-           family={Fernandez},
-           familyi={F\bibinitperiod},
-           given={S.},
-           giveni={S\bibinitperiod}}}%
-        {{hash=e90ec5643fd8a4f17237efff1093a9e2}{%
-           family={Adam},
-           familyi={A\bibinitperiod},
-           given={A.},
-           giveni={A\bibinitperiod}}}%
-        {{hash=ed421c3636d48bf6eafaf2e94522eb74}{%
-           family={Bala},
-           familyi={B\bibinitperiod},
-           given={K.},
-           giveni={K\bibinitperiod}}}%
-        {{hash=4c81e1629d036672bd17893cb7c3953c}{%
-           family={Donikian},
-           familyi={D\bibinitperiod},
-           given={M},
-           giveni={M\bibinitperiod}}}%
-        {{hash=b4cdb576f40504f107f369505971359d}{%
-           family={Greenberg},
-           familyi={G\bibinitperiod},
-           given={D.},
-           giveni={D\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {ACM SIGGRAPH 2005 conference proceedings}%
-      }
-      \strng{namehash}{50dda873b849b117b996256ab8f61e8e}
-      \strng{fullhash}{23e14c3f495416a7cff1b138b94d3aee}
-      \strng{bibnamehash}{50dda873b849b117b996256ab8f61e8e}
-      \strng{authorbibnamehash}{50dda873b849b117b996256ab8f61e8e}
-      \strng{authornamehash}{50dda873b849b117b996256ab8f61e8e}
-      \strng{authorfullhash}{23e14c3f495416a7cff1b138b94d3aee}
-      \field{labelalpha}{Wal+05}
-      \field{sortinit}{W}
-      \field{sortinithash}{ecb89ff85896a47dc313960773ac311d}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{{Lightcuts: a scalable approach to illumination}}
-      \field{year}{2005}
+      \field{title}{Robust Monte Carlo Methods for Light Transport Simulation}
+      \field{year}{1997}
     \endentry
   \enddatalist
 \endrefsection

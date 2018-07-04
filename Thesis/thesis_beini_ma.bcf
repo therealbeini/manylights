@@ -1974,11 +1974,8 @@
     <bcf:datasource type="file" datatype="bibtex">thesis.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1">PBR</bcf:citekey>
-    <bcf:citekey order="2">MLA</bcf:citekey>
-    <bcf:citekey order="3">MLS</bcf:citekey>
-    <bcf:citekey order="4">LCT</bcf:citekey>
-    <bcf:citekey order="5">PTTLS</bcf:citekey>
+    <bcf:citekey order="1">PTTLS</bcf:citekey>
+    <bcf:citekey order="2">RMCM</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="anyt">

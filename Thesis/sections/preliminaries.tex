@@ -52,6 +52,21 @@ When we talk about Monto Carlo Intergration later, the variance is a strong indi
 \section{Monte Carlo Integration}
 \label{ch:preliminaries:mci}
 
+When generating an image using ray tracing, we will be dealing with integrals and our main task will be to estimate the values of these integrals. Since they are almost never available in closed form, like the incident lighting of a certain point that theoretically requires infinite number of rays traced over infinite dimensions, analytical integration methods do not work. Instead, we have to use numerical integration methods give an appropriate estimation for these integrals. One of the most powerful tools we have in this regard is the Monto Carlo integration. We will be discussing the advantages of Monte Carlo integration, as well as its constraints and mechanisms how we can deal with these limits.
+
+Different to \textit{Las Vegas} algorithms, Monte Carlo integration has a non-deterministic approach. Every iteration of the algorithm provides a different outcome and will only be an approximation of the actual integral. Imagine that we want to integrate a function $f:D \rightarrow \mathbb{R}$. The Monte Carlo estimator states that with samples of uniform random variables $Xi \in [a,b]$ and number of samples $N$ the expected value $E[F_N]$ of the estimator 
+\begin{equation}
+F_N = \frac{b-a}{N}\sum_{i = 1}^{N}f(X_i)
+\end{equation}
+is equal to the integral. If we use a PDF $p(x)$ instead of an uniform distribution, the estimator
+\begin{equation}
+F_N = \frac{1}{N}\sum_{i = 1}^{N}\frac{f(X_i)}{p(X_i)}
+\end{equation} 
+is used to approximate the integral. Being able to use arbitrary PDFs is essential for solving the light transport problem and the importance of choosing a good PDF $p(x)$ will be explained in the next section.
+
+While standard quadrature techniques converge faster than Monte Carlo integration, which converges at the rate of $O(\sqrt{N})$, it is the only integration method that allows us to deal with higher dimensions of the integrand. Later, we will explain why the light transport problem of the ray tracing algorithm is theoretically an infinite-dimensional problem. \cite{RMCM}
+
+
 \section{Importance Sampling}
 \label{ch:preliminaries:is}
 
