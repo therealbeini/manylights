@@ -113,7 +113,7 @@ namespace pbrt {
 		bool handleMedia, const Distribution1D *lightDistrib) {
 		ProfilePhase p(Prof::DirectLighting);
 		// Choose the light according to the lightBVH data structure
-		float pdf = 1;
+		float pdf;
 		int lightNum = scene.lightAccel->Sample(it, sampler, &pdf);
 		// negative return means that the contribution will be zero (because of orientation)
 		if (lightNum < 0) {

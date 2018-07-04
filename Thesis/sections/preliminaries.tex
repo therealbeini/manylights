@@ -26,9 +26,9 @@ The so-called canonical uniform random variable $\xi$ is a special continuous ra
 
 \subsection{Probability Density Function}
 
-For continuous random variables, probability density functions (PDF) illustrate how the possible outcomes of the random experiment are distributed across the domain. They must be nonnegative and integrate to 1 over the domain. $p:\varsigma \rightarrow \mathbb{R}$ is a pdf when
+For continuous random variables, probability density functions (PDF) illustrate how the possible outcomes of the random experiment are distributed across the domain. They must be nonnegative and integrate to 1 over the domain. $p:D \rightarrow \mathbb{R}$ is a pdf when
 \begin{equation}
-\int_{\varsigma}p(x)\mathrm{d}x = 1.
+\int_{D}p(x)\mathrm{d}x = 1.
 \end{equation}
 Integrating over a certain interval $[a, b]$ gives the possibility that the random experiment returns a result that lies inside of given interval:
 \begin{equation}
@@ -36,6 +36,18 @@ Integrating over a certain interval $[a, b]$ gives the possibility that the rand
 \end{equation}
 It is evident, that $P(x \in [a, a]) = 0$ which reflects the fundamental idea of continuous random variables: The possibility of getting a sample that exactly equals a certain number is zero. Therefore, PDFs are only meaningful when regarded over a interval and not over a single point.
 
+\subsection{Expected Values and Variance}
+
+As the name already indicates, the expected value $E_p[f(x)]$ of a function $f$ and a distribution $p$ specifies the average value of the function after getting a large amount of samples according to the distribution function $p(x)$. Over a certain domain $D$, the expected value is defined as
+\begin{equation}
+E_p[f(x)] = \int_{D}f(x)p(x)\mathrm{d}x.
+\end{equation}
+
+The variance defines a measure that illustrates the distance between the actual sample values and their average value. Formally, it is defined by the expectation of the squared deviation of the function from its expected value:
+\begin{equation}
+V[f(x)] = E[(f(x) - E[f(x)])^2]
+\end{equation}
+When we talk about Monto Carlo Intergration later, the variance is a strong indicator of the quality of the PDF we chose. The main part of this thesis will be to minimize the variance of light sampling methods.
 
 \section{Monte Carlo Integration}
 \label{ch:preliminaries:mci}

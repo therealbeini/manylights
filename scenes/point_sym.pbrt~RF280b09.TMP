@@ -5,8 +5,8 @@ Camera "perspective" "float fov" 45
 
 Sampler "halton" "integer pixelsamples" 64
 Integrator "path"
-Film "image" "string filename" "point_sym.png"
-     "integer xresolution" [800] "integer yresolution" [800]
+Film "image" "string filename" "point_sym_old.png"
+     "integer xresolution" [1600] "integer yresolution" [1600]
 
 WorldBegin
 
