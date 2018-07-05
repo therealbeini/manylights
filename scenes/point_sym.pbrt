@@ -3,7 +3,7 @@ LookAt 0 -10 1.5  # eye
        0 0 1    # up vector
 Camera "perspective" "float fov" 45
 
-Sampler "halton" "integer pixelsamples" 64
+Sampler "halton" "integer pixelsamples" 16
 Integrator "path"
 Film "image" "string filename" "point_sym.png"
      "integer xresolution" [800] "integer yresolution" [800]
@@ -53,24 +53,80 @@ Translate -1 -3 0
 AttributeEnd
 
 AttributeBegin
-  Texture "checks" "spectrum" "checkerboard"
+  Texture "wall" "spectrum" "checkerboard"
           "float uscale" [8] "float vscale" [8]
           "rgb tex1" [.1 .1 .1] "rgb tex2" [.8 .8 .8]
   Material "matte" "rgb Kd" [ 1 1 1 ]
   Translate 0 0 -0.5
-Shape "trianglemesh" "point P" [ -5 -5 0 5 -5 0 5 5 0 -5 5 0 ]
+Shape "trianglemesh" "point P" [ -5 -11 0 5 -11 0 5 5 0 -5 5 0 ]
       "float uv" [ 0 0 5 0 5 5 0 5 ]
 	"integer indices" [ 0 1 2 2 3 0]
-Shape "trianglemesh" "point P" [ -5 -5 0 -5 5 0 
-	-5 5  25 -5 -5 25 ]
+Shape "trianglemesh" "point P" [ -5 -11 0 -5 5 0 -5 5  7 -5 -11 7 ]
       "float uv" [ 0 0 5 0 5 5 0 5 ]
 	"integer indices" [ 0 1 2 2 3 0]
-Shape "trianglemesh" "point P" [ 5 -5 0 5 5 0  5 5 25 5 -5 25 ]
+Shape "trianglemesh" "point P" [ 5 -11 0 5 5 0  5 5 7 5 -11 7 ]
       "float uv" [ 0 0 5 0 5 5 0 5 ]
 	"integer indices" [ 0 1 2 2 3 0]
-Shape "trianglemesh" "point P" [ -5 5 0 5 5 0  5 5 25 -5 5 25 ]
+Shape "trianglemesh" "point P" [ -5 5 0 5 5 0  5 5 7 -5 5 7 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ -5 -11 7 5 -11 7 5 5 7 -5 5 7 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 5 -11 0 -5 -11 0  -5 -11 7 5 -11 7 ]
       "float uv" [ 0 0 5 0 5 5 0 5 ]
 	"integer indices" [ 0 1 2 2 3 0]
 AttributeEnd
+
+AttributeBegin
+  Texture "box1" "spectrum" "checkerboard"
+          "float uscale" [8] "float vscale" [8]
+          "rgb tex1" [.1 .1 .1] "rgb tex2" [.8 .8 .8]
+  Material "matte" "rgb Kd" [ 0.6 0.6 0.1 ]
+Shape "trianglemesh" "point P" [ 1.5 2 5 3.5 2 5 3.5 4 5 1.5 4 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 1.5 2 3 3.5 2 3 3.5 4 3 1.5 4 3 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 1.5 2 3 1.5 4 3 1.5 4 5 1.5 2 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 3.5 2 3 3.5 4 3 3.5 4 5 3.5 2 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 3.5 2 3 1.5 2 3 1.5 2 5 3.5 2 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ 3.5 4 3 1.5 4 3 1.5 4 5 3.5 4 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+AttributeEnd
+
+AttributeBegin
+  Texture "box2" "spectrum" "checkerboard"
+          "float uscale" [8] "float vscale" [8]
+          "rgb tex1" [.1 .1 .1] "rgb tex2" [.8 .8 .8]
+  Material "matte" "rgb Kd" [ 0.1 0.6 0.6 ]
+Shape "trianglemesh" "point P" [ -1.5 2 5 -3.5 2 5 -3.5 4 5 -1.5 4 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ -1.5 2 3 -3.5 2 3 -3.5 4 3 -1.5 4 3 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ -1.5 2 3 -1.5 4 3 -1.5 4 5 -1.5 2 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ -3.5 2 3 -3.5 4 3 -3.5 4 5 -3.5 2 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ -3.5 2 3 -1.5 2 3 -1.5 2 5 -3.5 2 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+Shape "trianglemesh" "point P" [ -3.5 4 3 -1.5 4 3 -1.5 4 5 -3.5 4 5 ]
+      "float uv" [ 0 0 5 0 5 5 0 5 ]
+	"integer indices" [ 0 1 2 2 3 0]
+AttributeEnd
+
 
 WorldEnd
