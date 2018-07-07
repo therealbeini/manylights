@@ -194,7 +194,7 @@ namespace pbrt {
 				std::vector<float> cost(buckets - 1);
 				// a float defining the amount of lights that goes in every bucket
 				float lightsPerBucket = (float)nLights / buckets;
-				float total;
+				float totalCost;
 				for (int i = 0; i < buckets - 1; i++) {
 					// defines the end of the interval we are regarding right now, the int states the index of the last element of the first part
 					int intervalEnd = start + lightsPerBucket * i;
@@ -257,14 +257,14 @@ namespace pbrt {
 
 					float leftAngle = 2 * Pi * (1 - cos(leftO) + (2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4);
 					float rightAngle = 2 * Pi * (1 - cos(rightO) + (2 * sin(rightO) * rightE + cos(rightO) - cos(2 * rightE + rightO)) / 4);
-					float left = b0.SurfaceArea() * leftAngle * leftEnergy;
-					float right = b1.SurfaceArea() * rightAngle * rightEnergy;
+					float leftCost = b0.SurfaceArea() * leftAngle * leftEnergy;
+					float rightCost = b1.SurfaceArea() * rightAngle * rightEnergy;
 					if (i == 0) {
 						totalEnergy = leftEnergy + rightEnergy;
 						Bounds3f totalBounds = Union(b0, b1);
-						total = totalBounds.SurfaceArea() * totalAngle * totalEnergy;
+						totalCost = totalBounds.SurfaceArea() * totalAngle * totalEnergy;
 					}
-					cost[i] = (left + right) / total;
+					cost[i] = (leftCost + rightCost) / totalCost;
 				}
 
 
