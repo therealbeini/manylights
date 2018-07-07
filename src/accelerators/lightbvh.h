@@ -27,7 +27,7 @@ namespace pbrt {
 		// BVHAccel Public Methods
 		LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
 			int maxPrimsInNode = 1);
-		int Sample(const Interaction &it, Sampler &sampler, float *pdf);
+		int Sample(const Interaction &it, Sampler &sampler, double *pdf);
 
 	private:
 		// BVHAccel Private Methods
@@ -36,8 +36,8 @@ namespace pbrt {
 			int start, int end, int *totalNodes,
 			std::vector<std::shared_ptr<Light>> &orderedLights);
 		void calculateThetas(std::vector<LightBVHLightInfo> &lightInfo, int startIndex, int endIndex, Vector3f axis, float *theta_o, float *theta_e);
-		int TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, float *pdf);
-		float calculateImportance(Point3f o, LightBVHNode* node);
+		int TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, double *pdf);
+		double calculateImportance(Point3f o, LightBVHNode* node);
 
 		// BVHAccel Private Data
 		const int maxLightsInNode;

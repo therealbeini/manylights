@@ -321,23 +321,23 @@ namespace pbrt {
 		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
 	}
 
-	int LightBVHAccel::Sample(const Interaction &it, Sampler &sampler, float *pdf) {
+	int LightBVHAccel::Sample(const Interaction &it, Sampler &sampler, double *pdf) {
 		float sample1D = sampler.Get1D();
 		*pdf = 1;
 		return TraverseNode(root, sample1D, it, pdf);
 	}
 
-	int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, float *pdf) {
+	int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, double *pdf) {
 		// im already at a leaf of the tree
 		if (node->nLights == 1) {
 			return node->lightNum;
 		}
 		// finding out if I have to take the left or the right path
 		Point3f o = it.p;
-		float firstImportance = calculateImportance(o, node->children[0]);
-		float secondImportance = calculateImportance(o, node->children[1]);
+		double firstImportance = calculateImportance(o, node->children[0]);
+		double secondImportance = calculateImportance(o, node->children[1]);
 		// normalize the importance
-		float totalImportance = firstImportance + secondImportance;
+		double totalImportance = firstImportance + secondImportance;
 		// return -1 when the contribution of the sampled light will be zero (because of orientation)
 		if (totalImportance == 0) {
 			return -1;
@@ -354,7 +354,7 @@ namespace pbrt {
 		return TraverseNode(node->children[1], (sample1D - firstImportance) / secondImportance, it, pdf);
 	}
 
-	float LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {
+	double LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {
 		float theta_e = node->bounds_o.theta_e;
 		float theta_o = node->bounds_o.theta_o;
 		Vector3f d = node->centroid - o;

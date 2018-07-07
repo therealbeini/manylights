@@ -3,7 +3,7 @@ LookAt 0 -10 1.5  # eye
        0 0 1    # up vector
 Camera "perspective" "float fov" 45
 
-Sampler "halton" "integer pixelsamples" 1
+Sampler "halton" "integer pixelsamples" 16
 Integrator "path"
 Film "image" "string filename" "spotlight_many.png"
      "integer xresolution" [800] "integer yresolution" [800]
@@ -12106,7 +12106,6 @@ LightSource "spot" "point from" [ -0.868041 5.453898 0.728424 ] "point to " [ -1
 LightSource "spot" "point from" [ -3.095228 -8.586020 2.476402 ] "point to " [ -3.353728 -8.257936 2.326185 ] "float coneangle" [ 2.279733 ] "color I" [0.02 0.02 0.02] 
 LightSource "spot" "point from" [ 0.461922 -4.356342 4.552699 ] "point to " [ -0.449999 -5.253980 5.387711 ] "float coneangle" [ 28.292490 ] "color I" [0.02 0.02 0.02] 
 LightSource "spot" "point from" [ -0.777196 -6.573429 4.392110 ] "point to " [ 0.140097 -7.502318 4.566498 ] "float coneangle" [ 40.335705 ] "color I" [0.02 0.02 0.02] 
-
 
 
 AttributeBegin

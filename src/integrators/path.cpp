@@ -112,7 +112,7 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
             continue;
         }
 
-        const Distribution1D *distrib = lightDistribution->Lookup(isect.p);
+        // const Distribution1D *distrib = lightDistribution->Lookup(isect.p);
 
         // Sample illumination from lights to find path contribution.
         // (But skip this for perfectly specular BSDFs.)
@@ -120,7 +120,7 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
             0) {
             ++totalPaths;
             Spectrum Ld = beta * TreeSampleOneLight(isect, scene, arena,
-                                                       sampler, false, distrib);
+                                                       sampler, false, nullptr);
             VLOG(2) << "Sampled direct lighting Ld = " << Ld;
             if (Ld.IsBlack()) ++zeroRadiancePaths;
             CHECK_GE(Ld.y(), 0.f);
