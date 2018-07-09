@@ -20,7 +20,7 @@ In this section we will be discussing basic ideas and define certain terms from 
 
 \subsection{Random Variable}
 
-A random variable $X$ is a variable whose values are numerical outcomes chosen by a random process. There are discrete random variables, which can only take a countable set of possible outcomes and continuous random variables with an uncountable number of possible results. For instance, flipping a coin would be a random variable drawn from a discrete domain which can only result to heads or tails, while sampling a random direction over a unit sphere can produce infinite different directions. In rendering and particularly in ray tracing, we are often sampling certain directions or light sources in order to illuminate the scene, therefore we will be handling both discrete and continuous random variables, albeit with the latter in the most cases.
+A random variable $X$ is a variable whose values are numerical outcomes chosen by a random process. There are discrete random variables, which can only take a countable set of possible outcomes and continuous random variables with an uncountable number of possible results. For instance, flipping a coin would be a random variable drawn from a discrete domain which can only result to heads or tails, while sampling a random direction over a unit sphere can produce infinite different directions. In rendering and particularly in path tracing, we are often sampling certain directions or light sources in order to illuminate the scene, therefore we will be handling both discrete and continuous random variables, albeit with the latter in the most cases.
 
 The so-called canonical uniform random variable $\xi$ is a special continuous random variable that is especially important for us. Every interval in its domain [0, 1) with equal length are assigned the same probability. This random variable makes it very easy to generate samples from arbitrary distributions. For example, if we would need to sample a direction to estimate the incident lighting on a point, we could draw two samples from $\xi$ and scale these two values with appropriate transformations so they reflect the polar coordinates of direction to sample.
 
@@ -40,7 +40,7 @@ It is evident, that $P(x \in [a, a]) = 0$ which reflects the fundamental idea of
 
 As the name already indicates, the expected value $E_p[f(x)]$ of a function $f$ and a distribution $p$ specifies the average value of the function after getting a large amount of samples according to the distribution function $p(x)$. Over a certain domain $D$, the expected value is defined as
 \begin{equation}
-E_p[f(x)] = \int_{D}f(x)p(x)\mathrm{d}x.
+E[f(x)] = \int_{D}f(x)p(x)\mathrm{d}x.
 \end{equation}
 
 The variance defines a measure that illustrates the distance between the actual sample values and their average value. Formally, it is defined by the expectation of the squared deviation of the function from its expected value:
@@ -49,29 +49,118 @@ V[f(x)] = E[(f(x) - E[f(x)])^2]
 \end{equation}
 When we talk about Monto Carlo Intergration later, the variance is a strong indicator of the quality of the PDF we chose. The main part of this thesis will be to minimize the variance of light sampling methods.
 
+\subsection{Error and Bias} 
+
+For an estimator $F_N$, the parameter to be estimated $I$ and a sample $x$ the error $e(x)$ is defined as
+
+\begin{equation}
+e(x) = F_N(x) - I.
+\end{equation}
+
+Since the error is dependent on the certain sample we took, we will also introduce bias. The bias $b$ of an estimator is the expected value of the error:
+
+\begin{equation}
+b(F_N) = E[F_N - I].
+\end{equation}
+
+An estimator $F_N$ is unbiased, if $b(F_N) = 0$ for all sample sizes N. Informally, it means that the estimator is going to return the correct value on average. In the next section, we will introduce an unbiased estimator, the Monte Carlo estimator.
+
 \section{Monte Carlo Integration}
 \label{ch:preliminaries:mci}
 
-When generating an image using ray tracing, we will be dealing with integrals and our main task will be to estimate the values of these integrals. Since they are almost never available in closed form, like the incident lighting of a certain point that theoretically requires infinite number of rays traced over infinite dimensions, analytical integration methods do not work. Instead, we have to use numerical integration methods give an appropriate estimation for these integrals. One of the most powerful tools we have in this regard is the Monto Carlo integration. We will be discussing the advantages of Monte Carlo integration, as well as its constraints and mechanisms how we can deal with these limits.
+When generating an image using path tracing, we will be dealing with integrals and our main task will be to estimate the values of these integrals. Since they are almost never available in closed form, like the incident lighting of a certain point that theoretically requires infinite number of rays traced over infinite dimensions, analytical integration methods do not work. Instead, we have to use numerical integration methods give an appropriate estimation for these integrals. One of the most powerful tools we have in this regard is the Monto Carlo integration. We will be discussing the advantages of Monte Carlo integration, as well as its constraints and mechanisms how we can deal with these limits.
 
-Different to \textit{Las Vegas} algorithms, Monte Carlo integration has a non-deterministic approach. Every iteration of the algorithm provides a different outcome and will only be an approximation of the actual integral. Imagine that we want to integrate a function $f:D \rightarrow \mathbb{R}$. The Monte Carlo estimator states that with samples of uniform random variables $Xi \in [a,b]$ and number of samples $N$ the expected value $E[F_N]$ of the estimator 
+Using random sampling methods, we want to evaluate the integral 
+
+\begin{equation}
+I = \int_{a}^{b}f(x)d(x)
+\end{equation}
+
+with Monte Carlo integration. Different to Las Vegas algorithms, Monte Carlo integration has a non-deterministic approach. Every iteration of the algorithm provides a different outcome and will only be an approximation of the actual integral. Imagine that we want to integrate a function $f:D \rightarrow \mathbb{R}$. The Monte Carlo estimator states that with samples of uniform random variables $Xi \in [a,b]$ and number of samples $N$ the expected value $E[F_N]$ of the estimator 
 \begin{equation}
 F_N = \frac{b-a}{N}\sum_{i = 1}^{N}f(X_i)
 \end{equation}
-is equal to the integral. If we use a PDF $p(x)$ instead of an uniform distribution, the estimator
+is equal to the integral, since:
+
+\begin{equation}
+\begin{split}
+E[F_N] &= E\Bigg[\frac{b-a}{N}\sum_{i = 1}^{N}f(X_i)\Bigg] \\
+&= \frac{b-a}{N}\sum_{i = 1}^{N}E[f(X_i)] \\
+&= \frac{b-a}{N}\sum_{i = 1}^{N}\int_{a}^{b}f(x)p(x)dx \\
+&= \frac{1}{N}\sum_{i = 1}^{N}\int_{a}^{b}f(x)dx \\
+&= \int_{a}^{b}f(x)d(x)
+\end{split}
+\end{equation}
+ 
+If we use a PDF $p(x)$ instead of an uniform distribution, the estimator
 \begin{equation}
 F_N = \frac{1}{N}\sum_{i = 1}^{N}\frac{f(X_i)}{p(X_i)}
 \end{equation} 
 is used to approximate the integral. Being able to use arbitrary PDFs is essential for solving the light transport problem and the importance of choosing a good PDF $p(x)$ will be explained in the next section.
 
-While standard quadrature techniques converge faster than Monte Carlo integration, which converges at the rate of $O(\sqrt{N})$, it is the only integration method that allows us to deal with higher dimensions of the integrand. Later, we will explain why the light transport problem of the ray tracing algorithm is theoretically an infinite-dimensional problem. \cite{RMCM}
+The Monto Carlo estimator is unbiased, because
+
+\begin{equation}
+\begin{split}
+b(F_N) &= E\Bigg[\frac{1}{N}\sum_{i = 1}^{N}\frac{f(X_i)}{p(X_i)} - I\Bigg] \\
+&= E\Bigg[\frac{1}{N}\sum_{i = 1}^{N}\frac{f(X_i)}{p(X_i)}\Bigg] - E[I] \\
+&= E\Bigg[\frac{f(X)}{p(X)} - I\Bigg] \\
+&= I - I = 0.
+\end{split}
+\end{equation}
+
+While standard quadrature techniques converge faster than the Monte Carlo integration in low dimensions, the Monte Carlo integration is the only integration method that allows us to deal with higher dimensions of the integrand, since it's convergence rate is independent of the dimension. In fact, standard numerical integration techniques do not work very well on high-dimensional domains since their performance becomes exponentially worse as the dimension of the integral increases. Later, we will explain why the light transport problem of the path tracing algorithm is theoretically an infinite-dimensional problem and therefore we will estimating the integrals in our light transport equations with Monte Carlo integration at a convergence rate of $O(\sqrt{N})$. \cite{RMCM}
 
 
 \section{Importance Sampling}
 \label{ch:preliminaries:is}
 
+As we have mentioned earlier, the Monte Carlo estimator allows us to use any distribution $p(x)$ to get the samples from. Abusing the fact, that the Monte Carlo estimator 
+
+\begin{equation}
+F_N = \frac{1}{N}\sum_{i = 1}^{N}\frac{f(X_i)}{p(X_i)}
+\end{equation}
+
+converges faster if we choose a sampling distribution $p(x)$ that is roughly proportional to the function $f(x)$, this will be our main variance reduction method. Suppose, we could use any distribution $p(x)$ to pick our samples from. We would then choose a distribution $p(x) = cf(x)$, basically a distribution proportional to the function of the integrand. Then, after each estimation, the value we would have calculated would be 
+
+\begin{equation}
+\frac{f(X_i)}{p(X_i)} = \frac{1}{c} = \int{f(x)dx}.
+\end{equation}
+
+We would be getting a constant value and since the Monte Carlo estimator is unbiased, every single of our estimates would exactly return the value of the integral and our variance would be zero. Obviously, that does not work, since it requires us to know the value of the integral $\int{f(x)dx}$ before, and then using Monte Carlo techniques to evaluate the integral would be pointless. Nonetheless, if we are able to find a distribution $p(x)$ that has a similar shape to $f(x)$, we would be archive a faster convergence rate. To put it in relation to path tracing, assume we want to calculate the incident lighting for a given point on a diffuse surface. Imagine, the light sources of the scene are all focused on a certain direction of the point. It would make a lot of sense to mainly sample the directions that are similar to the vectors pointing to the light sources, since their contribution will be the biggest. In this case, we would want to use a distribution that is similar to the light source distribution in the scene given the position of the point.
+
 \section{Multiple Importance Sampling}
 \label{ch:preliminaries:mis}
+
+We have been discussing how to deal with integrals of the form $\int{f(x)dx}$ with Monte Carlo techniques. While path tracing, we are mainly faced with situation where we have to evaluate integrals that consists of a product of two functions. In fact, the main function we need to estimate for the direct lighting given a certain point and the outgoing direction is in that form:
+
+\begin{equation}
+L_o(p, \omega_o) = \int_{\varsigma^2}f(p, \omega_o, \omega_i)L_d(p, \omega_i)|cos\theta_i|d\omega_i
+\end{equation}
+
+$f(p, \omega_o, \omega_i)$ describes the reflectance of the surface at given point p, and the ingoing and outgoing directions $\omega_i$ and $\omega_o$. $L_d(p, \omega_i)$ specifies the incident lighting at given point and direction $\omega_i$. It is apparent, that using a single distribution function in every situation will not yield the optimal results. A specular surface would only reflect the light in very specific angles and in these cases, having a distribution, that has a similar form of $f(p, \omega_o, \omega_i)$ would be preferable. On the other hand, if the surface was diffuse, we would obtain better results, when using a distribution that has a similar shape of that of the incident lighting.
+
+The solution to this dilemma is multiple importance sampling. When using multiple importance sampling, we will draw samples from multiple distributions to sample the given integral. The idea is that, although we do not know which PDF will have a similar shape to the integrand, we hope that one of the chosen distributions match it fairly well. If we want to evaluate the integral $\int{f(x)g(x)dx}$ and $p_f$ and $p_g$ are our distribution functions, then the Monte Carlo estimateor with multiple importance sampling is
+
+\begin{equation}
+\frac{1}{n_f}\sum_{i = 1}^{n_f}{\frac{f(X_i)g(X_i)w_f(X_i)}{p_f(X_i)}}+ \frac{1}{n_g}\sum_{j = 1}^{n_g}{\frac{f(X_j)g(X_j)w_g(X_j)}{p_g(X_j)}},
+\end{equation}
+
+where $n_f$ and $n_g$ are the number of samples taken from their respective distribution function and $w_f$ and $w_g$ are weighting functions so the expected value of the estimator still matches the value of the integral. Multiple importance sampling is able to significantly lower the variance because a good weighting function should dampen contributions with low PDFs. We will present two weighting heuristics, the \textit{balance heuristic} and the \textit{power heuristic}.
+
+A good way to reduce variance is the balance heuristic:
+
+\begin{equation}
+w_s(x) = \frac{n_s p_s(x)}{\sum_{i}n_i p_i(x)}
+\end{equation}
+
+The power heuristic with exponent $\beta = 2$ is often a better heuristic to reduce variance:
+
+\begin{equation}
+w_s(x) = \frac{(n_s p_s(x))^2}{\sum_{i}(n_i p_i(x))^2}
+\end{equation}
+
+For a more detailed explanation of the weighting heuristics, we recommend "Robust Monte Carlo Methods for Light Transport Simulation" by Veach to the reader. \cite{RMCM}
 
 \section{Bounding Volume Hierarchies}
 \label{sec:preliminaries:bvh}
