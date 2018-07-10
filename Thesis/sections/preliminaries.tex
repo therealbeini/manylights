@@ -162,11 +162,55 @@ w_s(x) = \frac{(n_s p_s(x))^2}{\sum_{i}(n_i p_i(x))^2}
 
 For a more detailed explanation of the weighting heuristics, we recommend "Robust Monte Carlo Methods for Light Transport Simulation" by Veach to the reader. \cite{RMCM}
 
+\section{Axis-Aligned Bounding Box}
+
+TODO: image
+
 \section{Bounding Volume Hierarchies}
 \label{sec:preliminaries:bvh}
 
-\section{Surface Area Heuristics}
-\label{sec:preliminaries:sah}
+Acceleration data structures are mandatory for path tracers. They reduce the amount of ray-primitive intersection tests can be reduced to logarithmic in the number of object. The basic idea of those data structures is to partition the primitives into sets and order those in a hierarchy, so only specific sets of primitives need to be tested for intersections. The two main approaches, when dividing the primitives, is to either split the room among the space or to choose a particular number of primitives and wrap a bounding box around these primitives. The acceleration data structure used in PBRT is the bounding volume hierarchy (BVH). It uses the latter approach.
+
+An example to partition the space would be kd-trees that splits the space parallel to one of the axis in each step. Those two sets of primitives are split recursively again until every leaf has only a maximum amount of primitives.  While kd-trees offer slightly faster ray intersection tests than BVH, their disadvantages outweigh. BVHs can be built much faster and are generally more numerically robust, so it is less likely to happen to miss intersection duo to round-off errors than kd-trees are. Other desired traits of BVHs is that they require a maximum number of $2n - 1$ nodes for n primitives and, since we are splitting the primitives after a particular amount of primitives, we will never have the same primitive in two different nodes.
+
+TODO: image?
+
+\subsection{BVH Construction}
+
+Obviously, the first step is the construction of the BVH data structure. The basic structure of BVH is a binary tree, with every node containing pointers to up to two children and every leaf holding a set maximum number of primitives. The construction technique that is most popular and also used in PBRT is the top-down construction. At the beginning of the construction we hold a set containing every single primitive of the scene. With each step, according to a split method we have chosen, we partition the primitives into two disjointed sets. Note that regardless of the split method, we chose, we will always split the primitives among a certain axis to retain locality. Examples for popular splitting heuristics are "Middle", which just partitions the room among the middle of a chosen axis, "EqualCounts", which partitions the primitives among a chosen axis so the disjointed sets have the same number of primitives, and SAH \ref{pre:sah}. While the first two split methods allow a easy and fast construction, their quality is very lacking. Recursively splitting a nodes into two disjointed sets of primitives constructs the tree. When a certain node holds less than a defined number of primitives, we do not split again and instead call the node a leaf.
+
+Every node needs to be holding onto some information in order to allow the intersection tests. Evidently, every inner node needs to have a reference to both of its children. As we have mentioned earlier, it also needs to store is a bounding volume that wraps around all its primitives. When testing, if we will need to intersect any of the primitives of a node with a ray, we will be instead, intersecting the box with the ray. Typically, we will be using minimum fit axis-aligned bounding boxes for this task.
+
+\subsubsection{Surface Area Heuristics}
+\label{pre:sah}
+
+https://puu.sh/AU5HS/49a242e5f1.png
+
+We have presented two split methods earlier in this paper. While they both do work well in some situations, they both have clear advantages, especially if the primitives are not evenly distributed over the scene. Looking at (TODO:ref), it is obvious, that both the "Middle" and "EqualCounts" split the scene in a way that can lead to very inefficient intersection tests. In the "Middle" split, although the triangle mesh on the right child node are focused on a very small space, the drawn ray will still make intersection test with each of the triangles of the right child node. Similarly, in the "EqualCounts" split, many unnecessary intersection tests are made. A desirable split would be the third split and we will now introduce a split method that favors these kinds of splits.
+
+The surface area heuristics (SAH) defines a model that assigns a quality to a given split. The idea behind the SAH cost model is actually very simple. When we want to decide the best possible split for given primitives, first, we have to decide if it is perhaps better not to split at all. That means, when a ray traverses through the bounding box of the node, we would have to make an ray-primitive intersection test with each primitive. That means the cost $c_g$ is 
+
+\begin{equation}
+\sum_{i = 1}^{N}t_isect(i),
+\end{equation}
+
+where N is the number of primitives and $t_isect(i)$ the time required for the intersection test with the i-th primitive. For simplicity, we will assume, that every ray-primitive intersection test takes the same amount of time.
+
+Clearly, we can also split the primitives. The cost $c(A,B)$ would be
+
+\begin{equation}
+c(A,B) = t_trav + p_A\sum_{i=1}^{N_A}t_isect(a_i) + p_B\sum_{i=1}^{N_B}t_isect(b_i)
+\end{equation}
+
+with $t_trav$ being the additional overhead time to traverse through a child, $p_A$ and $p_B$ being the probabilities that the ray passes through the respective child node. The probabilities $p_A$ and $p_B$ can be calculated using their respective surface areas:
+
+\begin{equation}
+p_C = \frac{s_G}{s_C},
+\end{equation}
+
+where $s_G$ is the surface area of the node and $s_C$ is the surface area of the child.
+
+\subsection{BVH Traversal}
 
 \section{The algorithms for comparison}
 \label{sec:preliminaries:com}

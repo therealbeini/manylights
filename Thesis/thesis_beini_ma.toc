@@ -31,30 +31,36 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.4}Multiple Importance Sampling}{7}{section.2.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.5}Bounding Volume Hierarchies}{9}{section.2.5}
+\contentsline {section}{\numberline {2.5}Axis-Aligned Bounding Box}{9}{section.2.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.6}Surface Area Heuristics}{9}{section.2.6}
+\contentsline {section}{\numberline {2.6}Bounding Volume Hierarchies}{9}{section.2.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.7}The algorithms for comparison}{9}{section.2.7}
+\contentsline {subsection}{\numberline {2.6.1}BVH Construction}{9}{subsection.2.6.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}Own Data Structures}{11}{chapter.3}
+\contentsline {subsubsection}{\numberline {2.6.1.1}Surface Area Heuristics}{10}{subsubsection.2.6.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Node}{11}{section.3.1}
+\contentsline {subsection}{\numberline {2.6.2}BVH Traversal}{11}{subsection.2.6.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{11}{section.3.2}
+\contentsline {section}{\numberline {2.7}The algorithms for comparison}{11}{section.2.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Our Algorithm}{13}{chapter.4}
+\contentsline {chapter}{\numberline {3}Own Data Structures}{13}{chapter.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.1}General Idea}{13}{section.4.1}
+\contentsline {section}{\numberline {3.1}Node}{13}{section.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.2}Tree Construction}{13}{section.4.2}
+\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{13}{section.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.3}Tree Traversal}{13}{section.4.3}
+\contentsline {chapter}{\numberline {4}Our Algorithm}{15}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Evaluation}{15}{chapter.5}
+\contentsline {section}{\numberline {4.1}General Idea}{15}{section.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {6}Conclusion}{17}{chapter.6}
+\contentsline {section}{\numberline {4.2}Tree Construction}{15}{section.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Bibliography}{17}{chapter.6}
+\contentsline {section}{\numberline {4.3}Tree Traversal}{15}{section.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{19}{chapter*.6}
+\contentsline {chapter}{\numberline {5}Evaluation}{17}{chapter.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Conclusion}{19}{chapter.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Bibliography}{19}{chapter.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Bibliography}{21}{chapter*.6}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  9 JUL 2018 21:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  10 JUL 2018 18:15
 entering extended mode
 **./thesis_beini_ma.tex
 (thesis_beini_ma.tex
@@ -1970,33 +1970,36 @@ LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/sb/n' will be
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5]
-[6] [7]) (sections/datastructures.tex [8] [9] [10
+[6] [7] [8] [9]
+LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/sb/n' will be
+(Font)              scaled to size 11.03998pt on input line 184.
+ [10]) (sections/datastructures.tex [11] [12
 
 
 ]
 chapter 3.
-) (sections/algorithm.tex [11] [12
+) (sections/algorithm.tex [13] [14
 
 
 ]
 chapter 4.
-) (sections/evaluation.tex [13] [14
+) (sections/evaluation.tex [15] [16
 
 
 ]
 chapter 5.
-) (sections/conclusion.tex [15] [16
+) (sections/conclusion.tex [17] [18
 
 
 ]
 chapter 6.
-) [17] [18
+) [19] [20
 
 
 ]
 chapter without number
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 149.
-[19]
+[21]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 149.
  (thesis_beini_ma.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 149.
@@ -2006,11 +2009,11 @@ Package logreq Info: Writing requests to 'thesis_beini_ma.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 24518 strings out of 493305
- 461820 string characters out of 3129802
- 1037734 words of memory out of 3000000
- 27613 multiletter control sequences out of 15000+200000
- 158142 words of font info for 162 fonts, out of 3000000 for 9000
+ 24521 strings out of 493305
+ 461903 string characters out of 3129802
+ 1037755 words of memory out of 3000000
+ 27615 multiletter control sequences out of 15000+200000
+ 168012 words of font info for 164 fonts, out of 3000000 for 9000
  1143 hyphenation exceptions out of 8191
  61i,20n,80p,9117b,2269s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/newtx/liber
@@ -2036,9 +2039,9 @@ ini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/txfonts/txsyb.pfb><C:/
 Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/txsys.pf
 b><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/zx
 lri.pfb>
-Output written on thesis_beini_ma.pdf (33 pages, 484044 bytes).
+Output written on thesis_beini_ma.pdf (35 pages, 496176 bytes).
 PDF statistics:
- 175 PDF objects out of 1000 (max. 8388607)
+ 181 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
