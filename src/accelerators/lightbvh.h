@@ -37,7 +37,7 @@ namespace pbrt {
 			std::vector<std::shared_ptr<Light>> &orderedLights);
 		void calculateThetas(std::vector<LightBVHLightInfo> &lightInfo, int startIndex, int endIndex, Vector3f axis, float *theta_o, float *theta_e);
 		int TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, double *pdf);
-		double calculateImportance(Point3f o, LightBVHNode* node);
+		double calculateImportance(const Interaction & it, LightBVHNode * node);
 
 		// BVHAccel Private Data
 		const int maxLightsInNode;

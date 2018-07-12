@@ -333,9 +333,8 @@ namespace pbrt {
 			return node->lightNum;
 		}
 		// finding out if I have to take the left or the right path
-		Point3f o = it.p;
-		double firstImportance = calculateImportance(o, node->children[0]);
-		double secondImportance = calculateImportance(o, node->children[1]);
+		double firstImportance = calculateImportance(it, node->children[0]);
+		double secondImportance = calculateImportance(it, node->children[1]);
 		// normalize the importance
 		double totalImportance = firstImportance + secondImportance;
 		// return -1 when the contribution of the sampled light will be zero (because of orientation)
@@ -354,7 +353,27 @@ namespace pbrt {
 		return TraverseNode(node->children[1], (sample1D - firstImportance) / secondImportance, it, pdf);
 	}
 
-	double LightBVHAccel::calculateImportance(Point3f o, LightBVHNode* node) {
+	double LightBVHAccel::calculateImportance(const Interaction &it, LightBVHNode* node) {
+		Point3f o = it.p;
+		// turn normal if pointed to wrong side
+		Normal3f n = it.n;
+		if (Dot(it.wo, n) < 0) {
+			n *= -1;
+		}
+		// check if the bounding box of node is behind the shaded point
+		bool wrongDirection = true;
+		if (it.IsSurfaceInteraction()) {
+			for (int i = 0; i < 8; i++) {
+				// no need to normalize since just comparing to 0
+				if (Dot(n, node->bounds_w.Corner(i) - o) >= 0 ) {
+					wrongDirection = false;
+					break;
+				}
+			}
+			if (wrongDirection) {
+				return 0;
+			}
+		}
 		float theta_e = node->bounds_o.theta_e;
 		float theta_o = node->bounds_o.theta_o;
 		Vector3f d = node->centroid - o;
@@ -443,9 +462,9 @@ namespace pbrt {
 				theta_u = std::max(theta_u, acos(Dot(d, Normalize(c[i] - o))));
 			}
 			// experimental: test if point is in the cone of the sampled light
-			if (theta - theta_o - theta_u - theta_e > 0) {
-				angleImportance = std::max(0.f, cos(theta - theta_o - theta_u));
-			}
+			//if (theta - theta_o - theta_u - theta_e > 0) {
+			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
+			//}
 		}
 		return node->energy * angleImportance / (distance * distance);
 	}
