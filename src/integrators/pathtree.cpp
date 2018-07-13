@@ -122,7 +122,7 @@ namespace pbrt {
 				0) {
 				++totalPaths;
 				Spectrum Ld = beta * TreeSampleOneLight(isect, scene, arena,
-					sampler, false, nullptr, lightAccel);
+					sampler, false, lightAccel);
 				VLOG(2) << "Sampled direct lighting Ld = " << Ld;
 				if (Ld.IsBlack()) ++zeroRadiancePaths;
 				CHECK_GE(Ld.y(), 0.f);
@@ -163,7 +163,7 @@ namespace pbrt {
 
 				// Account for the direct subsurface scattering component
 				L += beta * TreeSampleOneLight(isect, scene, arena,
-					sampler, false, nullptr, lightAccel);
+					sampler, false, lightAccel);
 
 				// Account for the indirect subsurface scattering component
 				Spectrum f = pi.bsdf->Sample_f(pi.wo, &wi, sampler.Get2D(), &pdf,
@@ -213,5 +213,4 @@ namespace pbrt {
 		return new PathTreeIntegrator(maxDepth, camera, sampler, pixelBounds,
 			rrThreshold, lightStrategy);
 	}
-
 }  // namespace pbrt

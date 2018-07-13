@@ -59,7 +59,7 @@ class PathTreeIntegrator : public SamplerIntegrator {
                 Sampler &sampler, MemoryArena &arena, int depth) const;
 
   private:
-    // PathTreeIntegrator Private Data
+	// PathTreeIntegrator Private Data
     const int maxDepth;
     const Float rrThreshold;
     const std::string lightSampleStrategy;
@@ -71,7 +71,6 @@ class PathTreeIntegrator : public SamplerIntegrator {
 PathTreeIntegrator *CreatePathTreeIntegrator(const ParamSet &params,
                                      std::shared_ptr<Sampler> sampler,
                                      std::shared_ptr<const Camera> camera);
-
 }  // namespace pbrt
 
 #endif  // PBRT_INTEGRATORS_PATHTREE_H
