@@ -110,11 +110,11 @@ namespace pbrt {
 
 	Spectrum TreeSampleOneLight(const Interaction &it, const Scene &scene,
 		MemoryArena &arena, Sampler &sampler,
-		bool handleMedia, const Distribution1D *lightDistrib) {
+		bool handleMedia, const Distribution1D *lightDistrib, std::shared_ptr<LightBVHAccel> lightAccel) {
 		ProfilePhase p(Prof::DirectLighting);
 		// Choose the light according to the lightBVH data structure
 		double pdf;
-		int lightNum = scene.lightAccel->Sample(it, sampler, &pdf);
+		int lightNum = lightAccel->Sample(it, sampler, &pdf);
 		// negative return means that the contribution will be zero (because of orientation)
 		if (lightNum < 0) {
 			return Spectrum(0.f);

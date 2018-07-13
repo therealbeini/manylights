@@ -58,6 +58,7 @@
 #include "integrators/mlt.h"
 #include "integrators/ao.h"
 #include "integrators/path.h"
+#include "integrators/pathtree.h"
 #include "integrators/sppm.h"
 #include "integrators/volpath.h"
 #include "integrators/whitted.h"
@@ -1658,8 +1659,7 @@ Scene *RenderOptions::MakeScene() {
         MakeAccelerator(AcceleratorName, std::move(primitives), AcceleratorParams);
 	// TODO: only for testing purposes
 	if (!accelerator) accelerator = std::make_shared<BVHAccel>(primitives);
-	std::shared_ptr<LightBVHAccel> lightAccel = CreateLightBVHAccelerator(lights, AcceleratorParams);
-    Scene *scene = new Scene(accelerator, lights, lightAccel);
+    Scene *scene = new Scene(accelerator, lights);
     // Erase primitives and lights from _RenderOptions_
     primitives.clear();
     lights.clear();
@@ -1688,6 +1688,8 @@ Integrator *RenderOptions::MakeIntegrator() const {
             CreateDirectLightingIntegrator(IntegratorParams, sampler, camera);
     else if (IntegratorName == "path")
         integrator = CreatePathIntegrator(IntegratorParams, sampler, camera);
+	else if (IntegratorName == "pathtree")
+		integrator = CreatePathTreeIntegrator(IntegratorParams, sampler, camera);
     else if (IntegratorName == "volpath")
         integrator = CreateVolPathIntegrator(IntegratorParams, sampler, camera);
     else if (IntegratorName == "bdpt") {

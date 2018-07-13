@@ -104,10 +104,8 @@ namespace pbrt {
 	};
 
 	// LightBVHAccel Method Definitions
-	LightBVHAccel::LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
-		int maxPrimsInNode)
-		: maxLightsInNode(std::min(255, maxPrimsInNode)),
-		lights(std::move(l)) {
+	LightBVHAccel::LightBVHAccel(std::vector<std::shared_ptr<Light>> l, float splitThreshold)
+		: lights(std::move(l)), splitThreshold(splitThreshold) {
 		ProfilePhase _(Prof::AccelConstruction);
 		if (lights.empty()) return;
 		// Build LBVH from _lights_
@@ -123,7 +121,7 @@ namespace pbrt {
 		orderedLights.reserve(lights.size());
 		MemoryArena arena(1024 * 1024);
 		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes, orderedLights);
-		root->PrintNode(0, lightInfo);
+		// root->PrintNode(0, lightInfo);
 		lights.swap(orderedLights);
 		lightInfo.resize(0);
 	}
@@ -188,8 +186,8 @@ namespace pbrt {
 			}
 			// more than two lights --> calculating best split
 			else {
-				// split the lights in 12 intervals with the same size and compute the cost for each split
-				// 11 splitindices = 12 splits
+				// split the lights in a certain number of intervals with the same size and compute the cost for each split
+				// at the moment we are using the amount of lights as the number of buckets but I do not know how well it scales
 				int buckets = std::min(12, nLights);
 				std::vector<float> cost(buckets - 1);
 				// a float defining the amount of lights that goes in every bucket
@@ -315,10 +313,8 @@ namespace pbrt {
 	}
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
-		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps) {
-		// TODO: max lights in node?
-		int maxLightsInNode = 1;
-		return std::make_shared<LightBVHAccel>(std::move(lights), maxLightsInNode);
+		std::vector<std::shared_ptr<Light>> lights, float splitThreshold) {
+		return std::make_shared<LightBVHAccel>(std::move(lights), splitThreshold);
 	}
 
 	int LightBVHAccel::Sample(const Interaction &it, Sampler &sampler, double *pdf) {

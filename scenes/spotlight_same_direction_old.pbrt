@@ -3,35 +3,35 @@ LookAt 0 -10 1.5  # eye
        0 0 1    # up vector
 Camera "perspective" "float fov" 45
 
-Sampler "halton" "integer pixelsamples" 32
-Integrator "path" "string lightsamplestrategy" "tree"
-Film "image" "string filename" "spotlight_same_point.png"
+Sampler "halton" "integer pixelsamples" 128
+Integrator "path" "string lightsamplestrategy" "uniform"
+Film "image" "string filename" "spotlight_same_direction_old.png"
      "integer xresolution" [800] "integer yresolution" [800]
 
 WorldBegin
 
-LightSource "spot" "point from" [ -1 4 4 ] "point to" [ -2.5 2.5 0 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ -4 1 4 ] "point to" [ -2.5 2.5 0 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ -1 4 1 ] "point to" [ -2.5 2.5 0 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ -4 1 1 ] "point to" [ -2.5 2.5 0 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -1 4 4 ] "point to" [ -1 4 0 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -4 1 4 ] "point to" [ -4 1 0 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -1 4 1 ] "point to" [ -1 4 0 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -4 1 1 ] "point to" [ -4 1 0 ] "color I" [ 1 1 1 ]
 LightSource "spot" "point from" [ -2.5 2.5 2.5 ] "point to" [ -2.5 2.5 0 ] "color I" [ 1 1 1 ]
 
-LightSource "spot" "point from" [ 1 4 4 ] "point to" [ 5 2.5 2.5 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ 4 1 4 ] "point to" [ 5 2.5 2.5 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ 1 4 1 ] "point to" [ 5 2.5 2.5 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ 4 1 1 ] "point to" [ 5 2.5 2.5 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 1 4 4 ] "point to" [ 5 4 4 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 4 1 4 ] "point to" [ 5 1 4 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 1 4 1 ] "point to" [ 5 4 1 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 4 1 1 ] "point to" [ 5 1 1 ] "color I" [ 1 1 1 ]
 LightSource "spot" "point from" [ 2.5 2.5 2.5 ] "point to" [ 5 2.5 2.5 ] "color I" [ 1 1 1 ]
 
-LightSource "spot" "point from" [ 1 -4 4 ] "point to" [ 2.5 -2.5 10 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ 4 -1 4 ] "point to" [ 2.5 -2.5 10 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ 1 -4 1 ] "point to" [ 2.5 -2.5 10 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ 4 -1 1 ] "point to" [ 2.5 -2.5 10 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 1 -4 4 ] "point to" [ 1 -4 10 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 4 -1 4 ] "point to" [ 4 -1 10 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 1 -4 1 ] "point to" [ 1 -4 10 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ 4 -1 1 ] "point to" [ 4 -1 10 ] "color I" [ 1 1 1 ]
 LightSource "spot" "point from" [ 2.5 -2.5 2.5 ] "point to" [ 2.5 -2.5 10 ] "color I" [ 1 1 1 ]
 
-LightSource "spot" "point from" [ -1 -4 4 ] "point to" [ -5 2.5 2.5 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ -4 -1 4 ] "point to" [ -5 2.5 2.5 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ -1 -4 1 ] "point to" [ -5 2.5 2.5 ] "color I" [ 1 1 1 ]
-LightSource "spot" "point from" [ -4 -1 1 ] "point to" [ -5 2.5 2.5 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -1 -4 4 ] "point to" [ -5 -4 4 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -4 -1 4 ] "point to" [ -5 -1 4 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -1 -4 1 ] "point to" [ -5 -4 1 ] "color I" [ 1 1 1 ]
+LightSource "spot" "point from" [ -4 -1 1 ] "point to" [ -5 -1 1 ] "color I" [ 1 1 1 ]
 LightSource "spot" "point from" [ -2.5 -2.5 2.5 ] "point to" [ -5 -2.5 2.5 ] "color I" [ 1 1 1 ]
 
 AttributeBegin

@@ -3,8 +3,8 @@ LookAt 0 -10 1.5  # eye
        0 0 1    # up vector
 Camera "perspective" "float fov" 45
 
-Sampler "halton" "integer pixelsamples" 64
-Integrator "path"
+Sampler "halton" "integer pixelsamples" 32
+Integrator "path" "string lightsamplestrategy" "tree"
 Film "image" "string filename" "point_ran.png"
      "integer xresolution" [800] "integer yresolution" [800]
 

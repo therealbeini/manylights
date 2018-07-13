@@ -25,8 +25,7 @@ namespace pbrt {
 		std::vector<std::shared_ptr<Light>> lights;
 
 		// BVHAccel Public Methods
-		LightBVHAccel(std::vector<std::shared_ptr<Light>> l,
-			int maxPrimsInNode = 1);
+		LightBVHAccel(std::vector<std::shared_ptr<Light>> l, float splitThreshold);
 		int Sample(const Interaction &it, Sampler &sampler, double *pdf);
 
 	private:
@@ -40,11 +39,11 @@ namespace pbrt {
 		double calculateImportance(const Interaction & it, LightBVHNode * node);
 
 		// BVHAccel Private Data
-		const int maxLightsInNode;
+		float splitThreshold;
 	};
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
-		std::vector<std::shared_ptr<Light>> lights, const ParamSet &ps);
+		std::vector<std::shared_ptr<Light>> lights, float splitThreshold);
 
 } // namespace pbrt
 

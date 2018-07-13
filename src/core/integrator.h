@@ -46,6 +46,7 @@
 #include "reflection.h"
 #include "sampler.h"
 #include "material.h"
+#include "accelerators\lightbvh.h"
 
 namespace pbrt {
 
@@ -67,7 +68,7 @@ namespace pbrt {
 		const Distribution1D *lightDistrib = nullptr);
 	Spectrum TreeSampleOneLight(const Interaction &it, const Scene &scene,
 		MemoryArena &arena, Sampler &sampler,
-		bool handleMedia, const Distribution1D *lightDistrib);
+		bool handleMedia, const Distribution1D *lightDistrib, std::shared_ptr<LightBVHAccel> lightAccel);
 	Spectrum EstimateDirect(const Interaction &it, const Point2f &uShading,
 		const Light &light, const Point2f &uLight,
 		const Scene &scene, Sampler &sampler,
