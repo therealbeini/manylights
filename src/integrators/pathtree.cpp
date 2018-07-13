@@ -57,7 +57,7 @@ namespace pbrt {
 		lightSampleStrategy(lightSampleStrategy) {}
 
 	void PathTreeIntegrator::Preprocess(const Scene &scene, Sampler &sampler) {
-		float splitThreshold = 0.f;
+		float splitThreshold = 1.f;
 		if (lightSampleStrategy.length() > 0) {
 			splitThreshold = stof(lightSampleStrategy);
 		}

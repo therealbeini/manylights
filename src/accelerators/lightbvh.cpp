@@ -317,22 +317,22 @@ namespace pbrt {
 		return std::make_shared<LightBVHAccel>(std::move(lights), splitThreshold);
 	}
 
-	int LightBVHAccel::Sample(const Interaction &it, Sampler &sampler, double *pdf) {
+	int LightBVHAccel::SampleOneLight(const Interaction &it, Sampler &sampler, float *pdf) {
 		float sample1D = sampler.Get1D();
 		*pdf = 1;
-		return TraverseNode(root, sample1D, it, pdf);
+		return TraverseNodeForOneLight(root, sample1D, it, pdf);
 	}
 
-	int LightBVHAccel::TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, double *pdf) {
+	int LightBVHAccel::TraverseNodeForOneLight(LightBVHNode *node, float sample1D, const Interaction &it, float *pdf) {
 		// im already at a leaf of the tree
 		if (node->nLights == 1) {
 			return node->lightNum;
 		}
 		// finding out if I have to take the left or the right path
-		double firstImportance = calculateImportance(it, node->children[0]);
-		double secondImportance = calculateImportance(it, node->children[1]);
+		float firstImportance = calculateImportance(it, node->children[0]);
+		float secondImportance = calculateImportance(it, node->children[1]);
 		// normalize the importance
-		double totalImportance = firstImportance + secondImportance;
+		float totalImportance = firstImportance + secondImportance;
 		// return -1 when the contribution of the sampled light will be zero (because of orientation)
 		if (totalImportance == 0) {
 			return -1;
@@ -342,14 +342,61 @@ namespace pbrt {
 		// left child traversal
 		if (sample1D < firstImportance) {
 			*pdf *= firstImportance;
-			return TraverseNode(node->children[0], sample1D / firstImportance, it, pdf);
+			return TraverseNodeForOneLight(node->children[0], sample1D / firstImportance, it, pdf);
 		}
 		// right child traversal
 		*pdf *= secondImportance;
-		return TraverseNode(node->children[1], (sample1D - firstImportance) / secondImportance, it, pdf);
+		return TraverseNodeForOneLight(node->children[1], (sample1D - firstImportance) / secondImportance, it, pdf);
 	}
 
-	double LightBVHAccel::calculateImportance(const Interaction &it, LightBVHNode* node) {
+	std::vector<std::pair<int, float>> LightBVHAccel::SampleMultipleLights(const Interaction &it, Sampler &sampler) {
+		float sample1D = sampler.Get1D();
+		std::vector<std::pair<int, float>> lightVector;
+		TraverseNodeForMultipleLights(root, sample1D, it, &lightVector);
+		return lightVector;
+	}
+
+	void LightBVHAccel::TraverseNodeForMultipleLights(LightBVHNode *node, float sample1D, const Interaction &it, std::vector<std::pair<int, float>> *lightVector) {
+		// im already at a leaf of the tree
+		if (node->nLights == 1) {
+			lightVector->push_back(std::pair<int, float>(node->lightNum, 1.f));
+			return;
+		}
+		bool split = false;
+		Bounds3f b = node->bounds_w;
+		Point3f pMax = b.pMax;
+		Point3f pMin = b.pMin;
+		Point3f o = it.p;
+		if (o.x >= pMin.x && o.x <= pMax.x && o.y >= pMin.y && o.y <= pMax.y && o.z >= pMin.z && o.z <= pMax.z) {
+			split = true;
+		}
+		else {
+			float maxAngle = 0;
+			Vector3f c[8];
+			for (int i = 0; i < 8; i++) {
+				c[i] = Normalize(b.Corner(i) - o);
+			}
+			for (int i = 0; i < 7; i++) {
+				for (int j = i + 1; j < 8; j++) {
+					maxAngle = std::max(maxAngle, std::acos(Dot(c[i], c[j])));
+				}
+			}
+			if (maxAngle / Pi > splitThreshold) {
+				split = true;
+			}
+		}
+		if (split) {
+			TraverseNodeForMultipleLights(node->children[0], sample1D, it, lightVector);
+			TraverseNodeForMultipleLights(node->children[1], sample1D, it, lightVector);
+		}
+		else {
+			float pdf = 1.f;
+			int lightNum = TraverseNodeForOneLight(node, sample1D, it, &pdf);
+			lightVector->push_back(std::pair<int, float>(lightNum, pdf));
+		}
+	}
+
+	float LightBVHAccel::calculateImportance(const Interaction &it, LightBVHNode* node) {
 		Point3f o = it.p;
 		// turn normal if pointed to wrong side
 		Normal3f n = it.n;

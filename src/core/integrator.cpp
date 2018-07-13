@@ -113,22 +113,42 @@ namespace pbrt {
 		bool handleMedia, std::shared_ptr<LightBVHAccel> lightAccel) {
 		ProfilePhase p(Prof::DirectLighting);
 		// Choose the light according to the lightBVH data structure
-		double pdf;
-		int lightNum = lightAccel->Sample(it, sampler, &pdf);
-		// negative return means that the contribution will be zero (because of orientation)
-		if (lightNum < 0) {
-			return Spectrum(0.f);
+		float pdf;
+		int lightNum;
+		if (lightAccel->splitThreshold == 1.f) {
+			lightNum = lightAccel->SampleOneLight(it, sampler, &pdf);
+			// negative return means that the contribution will be zero (because of orientation)
+			if (lightNum < 0) {
+				return Spectrum(0.f);
+			}
+			const std::shared_ptr<Light> &light = scene.lights[lightNum];
+			Point2f uLight = sampler.Get2D();
+			Point2f uScattering = sampler.Get2D();
+			// TOOO: fix this 
+			if (pdf == 0.0) {
+				pdf = 0.00001;
+			}
+			return EstimateDirect(it, uScattering, *light, uLight,
+				scene, sampler, arena, handleMedia) / pdf;
 		}
-		const std::shared_ptr<Light> &light = scene.lights[lightNum];
-		Point2f uLight = sampler.Get2D();
-		Point2f uScattering = sampler.Get2D();
-
-		// TOOO: fix this 
-		if (pdf == 0.0) {
-			pdf = 0.00001;
+		else {
+			std::vector<std::pair<int, float>> lightNumbers = lightAccel->SampleMultipleLights(it, sampler);
+			Spectrum s(0.f);
+			for (int i = 0; i < lightNumbers.size(); i++) {
+				std::pair<int, float> pair = lightNumbers[i];
+				pdf = pair.second;
+				lightNum = pair.first;
+				if (pdf == 0 || lightNum < 0) {
+					continue;
+				}
+				const std::shared_ptr<Light> &light = scene.lights[lightNum];
+				Point2f uLight = sampler.Get2D();
+				Point2f uScattering = sampler.Get2D();
+				s += EstimateDirect(it, uScattering, *light, uLight,
+					scene, sampler, arena, handleMedia) / pdf;
+			}
+			return s;
 		}
-		return EstimateDirect(it, uScattering, *light, uLight,
-			scene, sampler, arena, handleMedia) / pdf;
 	}
 
 	Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,

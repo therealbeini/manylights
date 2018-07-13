@@ -23,10 +23,12 @@ namespace pbrt {
 
 		LightBVHNode * root = nullptr;
 		std::vector<std::shared_ptr<Light>> lights;
+		float splitThreshold;
 
 		// BVHAccel Public Methods
 		LightBVHAccel(std::vector<std::shared_ptr<Light>> l, float splitThreshold);
-		int Sample(const Interaction &it, Sampler &sampler, double *pdf);
+		int SampleOneLight(const Interaction &it, Sampler &sampler, float *pdf);
+		std::vector<std::pair<int, float>> SampleMultipleLights(const Interaction &it, Sampler &sampler);
 
 	private:
 		// BVHAccel Private Methods
@@ -35,11 +37,11 @@ namespace pbrt {
 			int start, int end, int *totalNodes,
 			std::vector<std::shared_ptr<Light>> &orderedLights);
 		void calculateThetas(std::vector<LightBVHLightInfo> &lightInfo, int startIndex, int endIndex, Vector3f axis, float *theta_o, float *theta_e);
-		int TraverseNode(LightBVHNode *node, float sample1D, const Interaction &it, double *pdf);
-		double calculateImportance(const Interaction & it, LightBVHNode * node);
+		int TraverseNodeForOneLight(LightBVHNode *node, float sample1D, const Interaction &it, float *pdf);
+		void TraverseNodeForMultipleLights(LightBVHNode *node, float sample1D, const Interaction &it, std::vector<std::pair<int, float>> *lightVector);
+		float calculateImportance(const Interaction & it, LightBVHNode * node);
 
 		// BVHAccel Private Data
-		float splitThreshold;
 	};
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
