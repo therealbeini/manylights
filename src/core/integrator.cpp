@@ -118,16 +118,12 @@ namespace pbrt {
 		if (lightAccel->splitThreshold == 1.f) {
 			lightNum = lightAccel->SampleOneLight(it, sampler, &pdf);
 			// negative return means that the contribution will be zero (because of orientation)
-			if (lightNum < 0) {
+			if (lightNum < 0 || pdf == 0) {
 				return Spectrum(0.f);
 			}
 			const std::shared_ptr<Light> &light = scene.lights[lightNum];
 			Point2f uLight = sampler.Get2D();
 			Point2f uScattering = sampler.Get2D();
-			// TOOO: fix this 
-			if (pdf == 0.0) {
-				pdf = 0.00001;
-			}
 			return EstimateDirect(it, uScattering, *light, uLight,
 				scene, sampler, arena, handleMedia) / pdf;
 		}

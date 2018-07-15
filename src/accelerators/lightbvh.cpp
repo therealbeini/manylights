@@ -55,8 +55,7 @@ namespace pbrt {
 
 	struct LightBVHNode {
 		// LightBVHNode Public Methods
-		void InitLeaf(int first, int n, const Bounds3f &b_w, const Bounds_o &b_o, float e, int num) {
-			firstLightOffset = first;
+		void InitLeaf(int n, const Bounds3f &b_w, const Bounds_o &b_o, float e, int num) {
 			nLights = n;
 			bounds_w = b_w;
 			bounds_o = b_o;
@@ -74,7 +73,7 @@ namespace pbrt {
 			bounds_w = Union(c0->bounds_w, c1->bounds_w);
 			bounds_o = b_o;
 			splitAxis = split;
-			nLights = 0;
+			nLights = c0->nLights + c1->nLights;
 			++interiorNodes;
 			energy = e;
 			centroid = .5f * bounds_w.pMin + .5f * bounds_w.pMax;
@@ -98,10 +97,24 @@ namespace pbrt {
 		Bounds_o bounds_o;
 		Point3f centroid;
 		LightBVHNode *children[2];
-		int splitAxis, firstLightOffset, nLights, lightNum;
+		int splitAxis, nLights, lightNum;
 		float energy;
-		// TODO: number of emitters under this node required?
 	};
+
+	struct LinearLightBVHNode {
+		Bounds3f bounds_w;
+		Bounds_o bounds_o;
+		float energy;
+		Point3f centroid;
+		union {
+			int lightNum;   // leaf
+			int secondChildOffset;  // interior
+		};
+		uint16_t nLights;  // 1 for interior nodes
+		uint8_t splitAxis;          // interior node: xyz
+
+	};
+
 
 	// LightBVHAccel Method Definitions
 	LightBVHAccel::LightBVHAccel(std::vector<std::shared_ptr<Light>> l, float splitThreshold)
@@ -118,182 +131,208 @@ namespace pbrt {
 		// Build LightBVH tree for lights using _lightInfo_
 		int totalNodes = 0;
 		std::vector<std::shared_ptr<Light>> orderedLights;
-		orderedLights.reserve(lights.size());
 		MemoryArena arena(1024 * 1024);
-		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes, orderedLights);
+		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes);
 		// root->PrintNode(0, lightInfo);
-		lights.swap(orderedLights);
 		lightInfo.resize(0);
+		nodes = AllocAligned<LinearLightBVHNode>(totalNodes);
+		int offset = 0;
+		flattenLightBVHTree(root, &offset);
+		CHECK_EQ(totalNodes, offset);
 	}
 
 	LightBVHNode* LightBVHAccel::recursiveBuild(
 		MemoryArena &arena, std::vector<LightBVHLightInfo> &lightInfo, int start,
-		int end, int *totalNodes,
-		std::vector<std::shared_ptr<Light>> &orderedLights) {
+		int end, int *totalNodes) {
 		CHECK_NE(start, end);
-		// TODO: Change malloc back to arena allocation when I know what the problem is
-		LightBVHNode* node = (LightBVHNode*)malloc(sizeof LightBVHNode);
+		// LightBVHNode *node = arena.Alloc<LightBVHNode>();
+		LightBVHNode *node = (LightBVHNode*)malloc(sizeof LightBVHNode);
 		(*totalNodes)++;
 		// Compute bound of light centroids, choose split dimension _dim_
 		Bounds3f centroidBounds;
 		for (int i = start; i < end; ++i)
 			centroidBounds = Union(centroidBounds, lightInfo[i].centroid);
-		int dim = centroidBounds.MaximumExtent();
+		// number of lights under this node
 		int nLights = end - start;
-
-		// index of the last element of the first part and partial sort for median axis
+		// current middle element to split in two parts later
 		int mid = (end + start - 1) / 2;
-		std::nth_element(&lightInfo[start], &lightInfo[mid],
-			&lightInfo[end - 1] + 1,
-			[dim](const LightBVHLightInfo &a,
-				const LightBVHLightInfo &b) {
-			return a.bounds_o.axis[dim] <
-				b.bounds_o.axis[dim];
-		});
-
-		// calculate theta_o and theta_e for the node before the possible split
-		Vector3f axis = lightInfo[mid].bounds_o.axis;
-		float maxE = 0.f;
-		float maxO = 0.f;
-		calculateThetas(lightInfo, start, end - 1, axis, &maxO, &maxE);
-		float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4);
-		Bounds_o bounds_o = Bounds_o(axis, maxO, maxE);
-
+		// split the lights in a certain number of intervals with the same size and compute the cost for each split
+		// at the moment we are using the amount of lights as the number of buckets but I do not know how well it scales
+		int buckets = std::min(12, nLights);
+		// cost vector for each split + dim
+		std::vector<float> cost = std::vector<float>((buckets - 1) * 3);
+		// a float defining the amount of lights that goes in every bucket
+		float lightsPerBucket = (float)nLights / buckets;
+		// the three orientation bounds of this node for the three dimensions
+		Bounds_o bounds_o[3];
 		// total energy for the node
 		float totalEnergy = 0;
+		// for each dimension calculate the splits
+		for (int dim = 0; dim < 3; dim++) {
+			// index of the last element of the first part and partial sort for median axis
+			std::nth_element(&lightInfo[start], &lightInfo[mid],
+				&lightInfo[end - 1] + 1,
+				[dim](const LightBVHLightInfo &a,
+					const LightBVHLightInfo &b) {
+				return a.bounds_o.axis[dim] <
+					b.bounds_o.axis[dim];
+			});
 
-		// only one light --> leaf creation
-		if (nLights == 1) {
-			// Create leaf _LightBVHBuildNode_
-			int firstPrimOffset = orderedLights.size();
-			int lightNum = lightInfo[start].lightNumber;
-			orderedLights.push_back(lights[lightNum]);
-			node->InitLeaf(firstPrimOffset, nLights, lightInfo[start].bounds_w, bounds_o, lightInfo[start].energy, lightNum);
-			return node;
-		}
-		else {
-			// two lights --> split in the middle
-			if (nLights <= 2) {
-				// Partition primitives into equally-sized subsets
-				std::nth_element(&lightInfo[start], &lightInfo[mid],
-					&lightInfo[end - 1] + 1,
-					[dim](const LightBVHLightInfo &a,
-						const LightBVHLightInfo &b) {
-					return a.centroid[dim] <
-						b.centroid[dim];
-				});
-				totalEnergy = lightInfo[start].energy + lightInfo[start + 1].energy;
+			// calculate theta_o and theta_e for the node before the possible split
+			Vector3f axis = lightInfo[mid].bounds_o.axis;
+			float maxE = 0.f;
+			float maxO = 0.f;
+			calculateThetas(lightInfo, start, end - 1, axis, &maxO, &maxE);
+			float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4);
+			bounds_o[dim] = Bounds_o(axis, maxO, maxE);
+
+			// only one light --> leaf creation
+			if (nLights == 1) {
+				// Create leaf _LightBVHBuildNode_
+				int lightNum = lightInfo[start].lightNumber;
+				node->InitLeaf(nLights, lightInfo[start].bounds_w, bounds_o[dim], lightInfo[start].energy, lightNum);
+				return node;
 			}
-			// more than two lights --> calculating best split
 			else {
-				// split the lights in a certain number of intervals with the same size and compute the cost for each split
-				// at the moment we are using the amount of lights as the number of buckets but I do not know how well it scales
-				int buckets = std::min(12, nLights);
-				std::vector<float> cost(buckets - 1);
-				// a float defining the amount of lights that goes in every bucket
-				float lightsPerBucket = (float)nLights / buckets;
-				float totalCost;
-				for (int i = 0; i < buckets - 1; i++) {
-					// defines the end of the interval we are regarding right now, the int states the index of the last element of the first part
-					int intervalEnd = start + lightsPerBucket * i;
-					// first partial sort to find out which elements goes to which part, intervalEnd is the median for the axis with maximum extend
-					std::nth_element(&lightInfo[(int)(start)], &lightInfo[intervalEnd],
+				// two lights --> split in the middle
+				if (nLights <= 2) {
+					// Partition primitives into equally-sized subsets
+					std::nth_element(&lightInfo[start], &lightInfo[mid],
 						&lightInfo[end - 1] + 1,
 						[dim](const LightBVHLightInfo &a,
 							const LightBVHLightInfo &b) {
 						return a.centroid[dim] <
 							b.centroid[dim];
 					});
-					Bounds3f b0, b1;
-					float leftE = 0, rightE = 0;
-					float leftO = 0, rightO = 0;
-					float leftEnergy = 0, rightEnergy = 0;
-					// two integers for the median indices of left and right side
-					int leftMid = start + (intervalEnd - start) / 2;
-					int rightMid = intervalEnd + 1 + (end - 1 - intervalEnd) / 2;
-					// partial sorting for both sides
-					std::nth_element(&lightInfo[start], &lightInfo[leftMid],
-						&lightInfo[intervalEnd] + 1,
-						[dim](const LightBVHLightInfo &a,
-							const LightBVHLightInfo &b) {
-						return a.bounds_o.axis[dim] <
-							b.bounds_o.axis[dim];
-					});
-					std::nth_element(&lightInfo[intervalEnd + 1], &lightInfo[rightMid],
-						&lightInfo[end - 1] + 1,
-						[dim](const LightBVHLightInfo &a,
-							const LightBVHLightInfo &b) {
-						return a.bounds_o.axis[dim] <
-							b.bounds_o.axis[dim];
-					});
-
-					// setting the median axis
-					Vector3f leftAxis = lightInfo[leftMid].bounds_o.axis;
-					Vector3f rightAxis = lightInfo[rightMid].bounds_o.axis;
-
-					// left side Theta_e and Theta_o calculations
-					calculateThetas(lightInfo, start, intervalEnd, leftAxis, &leftO, &leftE);
-
-					// left side bounds and energy calculations
-					for (int j = start; j < intervalEnd + 1; j++) {
-						LightBVHLightInfo l = lightInfo[j];
-						b0 = Union(b0, l.bounds_w);
-						leftEnergy += l.energy;
-					}
-
-					// right side Theta_e and Theta_o calculations
-					calculateThetas(lightInfo, intervalEnd + 1, end - 1, rightAxis, &rightO, &rightE);
-
-					// right side bounds and energy calculations
-					for (int j = intervalEnd + 1; j < end; j++) {
-						LightBVHLightInfo l = lightInfo[j];
-						b1 = Union(b1, l.bounds_w);
-						rightEnergy += l.energy;
-					}
-
-					// calculating the cost for the current split
-
-					float leftAngle = 2 * Pi * (1 - cos(leftO) + (2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4);
-					float rightAngle = 2 * Pi * (1 - cos(rightO) + (2 * sin(rightO) * rightE + cos(rightO) - cos(2 * rightE + rightO)) / 4);
-					float leftCost = b0.SurfaceArea() * leftAngle * leftEnergy;
-					float rightCost = b1.SurfaceArea() * rightAngle * rightEnergy;
-					if (i == 0) {
-						totalEnergy = leftEnergy + rightEnergy;
-						Bounds3f totalBounds = Union(b0, b1);
-						totalCost = totalBounds.SurfaceArea() * totalAngle * totalEnergy;
-					}
-					cost[i] = (leftCost + rightCost) / totalCost;
+					totalEnergy = lightInfo[start].energy + lightInfo[start + 1].energy;
 				}
+				// more than two lights --> calculating best split
+				else {
+					float totalCost;
+					for (int i = 0; i < buckets - 1; i++) {
+						// defines the end of the interval we are regarding right now, the int states the index of the last element of the first part
+						int intervalEnd = start + lightsPerBucket * (i + 1) - 1;
+						// first partial sort to find out which elements goes to which part, intervalEnd is the median for the axis with maximum extend
+						std::nth_element(&lightInfo[(int)(start)], &lightInfo[intervalEnd],
+							&lightInfo[end - 1] + 1,
+							[dim](const LightBVHLightInfo &a,
+								const LightBVHLightInfo &b) {
+							return a.centroid[dim] <
+								b.centroid[dim];
+						});
+						Bounds3f b0, b1;
+						float leftE = 0, rightE = 0;
+						float leftO = 0, rightO = 0;
+						float leftEnergy = 0, rightEnergy = 0;
+						// two integers for the median indices of left and right side
+						int leftMid = start + (intervalEnd - start) / 2;
+						int rightMid = intervalEnd + 1 + (end - 1 - intervalEnd) / 2;
+						// partial sorting for both sides
+						std::nth_element(&lightInfo[start], &lightInfo[leftMid],
+							&lightInfo[intervalEnd] + 1,
+							[dim](const LightBVHLightInfo &a,
+								const LightBVHLightInfo &b) {
+							return a.bounds_o.axis[dim] <
+								b.bounds_o.axis[dim];
+						});
+						std::nth_element(&lightInfo[intervalEnd + 1], &lightInfo[rightMid],
+							&lightInfo[end - 1] + 1,
+							[dim](const LightBVHLightInfo &a,
+								const LightBVHLightInfo &b) {
+							return a.bounds_o.axis[dim] <
+								b.bounds_o.axis[dim];
+						});
 
+						// setting the median axis
+						Vector3f leftAxis = lightInfo[leftMid].bounds_o.axis;
+						Vector3f rightAxis = lightInfo[rightMid].bounds_o.axis;
 
-				// Find bucket to split at that minimizes SAOH metric
-				Float minCost = cost[0];
-				int minCostSplitBucket = 0;
-				for (int i = 1; i < buckets - 1; i++) {
-					if (cost[i] < minCost) {
-						minCost = cost[i];
-						minCostSplitBucket = i;
+						// left side Theta_e and Theta_o calculations
+						calculateThetas(lightInfo, start, intervalEnd, leftAxis, &leftO, &leftE);
+
+						// left side bounds and energy calculations
+						for (int j = start; j < intervalEnd + 1; j++) {
+							LightBVHLightInfo l = lightInfo[j];
+							b0 = Union(b0, l.bounds_w);
+							leftEnergy += l.energy;
+						}
+
+						// right side Theta_e and Theta_o calculations
+						calculateThetas(lightInfo, intervalEnd + 1, end - 1, rightAxis, &rightO, &rightE);
+
+						// right side bounds and energy calculations
+						for (int j = intervalEnd + 1; j < end; j++) {
+							LightBVHLightInfo l = lightInfo[j];
+							b1 = Union(b1, l.bounds_w);
+							rightEnergy += l.energy;
+						}
+
+						// calculating the cost for the current split
+
+						float leftAngle = 2 * Pi * (1 - cos(leftO) + (2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4);
+						float rightAngle = 2 * Pi * (1 - cos(rightO) + (2 * sin(rightO) * rightE + cos(rightO) - cos(2 * rightE + rightO)) / 4);
+						float leftCost = b0.SurfaceArea() * leftAngle * leftEnergy;
+						float rightCost = b1.SurfaceArea() * rightAngle * rightEnergy;
+						if (i == 0) {
+							totalEnergy = leftEnergy + rightEnergy;
+							Bounds3f totalBounds = Union(b0, b1);
+							totalCost = totalBounds.SurfaceArea() * totalAngle * totalEnergy;
+						}
+						cost[i + (dim * (buckets - 1))] = (leftCost + rightCost) / totalCost;
 					}
 				}
-
-				// split lights at selected SAOH bucket, mid is the last element of the first part
-				mid = start + minCostSplitBucket * lightsPerBucket;
-				std::nth_element(&lightInfo[(int)(start)], &lightInfo[mid],
-					&lightInfo[end - 1] + 1,
-					[dim](const LightBVHLightInfo &a,
-						const LightBVHLightInfo &b) {
-					return a.centroid[dim] <
-						b.centroid[dim];
-				});
 			}
-			// recursively build children
-			node->InitInterior(dim,
-				recursiveBuild(arena, lightInfo, start, mid + 1,
-					totalNodes, orderedLights),
-				recursiveBuild(arena, lightInfo, mid + 1, end,
-					totalNodes, orderedLights), bounds_o, totalEnergy);
 		}
+		// Find bucket to split at that minimizes SAOH metric
+		Float minCost = cost[0];
+		int minCostSplitBucket = 0;
+		for (int i = 1; i < (buckets - 1) * 3; i++) {
+			if (cost[i] < minCost) {
+				minCost = cost[i];
+				minCostSplitBucket = i;
+			}
+		}
+		// find out dimension and buckets accordingly
+		int dim = minCostSplitBucket / (buckets - 1);
+		minCostSplitBucket %= (buckets -1);
+
+		// split lights at selected SAOH bucket, mid is the last element of the first part
+		mid = start + lightsPerBucket * (minCostSplitBucket + 1) - 1;
+		std::nth_element(&lightInfo[(int)(start)], &lightInfo[mid],
+			&lightInfo[end - 1] + 1,
+			[dim](const LightBVHLightInfo &a,
+				const LightBVHLightInfo &b) {
+			return a.centroid[dim] <
+				b.centroid[dim];
+		});
+		// recursively build children
+		node->InitInterior(dim,
+			recursiveBuild(arena, lightInfo, start, mid + 1,
+				totalNodes),
+			recursiveBuild(arena, lightInfo, mid + 1, end,
+				totalNodes), bounds_o[dim], totalEnergy);
 		return node;
+	}
+
+	int LightBVHAccel::flattenLightBVHTree(LightBVHNode *node, int *offset) {
+		LinearLightBVHNode *linearNode = &nodes[*offset];
+		linearNode->bounds_w = node->bounds_w;
+		linearNode->bounds_o = node->bounds_o;
+		linearNode->energy = node->energy;
+		linearNode->centroid = node->centroid;
+		linearNode->nLights = node->nLights;
+		int myOffset = (*offset)++;
+		if (node->nLights == 1) {
+			linearNode->lightNum = node->lightNum;
+		}
+		else {
+			// Create interior flattened BVH node
+			linearNode->splitAxis = node->splitAxis;
+			flattenLightBVHTree(node->children[0], offset);
+			linearNode->secondChildOffset =
+				flattenLightBVHTree(node->children[1], offset);
+		}
+		return myOffset;
 	}
 
 	void LightBVHAccel::calculateThetas(std::vector<LightBVHLightInfo> &lightInfo, int startIndex, int endIndex, Vector3f axis, float *theta_o, float *theta_e) {
@@ -320,17 +359,17 @@ namespace pbrt {
 	int LightBVHAccel::SampleOneLight(const Interaction &it, Sampler &sampler, float *pdf) {
 		float sample1D = sampler.Get1D();
 		*pdf = 1;
-		return TraverseNodeForOneLight(root, sample1D, it, pdf);
+		return TraverseNodeForOneLight(nodes, sample1D, it, pdf);
 	}
 
-	int LightBVHAccel::TraverseNodeForOneLight(LightBVHNode *node, float sample1D, const Interaction &it, float *pdf) {
+	int LightBVHAccel::TraverseNodeForOneLight(LinearLightBVHNode *node, float sample1D, const Interaction &it, float *pdf) {
 		// im already at a leaf of the tree
 		if (node->nLights == 1) {
 			return node->lightNum;
 		}
 		// finding out if I have to take the left or the right path
-		float firstImportance = calculateImportance(it, node->children[0]);
-		float secondImportance = calculateImportance(it, node->children[1]);
+		float firstImportance = calculateImportance(it, &node[1]);
+		float secondImportance = calculateImportance(it, &nodes[node->secondChildOffset]);
 		// normalize the importance
 		float totalImportance = firstImportance + secondImportance;
 		// return -1 when the contribution of the sampled light will be zero (because of orientation)
@@ -342,21 +381,21 @@ namespace pbrt {
 		// left child traversal
 		if (sample1D < firstImportance) {
 			*pdf *= firstImportance;
-			return TraverseNodeForOneLight(node->children[0], sample1D / firstImportance, it, pdf);
+			return TraverseNodeForOneLight(&node[1], sample1D / firstImportance, it, pdf);
 		}
 		// right child traversal
 		*pdf *= secondImportance;
-		return TraverseNodeForOneLight(node->children[1], (sample1D - firstImportance) / secondImportance, it, pdf);
+		return TraverseNodeForOneLight(&nodes[node->secondChildOffset], (sample1D - firstImportance) / secondImportance, it, pdf);
 	}
 
 	std::vector<std::pair<int, float>> LightBVHAccel::SampleMultipleLights(const Interaction &it, Sampler &sampler) {
 		float sample1D = sampler.Get1D();
 		std::vector<std::pair<int, float>> lightVector;
-		TraverseNodeForMultipleLights(root, sample1D, it, &lightVector);
+		TraverseNodeForMultipleLights(nodes, sampler, it, &lightVector);
 		return lightVector;
 	}
 
-	void LightBVHAccel::TraverseNodeForMultipleLights(LightBVHNode *node, float sample1D, const Interaction &it, std::vector<std::pair<int, float>> *lightVector) {
+	void LightBVHAccel::TraverseNodeForMultipleLights(LinearLightBVHNode *node, Sampler &sampler, const Interaction &it, std::vector<std::pair<int, float>> *lightVector) {
 		// im already at a leaf of the tree
 		if (node->nLights == 1) {
 			lightVector->push_back(std::pair<int, float>(node->lightNum, 1.f));
@@ -386,17 +425,18 @@ namespace pbrt {
 			}
 		}
 		if (split) {
-			TraverseNodeForMultipleLights(node->children[0], sample1D, it, lightVector);
-			TraverseNodeForMultipleLights(node->children[1], sample1D, it, lightVector);
+			TraverseNodeForMultipleLights(&node[1], sampler, it, lightVector);
+			TraverseNodeForMultipleLights(&nodes[node->secondChildOffset], sampler, it, lightVector);
 		}
 		else {
 			float pdf = 1.f;
+			float sample1D = sampler.Get1D();
 			int lightNum = TraverseNodeForOneLight(node, sample1D, it, &pdf);
 			lightVector->push_back(std::pair<int, float>(lightNum, pdf));
 		}
 	}
 
-	float LightBVHAccel::calculateImportance(const Interaction &it, LightBVHNode* node) {
+	float LightBVHAccel::calculateImportance(const Interaction &it, LinearLightBVHNode* node) {
 		Point3f o = it.p;
 		// turn normal if pointed to wrong side
 		Normal3f n = it.n;
@@ -408,7 +448,7 @@ namespace pbrt {
 		if (it.IsSurfaceInteraction()) {
 			for (int i = 0; i < 8; i++) {
 				// no need to normalize since just comparing to 0
-				if (Dot(n, node->bounds_w.Corner(i) - o) >= 0 ) {
+				if (Dot(n, node->bounds_w.Corner(i) - o) >= 0) {
 					wrongDirection = false;
 					break;
 				}
@@ -506,8 +546,9 @@ namespace pbrt {
 			}
 			// experimental: test if point is in the cone of the sampled light
 			//if (theta - theta_o - theta_u - theta_e > 0) {
-			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
+			//	angleImportance = std::max(0.f, cos(theta - theta_o - theta_u));
 			//}
+			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
 		}
 		return node->energy * angleImportance / (distance * distance);
 	}

@@ -55,3 +55,4 @@ src/objs
 /scenes/README.md.html
 /scenes/sphere-lights.pbrt~RF4bdcc2d.TMP
 /scenes/.gitignore
+/scenes/geometry

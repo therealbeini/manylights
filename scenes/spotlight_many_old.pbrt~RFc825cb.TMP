@@ -4,7 +4,7 @@ LookAt 0 -10 1.5  # eye
 Camera "perspective" "float fov" 45
 
 Sampler "halton" "integer pixelsamples" 32
-Integrator "path" "string lightsamplestrategy" "spatial"
+Integrator "path" "string lightsamplestrategy" "spartial"
 Film "image" "string filename" "spotlight_many_old.png"
      "integer xresolution" [800] "integer yresolution" [800]
 
