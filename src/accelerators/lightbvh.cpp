@@ -141,24 +141,17 @@ namespace pbrt {
 		CHECK_EQ(totalNodes, offset);
 	}
 
-	LightBVHNode* LightBVHAccel::recursiveBuild(
-		MemoryArena &arena, std::vector<LightBVHLightInfo> &lightInfo, int start,
-		int end, int *totalNodes) {
+	LightBVHNode* LightBVHAccel::recursiveBuild(MemoryArena &arena, std::vector<LightBVHLightInfo> &lightInfo, int start, int end, int *totalNodes) {
 		CHECK_NE(start, end);
-		// LightBVHNode *node = arena.Alloc<LightBVHNode>();
-		LightBVHNode *node = (LightBVHNode*)malloc(sizeof LightBVHNode);
+		LightBVHNode *node = arena.Alloc<LightBVHNode>();
 		(*totalNodes)++;
-		// Compute bound of light centroids, choose split dimension _dim_
-		Bounds3f centroidBounds;
-		for (int i = start; i < end; ++i)
-			centroidBounds = Union(centroidBounds, lightInfo[i].centroid);
 		// number of lights under this node
 		int nLights = end - start;
 		// current middle element to split in two parts later
 		int mid = (end + start - 1) / 2;
 		// split the lights in a certain number of intervals with the same size and compute the cost for each split
 		// at the moment we are using the amount of lights as the number of buckets but I do not know how well it scales
-		int buckets = std::min(12, nLights);
+		int buckets = std::min(10000, nLights);
 		// cost vector for each split + dim
 		std::vector<float> cost = std::vector<float>((buckets - 1) * 3);
 		// a float defining the amount of lights that goes in every bucket
@@ -169,21 +162,26 @@ namespace pbrt {
 		float totalEnergy = 0;
 		// for each dimension calculate the splits
 		for (int dim = 0; dim < 3; dim++) {
-			// index of the last element of the first part and partial sort for median axis
-			std::nth_element(&lightInfo[start], &lightInfo[mid],
-				&lightInfo[end - 1] + 1,
-				[dim](const LightBVHLightInfo &a,
-					const LightBVHLightInfo &b) {
-				return a.bounds_o.axis[dim] <
-					b.bounds_o.axis[dim];
-			});
+			//// index of the last element of the first part and partial sort for median axis
+			//std::nth_element(&lightInfo[start], &lightInfo[mid],
+			//	&lightInfo[end - 1] + 1,
+			//	[dim](const LightBVHLightInfo &a,
+			//		const LightBVHLightInfo &b) {
+			//	return a.bounds_o.axis[dim] <
+			//		b.bounds_o.axis[dim];
+			//});
+
+			Vector3f axis(0.f, 0.f, 0.f);
+			for (int i = start; i < end; i++) {
+				axis += lightInfo[i].bounds_o.axis;
+			}
+			axis = Normalize(axis);
 
 			// calculate theta_o and theta_e for the node before the possible split
-			Vector3f axis = lightInfo[mid].bounds_o.axis;
 			float maxE = 0.f;
 			float maxO = 0.f;
 			calculateThetas(lightInfo, start, end - 1, axis, &maxO, &maxE);
-			float totalAngle = 2 * Pi * (1 - cos(maxO) + (2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4);
+			float totalAngle = 2 * Pi * ((1 - cos(maxO)) + ((2 * sin(maxO) * maxE + cos(maxO) - cos(2 * maxE + maxO)) / 4));
 			bounds_o[dim] = Bounds_o(axis, maxO, maxE);
 
 			// only one light --> leaf creation
@@ -224,28 +222,41 @@ namespace pbrt {
 						float leftE = 0, rightE = 0;
 						float leftO = 0, rightO = 0;
 						float leftEnergy = 0, rightEnergy = 0;
-						// two integers for the median indices of left and right side
-						int leftMid = start + (intervalEnd - start) / 2;
-						int rightMid = intervalEnd + 1 + (end - 1 - intervalEnd) / 2;
-						// partial sorting for both sides
-						std::nth_element(&lightInfo[start], &lightInfo[leftMid],
-							&lightInfo[intervalEnd] + 1,
-							[dim](const LightBVHLightInfo &a,
-								const LightBVHLightInfo &b) {
-							return a.bounds_o.axis[dim] <
-								b.bounds_o.axis[dim];
-						});
-						std::nth_element(&lightInfo[intervalEnd + 1], &lightInfo[rightMid],
-							&lightInfo[end - 1] + 1,
-							[dim](const LightBVHLightInfo &a,
-								const LightBVHLightInfo &b) {
-							return a.bounds_o.axis[dim] <
-								b.bounds_o.axis[dim];
-						});
+						//// two integers for the median indices of left and right side
+						//int leftMid = start + (intervalEnd - start) / 2;
+						//int rightMid = intervalEnd + 1 + (end - 1 - intervalEnd) / 2;
+						//// partial sorting for both sides for median axis
+						//std::nth_element(&lightInfo[start], &lightInfo[leftMid],
+						//	&lightInfo[intervalEnd] + 1,
+						//	[dim](const LightBVHLightInfo &a,
+						//		const LightBVHLightInfo &b) {
+						//	return a.bounds_o.axis[dim] <
+						//		b.bounds_o.axis[dim];
+						//});
+						//std::nth_element(&lightInfo[intervalEnd + 1], &lightInfo[rightMid],
+						//	&lightInfo[end - 1] + 1,
+						//	[dim](const LightBVHLightInfo &a,
+						//		const LightBVHLightInfo &b) {
+						//	return a.bounds_o.axis[dim] <
+						//		b.bounds_o.axis[dim];
+						//});
 
-						// setting the median axis
-						Vector3f leftAxis = lightInfo[leftMid].bounds_o.axis;
-						Vector3f rightAxis = lightInfo[rightMid].bounds_o.axis;
+						//// setting the median axis
+						//Vector3f leftAxis = lightInfo[leftMid].bounds_o.axis;
+						//Vector3f rightAxis = lightInfo[rightMid].bounds_o.axis;
+
+						Vector3f leftAxis(0.f, 0.f, 0.f);
+						Vector3f rightAxis(0.f, 0.f, 0.f);
+
+						for (int j = start; j < intervalEnd + 1; j++) {
+							leftAxis += lightInfo[j].bounds_o.axis;
+						}
+
+						for (int j = intervalEnd + 1; j < end; j++) {
+							rightAxis += lightInfo[j].bounds_o.axis;
+						}
+						leftAxis = Normalize(leftAxis);
+						rightAxis = Normalize(rightAxis);
 
 						// left side Theta_e and Theta_o calculations
 						calculateThetas(lightInfo, start, intervalEnd, leftAxis, &leftO, &leftE);
@@ -268,9 +279,9 @@ namespace pbrt {
 						}
 
 						// calculating the cost for the current split
-
-						float leftAngle = 2 * Pi * (1 - cos(leftO) + (2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4);
-						float rightAngle = 2 * Pi * (1 - cos(rightO) + (2 * sin(rightO) * rightE + cos(rightO) - cos(2 * rightE + rightO)) / 4);
+						float integral = ((2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4);
+						float leftAngle = 2 * Pi * ((1 - cos(leftO)) + ((2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4));
+						float rightAngle = 2 * Pi * ((1 - cos(rightO)) + ((2 * sin(rightO) * rightE + cos(rightO) - cos(2 * rightE + rightO)) / 4));
 						float leftCost = b0.SurfaceArea() * leftAngle * leftEnergy;
 						float rightCost = b1.SurfaceArea() * rightAngle * rightEnergy;
 						if (i == 0) {
@@ -344,11 +355,12 @@ namespace pbrt {
 			if ((o = angle + l.bounds_o.theta_o) > *theta_o) {
 				*theta_o = o;
 			}
-			if ((e = angle + l.bounds_o.theta_e + l.bounds_o.theta_o) > *theta_e) {
+			if ((e = o + l.bounds_o.theta_e) > *theta_e) {
 				*theta_e = e;
 			}
 		}
 		*theta_e -= *theta_o;
+		*theta_e = std::min(*theta_e, Pi - *theta_o);
 	}
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(

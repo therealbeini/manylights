@@ -148,7 +148,7 @@ std::shared_ptr<AreaLight> CreateDiffuseAreaLight(
 Vector3f DiffuseAreaLight::Axis() const {
 	// TODO: getting the correct axis
 	Normal3f n = dynamic_cast<Triangle*>(shape.get())->Normal();
-	return LightToWorld(Vector3f(n));
+	return Normalize(LightToWorld(Vector3f(n)));
 }
 
 float DiffuseAreaLight::Theta_o() const {

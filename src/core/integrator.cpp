@@ -89,7 +89,7 @@ namespace pbrt {
 		bool handleMedia, const Distribution1D *lightDistrib) {
 		ProfilePhase p(Prof::DirectLighting);
 		// Randomly choose a single light to sample, _light_
-		int nLights = int(scene.lights.size());
+ 		int nLights = int(scene.lights.size());
 		if (nLights == 0) return Spectrum(0.f);
 		int lightNum;
 		Float lightPdf;
