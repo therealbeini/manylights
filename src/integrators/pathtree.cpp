@@ -54,7 +54,7 @@ namespace pbrt {
 		: SamplerIntegrator(camera, sampler, pixelBounds),
 		maxDepth(maxDepth),
 		rrThreshold(rrThreshold),
-		lightSampleStrategy(lightSampleStrategy) {}
+		lightSampleStrategy(lightSampleStrategy){}
 
 	void PathTreeIntegrator::Preprocess(const Scene &scene, Sampler &sampler) {
 		float splitThreshold = 1.f;

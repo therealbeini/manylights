@@ -3,7 +3,7 @@ LookAt 0 -10 1.5  # eye
        0 0 1    # up vector
 Camera "perspective" "float fov" 45
 
-Sampler "halton" "integer pixelsamples" 32
+Sampler "halton" "integer pixelsamples" 64
 Integrator "path" "string lightsamplestrategy" "uniform"
 Film "image" "string filename" "area_many_sphere_old.png"
      "integer xresolution" [800] "integer yresolution" [800]
@@ -13,14 +13,14 @@ WorldBegin
 TransformBegin
 Translate 0 0 3.5
 AttributeBegin
-AreaLightSource "diffuse" "rgb L" [ 1 1 1 ]
+AreaLightSource "diffuse" "rgb L" [ 0.7 0.7 0.7 ]
 Scale 0.003 0.003 0.003
 Shape "plymesh" "string filename" [ "sphere.ply" ] 
 AttributeEnd
 TransformEnd
 
 TransformBegin
-Translate -2 0 3.5
+Translate -2 -3 4.5
 AttributeBegin
 AreaLightSource "diffuse" "rgb L" [ 1 1 1 ]
 Scale 0.003 0.003 0.003
@@ -29,13 +29,14 @@ AttributeEnd
 TransformEnd
 
 TransformBegin
-Translate +2 0 3.5
+Translate 2 3 1.5
 AttributeBegin
-AreaLightSource "diffuse" "rgb L" [ 1 1 1 ]
+AreaLightSource "diffuse" "rgb L" [ 1.5 1.5 1.5 ]
 Scale 0.003 0.003 0.003
 Shape "plymesh" "string filename" [ "sphere.ply" ] 
 AttributeEnd
 TransformEnd
+
 
 
 

@@ -115,6 +115,8 @@ namespace pbrt {
 		// Choose the light according to the lightBVH data structure
 		float pdf;
 		int lightNum;
+		Point2f uLight = sampler.Get2D();
+		Point2f uScattering = sampler.Get2D();
 		if (lightAccel->splitThreshold == 1.f) {
 			lightNum = lightAccel->SampleOneLight(it, sampler, &pdf);
 			// negative return means that the contribution will be zero (because of orientation)
@@ -122,8 +124,6 @@ namespace pbrt {
 				return Spectrum(0.f);
 			}
 			const std::shared_ptr<Light> &light = scene.lights[lightNum];
-			Point2f uLight = sampler.Get2D();
-			Point2f uScattering = sampler.Get2D();
 			return EstimateDirect(it, uScattering, *light, uLight,
 				scene, sampler, arena, handleMedia) / pdf;
 		}
@@ -138,8 +138,6 @@ namespace pbrt {
 					continue;
 				}
 				const std::shared_ptr<Light> &light = scene.lights[lightNum];
-				Point2f uLight = sampler.Get2D();
-				Point2f uScattering = sampler.Get2D();
 				s += EstimateDirect(it, uScattering, *light, uLight,
 					scene, sampler, arena, handleMedia) / pdf;
 			}

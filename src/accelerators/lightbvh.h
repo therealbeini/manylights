@@ -10,6 +10,7 @@
 #include "pbrt.h"
 #include "primitive.h"
 #include <atomic>
+#include "sampling.h"
 
 namespace pbrt {
 	struct Bounds_o;
@@ -43,6 +44,7 @@ namespace pbrt {
 		// BVHAccel Private Data
 		LinearLightBVHNode *nodes = nullptr;
 		LightBVHNode *root = nullptr;
+		RNG rng;
 	};
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(

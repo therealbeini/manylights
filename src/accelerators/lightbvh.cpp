@@ -8,6 +8,7 @@
 #include "core/light.h"
 #include <iostream>
 #include "sampler.h"
+#include "integrator.h"
 
 namespace pbrt {
 
@@ -118,7 +119,7 @@ namespace pbrt {
 
 	// LightBVHAccel Method Definitions
 	LightBVHAccel::LightBVHAccel(std::vector<std::shared_ptr<Light>> l, float splitThreshold)
-		: lights(std::move(l)), splitThreshold(splitThreshold) {
+		: lights(std::move(l)), splitThreshold(splitThreshold), rng(0) {
 		ProfilePhase _(Prof::AccelConstruction);
 		if (lights.empty()) return;
 		// Build LBVH from _lights_
@@ -151,7 +152,7 @@ namespace pbrt {
 		int mid = (end + start - 1) / 2;
 		// split the lights in a certain number of intervals with the same size and compute the cost for each split
 		// at the moment we are using the amount of lights as the number of buckets but I do not know how well it scales
-		int buckets = std::min(10000, nLights);
+		int buckets = std::min(nLights, nLights);
 		// cost vector for each split + dim
 		std::vector<float> cost = std::vector<float>((buckets - 1) * 3);
 		// a float defining the amount of lights that goes in every bucket
@@ -305,7 +306,7 @@ namespace pbrt {
 		}
 		// find out dimension and buckets accordingly
 		int dim = minCostSplitBucket / (buckets - 1);
-		minCostSplitBucket %= (buckets -1);
+		minCostSplitBucket %= (buckets - 1);
 
 		// split lights at selected SAOH bucket, mid is the last element of the first part
 		mid = start + lightsPerBucket * (minCostSplitBucket + 1) - 1;
@@ -422,19 +423,34 @@ namespace pbrt {
 			split = true;
 		}
 		else {
-			float maxAngle = 0;
-			Vector3f c[8];
-			for (int i = 0; i < 8; i++) {
-				c[i] = Normalize(b.Corner(i) - o);
-			}
-			for (int i = 0; i < 7; i++) {
-				for (int j = i + 1; j < 8; j++) {
-					maxAngle = std::max(maxAngle, std::acos(Dot(c[i], c[j])));
+			//float r1 = rng.UniformFloat();
+			//float r2 = rng.UniformFloat();
+			//Point2f uScattering(r1, r2);
+			//BxDFType bsdfFlags = BSDF_ALL;
+			//const SurfaceInteraction &isect = (const SurfaceInteraction &)it;
+			//Vector3f wi;
+			//float scatteringPdf;
+			//BxDFType sampledType;
+			//isect.bsdf->Sample_f(isect.wo, &wi, uScattering, &scatteringPdf,
+			//	bsdfFlags, &sampledType);
+			//if (scatteringPdf != 0) {
+				//wi = Normalize(wi);
+				//Vector3f d = Normalize(o - node->centroid);
+				//float maxCos = acos(Dot(wi, d));
+				float maxAngle = 0;
+				Vector3f c[8];
+				for (int i = 0; i < 8; i++) {
+					c[i] = Normalize(b.Corner(i) - o);
 				}
-			}
-			if (maxAngle / Pi > splitThreshold) {
-				split = true;
-			}
+				for (int i = 0; i < 7; i++) {
+					for (int j = i + 1; j < 8; j++) {
+						maxAngle = std::max(maxAngle, std::acos(Dot(c[i], c[j])));
+					}
+				}
+				if (maxAngle / Pi > splitThreshold) {
+					split = true;
+				}
+			//}
 		}
 		if (split) {
 			TraverseNodeForMultipleLights(&node[1], sampler, it, lightVector);
@@ -442,7 +458,7 @@ namespace pbrt {
 		}
 		else {
 			float pdf = 1.f;
-			float sample1D = sampler.Get1D();
+			float sample1D = rng.UniformFloat();
 			int lightNum = TraverseNodeForOneLight(node, sample1D, it, &pdf);
 			lightVector->push_back(std::pair<int, float>(lightNum, pdf));
 		}
