@@ -1,15 +1,15 @@
 [0] Config.pm:302> INFO - This is Biber 2.11
 [0] Config.pm:305> INFO - Logfile is 'thesis_beini_ma.blg'
-[23] biber-MSWIN64:313> INFO - === 
-[47] Biber.pm:371> INFO - Reading 'thesis_beini_ma.bcf'
-[118] Biber.pm:857> INFO - Found 2 citekeys in bib section 0
-[129] Biber.pm:3976> INFO - Processing section 0
-[141] Biber.pm:4136> INFO - Looking for bibtex format file 'thesis.bib' for section 0
-[144] bibtex.pm:1500> INFO - LaTeX decoding ...
-[151] bibtex.pm:1316> INFO - Found BibTeX data source 'thesis.bib'
-[167] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[167] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[167] Biber.pm:3804> INFO - Sorting list 'anyt/global//global/global' of type 'entry' with template 'anyt' and locale 'en-US'
-[167] Biber.pm:3810> INFO - No sort tailoring available for locale 'en-US'
-[170] bbl.pm:617> INFO - Writing 'thesis_beini_ma.bbl' with encoding 'UTF-8'
-[170] bbl.pm:720> INFO - Output to thesis_beini_ma.bbl
+[24] biber-MSWIN64:313> INFO - === 
+[49] Biber.pm:371> INFO - Reading 'thesis_beini_ma.bcf'
+[121] Biber.pm:857> INFO - Found 3 citekeys in bib section 0
+[133] Biber.pm:3976> INFO - Processing section 0
+[145] Biber.pm:4136> INFO - Looking for bibtex format file 'thesis.bib' for section 0
+[151] bibtex.pm:1500> INFO - LaTeX decoding ...
+[162] bibtex.pm:1316> INFO - Found BibTeX data source 'thesis.bib'
+[186] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[186] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[186] Biber.pm:3804> INFO - Sorting list 'anyt/global//global/global' of type 'entry' with template 'anyt' and locale 'en-US'
+[186] Biber.pm:3810> INFO - No sort tailoring available for locale 'en-US'
+[189] bbl.pm:617> INFO - Writing 'thesis_beini_ma.bbl' with encoding 'UTF-8'
+[190] bbl.pm:720> INFO - Output to thesis_beini_ma.bbl

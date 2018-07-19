@@ -27,8 +27,8 @@ namespace pbrt {
 
 		// BVHAccel Public Methods
 		LightBVHAccel(std::vector<std::shared_ptr<Light>> l, float splitThreshold);
-		int SampleOneLight(const Interaction &it, Sampler &sampler, float *pdf);
-		std::vector<std::pair<int, float>> SampleMultipleLights(const Interaction &it, Sampler &sampler);
+		int SampleOneLight(const Interaction &it, float *pdf);
+		std::vector<std::pair<int, float>> SampleMultipleLights(const Interaction &it);
 
 	private:
 		// BVHAccel Private Methods
@@ -37,7 +37,7 @@ namespace pbrt {
 			int start, int end, int *totalNodes);
 		void calculateThetas(std::vector<LightBVHLightInfo> &lightInfo, int startIndex, int endIndex, Vector3f axis, float *theta_o, float *theta_e);
 		int TraverseNodeForOneLight(LinearLightBVHNode * node, float sample1D, const Interaction & it, float * pdf);
-		void TraverseNodeForMultipleLights(LinearLightBVHNode *node, Sampler &sampler, const Interaction &it, std::vector<std::pair<int, float>> *lightVector);
+		void TraverseNodeForMultipleLights(LinearLightBVHNode *node, const Interaction &it, std::vector<std::pair<int, float>> *lightVector);
 		float calculateImportance(const Interaction & it, LinearLightBVHNode * node);
 		int flattenLightBVHTree(LightBVHNode *node, int *offset);
 

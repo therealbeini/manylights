@@ -118,7 +118,7 @@ namespace pbrt {
 		Point2f uLight = sampler.Get2D();
 		Point2f uScattering = sampler.Get2D();
 		if (lightAccel->splitThreshold == 1.f) {
-			lightNum = lightAccel->SampleOneLight(it, sampler, &pdf);
+			lightNum = lightAccel->SampleOneLight(it, &pdf);
 			// negative return means that the contribution will be zero (because of orientation)
 			if (lightNum < 0 || pdf == 0) {
 				return Spectrum(0.f);
@@ -128,7 +128,7 @@ namespace pbrt {
 				scene, sampler, arena, handleMedia) / pdf;
 		}
 		else {
-			std::vector<std::pair<int, float>> lightNumbers = lightAccel->SampleMultipleLights(it, sampler);
+			std::vector<std::pair<int, float>> lightNumbers = lightAccel->SampleMultipleLights(it);
 			Spectrum s(0.f);
 			for (int i = 0; i < lightNumbers.size(); i++) {
 				std::pair<int, float> pair = lightNumbers[i];

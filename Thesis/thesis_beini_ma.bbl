@@ -45,6 +45,42 @@
       \field{title}{Probability Theory: The Logic of Science}
       \field{year}{2003}
     \endentry
+    \entry{PBR}{book}{}
+      \name{author}{3}{}{%
+        {{hash=a2006d70c19e09c81fc664505c12247d}{%
+           family={Pharr},
+           familyi={P\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=9cbbff396ca703a70d9b53875d732735}{%
+           family={Jakob},
+           familyi={J\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+        {{hash=6613319527e4f1f8ce39c6693f4cb8d8}{%
+           family={Humphreys},
+           familyi={H\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Morgan Kaufmann Publishers}%
+      }
+      \strng{namehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{fullhash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{bibnamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{authorbibnamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{authornamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{authorfullhash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \field{labelalpha}{PJH16}
+      \field{sortinit}{P}
+      \field{sortinithash}{8d51b3d5b78d75b54308d706b9bbe285}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{3}
+      \field{title}{{Physically Based Rendering, From Theory to Implementation}}
+      \field{year}{2016}
+    \endentry
     \entry{RMCM}{thesis}{}
       \name{author}{1}{}{%
         {{hash=c0b11f85a4d5b80efa92f13d616b84ea}{%

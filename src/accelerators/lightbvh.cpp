@@ -369,8 +369,8 @@ namespace pbrt {
 		return std::make_shared<LightBVHAccel>(std::move(lights), splitThreshold);
 	}
 
-	int LightBVHAccel::SampleOneLight(const Interaction &it, Sampler &sampler, float *pdf) {
-		float sample1D = sampler.Get1D();
+	int LightBVHAccel::SampleOneLight(const Interaction &it, float *pdf) {
+		float sample1D = rng.UniformFloat();
 		*pdf = 1;
 		return TraverseNodeForOneLight(nodes, sample1D, it, pdf);
 	}
@@ -401,14 +401,13 @@ namespace pbrt {
 		return TraverseNodeForOneLight(&nodes[node->secondChildOffset], (sample1D - firstImportance) / secondImportance, it, pdf);
 	}
 
-	std::vector<std::pair<int, float>> LightBVHAccel::SampleMultipleLights(const Interaction &it, Sampler &sampler) {
-		float sample1D = sampler.Get1D();
+	std::vector<std::pair<int, float>> LightBVHAccel::SampleMultipleLights(const Interaction &it) {
 		std::vector<std::pair<int, float>> lightVector;
-		TraverseNodeForMultipleLights(nodes, sampler, it, &lightVector);
+		TraverseNodeForMultipleLights(nodes, it, &lightVector);
 		return lightVector;
 	}
 
-	void LightBVHAccel::TraverseNodeForMultipleLights(LinearLightBVHNode *node, Sampler &sampler, const Interaction &it, std::vector<std::pair<int, float>> *lightVector) {
+	void LightBVHAccel::TraverseNodeForMultipleLights(LinearLightBVHNode *node, const Interaction &it, std::vector<std::pair<int, float>> *lightVector) {
 		// im already at a leaf of the tree
 		if (node->nLights == 1) {
 			lightVector->push_back(std::pair<int, float>(node->lightNum, 1.f));
@@ -423,20 +422,23 @@ namespace pbrt {
 			split = true;
 		}
 		else {
-			//float r1 = rng.UniformFloat();
-			//float r2 = rng.UniformFloat();
-			//Point2f uScattering(r1, r2);
-			//BxDFType bsdfFlags = BSDF_ALL;
-			//const SurfaceInteraction &isect = (const SurfaceInteraction &)it;
-			//Vector3f wi;
-			//float scatteringPdf;
-			//BxDFType sampledType;
-			//isect.bsdf->Sample_f(isect.wo, &wi, uScattering, &scatteringPdf,
-			//	bsdfFlags, &sampledType);
-			//if (scatteringPdf != 0) {
-				//wi = Normalize(wi);
-				//Vector3f d = Normalize(o - node->centroid);
-				//float maxCos = acos(Dot(wi, d));
+			float r1 = rng.UniformFloat();
+			float r2 = rng.UniformFloat();
+			Point2f uScattering(r1, r2);
+			BxDFType bsdfFlags = BSDF_ALL;
+			const SurfaceInteraction &isect = (const SurfaceInteraction &)it;
+			Vector3f wi;
+			float scatteringPdf;
+			BxDFType sampledType;
+			isect.bsdf->Sample_Dir(isect.wo, &wi, uScattering, &scatteringPdf,
+				bsdfFlags, &sampledType);
+			if (wi == Vector3f(0.f, 0.f, 0.f)) {
+				std::cout << "doshite";
+			}
+			if (wi != Vector3f(0.f,0.f,0.f)) {
+				wi = Normalize(wi);
+				Vector3f d = Normalize(o - node->centroid);
+				float maxCos = acos(Dot(wi, d)) / Pi;
 				float maxAngle = 0;
 				Vector3f c[8];
 				for (int i = 0; i < 8; i++) {
@@ -444,17 +446,18 @@ namespace pbrt {
 				}
 				for (int i = 0; i < 7; i++) {
 					for (int j = i + 1; j < 8; j++) {
-						maxAngle = std::max(maxAngle, std::acos(Dot(c[i], c[j])));
+						maxAngle = std::max(maxAngle, acos(Dot(c[i], c[j])));
 					}
 				}
-				if (maxAngle / Pi > splitThreshold) {
+				maxAngle /= Pi;
+				if (maxAngle * maxCos > splitThreshold) {
 					split = true;
 				}
-			//}
+			}
 		}
 		if (split) {
-			TraverseNodeForMultipleLights(&node[1], sampler, it, lightVector);
-			TraverseNodeForMultipleLights(&nodes[node->secondChildOffset], sampler, it, lightVector);
+			TraverseNodeForMultipleLights(&node[1], it, lightVector);
+			TraverseNodeForMultipleLights(&nodes[node->secondChildOffset], it, lightVector);
 		}
 		else {
 			float pdf = 1.f;

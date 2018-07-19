@@ -185,6 +185,10 @@ class BSDF {
               BxDFType flags = BSDF_ALL) const;
     std::string ToString() const;
 
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
+
     // BSDF Public Data
     const Float eta;
 
@@ -223,6 +227,9 @@ class BxDF {
                          const Point2f *samples2) const;
     virtual Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
     virtual std::string ToString() const = 0;
+	virtual Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
     // BxDF Public Data
     const BxDFType type;
@@ -251,6 +258,9 @@ class ScaledBxDF : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     BxDF *bxdf;
@@ -314,6 +324,9 @@ class SpecularReflection : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const { return 0; }
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // SpecularReflection Private Data
@@ -339,6 +352,9 @@ class SpecularTransmission : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const { return 0; }
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // SpecularTransmission Private Data
@@ -366,6 +382,9 @@ class FresnelSpecular : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const { return 0; }
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // FresnelSpecular Private Data
@@ -383,6 +402,9 @@ class LambertianReflection : public BxDF {
     Spectrum rho(const Vector3f &, int, const Point2f *) const { return R; }
     Spectrum rho(int, const Point2f *, const Point2f *) const { return R; }
     std::string ToString() const;
+		Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // LambertianReflection Private Data
@@ -401,6 +423,9 @@ class LambertianTransmission : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // LambertianTransmission Private Data
@@ -440,6 +465,9 @@ class MicrofacetReflection : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // MicrofacetReflection Private Data
@@ -466,6 +494,9 @@ class MicrofacetTransmission : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // MicrofacetTransmission Private Data
@@ -490,6 +521,9 @@ class FresnelBlend : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // FresnelBlend Private Data
@@ -509,6 +543,9 @@ class FourierBSDF : public BxDF {
                       Float *pdf, BxDFType *sampledType) const;
     Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
     std::string ToString() const;
+	Vector3f Sample_Dir(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+		Float *pdf, BxDFType type = BSDF_ALL,
+		BxDFType *sampledType = nullptr) const;
 
   private:
     // FourierBSDF Private Data

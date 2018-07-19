@@ -163,8 +163,15 @@ w_s(x) = \frac{(n_s p_s(x))^2}{\sum_{i}(n_i p_i(x))^2}
 For a more detailed explanation of the weighting heuristics, we recommend "Robust Monte Carlo Methods for Light Transport Simulation" by Veach to the reader. \cite{RMCM}
 
 \section{Axis-Aligned Bounding Box}
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{aabb.pdf}
+		\caption{Two-dimensional bounding box for two triangles}
+		\label{fig:aabb}
+	\end{center}
+\end{figure}
 
-TODO: image
+A data structure we will be using frequently is minimum bounding boxes. A minimum bounding box for a set of geometric primitives is defined as the box with a certain smallest measure, that contains every single primitive in the set. While path tracing, these boxes can be two- or three-dimensional, making their respective measures the area and the volume. Because many parts of the path-tracing algorithm operate on axis-aligned regions of space, it makes sense to define use boxes, where the edges are parallel to the coordinate axes. These boxes are called axis-aligned bounding boxes (AABB) and we can see an example of it in {\ref{fig:aabb}}. Note, that in this case we have a two-dimensional bounding box but it is not hard to imagine, that AABBs work the same way in higher dimensions.
 
 \section{Bounding Volume Hierarchies}
 \label{sec:preliminaries:bvh}
@@ -173,7 +180,14 @@ Acceleration data structures are mandatory for path tracers. They reduce the amo
 
 An example to partition the space would be kd-trees that splits the space parallel to one of the axis in each step. Those two sets of primitives are split recursively again until every leaf has only a maximum amount of primitives.  While kd-trees offer slightly faster ray intersection tests than BVH, their disadvantages outweigh. BVHs can be built much faster and are generally more numerically robust, so it is less likely to happen to miss intersection duo to round-off errors than kd-trees are. Other desired traits of BVHs is that they require a maximum number of $2n - 1$ nodes for n primitives and, since we are splitting the primitives after a particular amount of primitives, we will never have the same primitive in two different nodes.
 
-TODO: image?
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{bvh.pdf}
+		\caption{On the left side the geometric representation of the primitives in the room and on the right side the representation in the BVH}
+		\label{fig:bvh}
+	\end{center}
+\end{figure}
+
 
 \subsection{BVH Construction}
 
@@ -184,9 +198,16 @@ Every node needs to be holding onto some information in order to allow the inter
 \subsubsection{Surface Area Heuristics}
 \label{pre:sah}
 
-https://puu.sh/AU5HS/49a242e5f1.png
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{sah.pdf}
+		\caption{Three different split strategies: "Middle" in the top, "EqualCounts" in the middle and SAH in the bottom}
+		\label{fig:sah}
+	\end{center}
+\end{figure}
 
-We have presented two split methods earlier in this paper. While they both do work well in some situations, they both have clear advantages, especially if the primitives are not evenly distributed over the scene. Looking at (TODO:ref), it is obvious, that both the "Middle" and "EqualCounts" split the scene in a way that can lead to very inefficient intersection tests. In the "Middle" split, although the triangle mesh on the right child node are focused on a very small space, the drawn ray will still make intersection test with each of the triangles of the right child node. Similarly, in the "EqualCounts" split, many unnecessary intersection tests are made. A desirable split would be the third split and we will now introduce a split method that favors these kinds of splits.
+
+We have presented two split methods earlier in this paper. While they both do work well in some situations, they both have clear advantages, especially if the primitives are not evenly distributed over the scene. Looking at \ref{fig:sah}, it is obvious, that both the "Middle" and "EqualCounts" split the scene in a way that can lead to very inefficient intersection tests. In the "Middle" split, although the triangle mesh on the right child node are focused on a very small space, the drawn ray will still make intersection test with each of the triangles of the right child node. Similarly, in the "EqualCounts" split, many unnecessary intersection tests are made. A desirable split would be the third split and we will now introduce a split method that favors these kinds of splits.
 
 The surface area heuristics (SAH) defines a model that assigns a quality to a given split. The idea behind the SAH cost model is actually very simple. When we want to decide the best possible split for given primitives, first, we have to decide if it is perhaps better not to split at all. That means, when a ray traverses through the bounding box of the node, we would have to make an ray-primitive intersection test with each primitive. That means the cost $c_g$ is 
 
@@ -212,5 +233,13 @@ where $s_G$ is the surface area of the node and $s_C$ is the surface area of the
 
 \subsection{BVH Traversal}
 
-\section{The algorithms for comparison}
-\label{sec:preliminaries:com}
+Since the traversal of the bounding volume hierarchy is not relevant for this thesis, we will only give a short introduction of the general idea of it. If the reader is interested and would like to study additional readings about this subject, we would recommend the book "Physically Based Rendering" by Pharr, Jakob and Humphreys. \Cite{PBR}
+
+We have constructed our BVH as an acceleration data structure for ray-primitive interaction tests now. In the next step, we will be intersecting rays that are tracked in out path tracing algorithm, with the BVH. First, we will be intersecting the given ray with the root of our tree. If there is an intersection between the bounding volume of the current node and the ray, we will be further checking for intersections of the ray with the children of our current node. If we arrive at a leaf node that contain primitives, we will make ray-primitive intersection tests with every primitive in the node. Note, that we can stop after we have found the first actual interaction with a primitive and have asserted that any other intersection of the scene with the ray is further away than the intersection we already found.  This way, we avoid many unneeded ray-primitive intersection tests 
+and save a lot of time.
+
+\section{Path Tracing Basics}
+\label{sec:preliminaries:pat}
+
+In this section we will discuss some of the basics of path tracing. Although most readers probably already have a good understanding of path tracing, it does not hurt to refresh the reader's mind and also helps the reader to understand what this thesis is exactly about. Still, we will try to keep this section as short as possible to avoid boring the reader.
+

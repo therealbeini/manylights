@@ -35,32 +35,32 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.6}Bounding Volume Hierarchies}{9}{section.2.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.6.1}BVH Construction}{9}{subsection.2.6.1}
+\contentsline {subsection}{\numberline {2.6.1}BVH Construction}{10}{subsection.2.6.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {2.6.1.1}Surface Area Heuristics}{10}{subsubsection.2.6.1.1}
+\contentsline {subsubsection}{\numberline {2.6.1.1}Surface Area Heuristics}{11}{subsubsection.2.6.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.6.2}BVH Traversal}{11}{subsection.2.6.2}
+\contentsline {subsection}{\numberline {2.6.2}BVH Traversal}{12}{subsection.2.6.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.7}The algorithms for comparison}{11}{section.2.7}
+\contentsline {section}{\numberline {2.7}Path Tracing Basics}{13}{section.2.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}Own Data Structures}{13}{chapter.3}
+\contentsline {chapter}{\numberline {3}Own Data Structures}{15}{chapter.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Node}{13}{section.3.1}
+\contentsline {section}{\numberline {3.1}Node}{15}{section.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{13}{section.3.2}
+\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{15}{section.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Our Algorithm}{15}{chapter.4}
+\contentsline {chapter}{\numberline {4}Our Algorithm}{17}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.1}General Idea}{15}{section.4.1}
+\contentsline {section}{\numberline {4.1}General Idea}{17}{section.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.2}Tree Construction}{15}{section.4.2}
+\contentsline {section}{\numberline {4.2}Tree Construction}{17}{section.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.3}Tree Traversal}{15}{section.4.3}
+\contentsline {section}{\numberline {4.3}Tree Traversal}{17}{section.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Evaluation}{17}{chapter.5}
+\contentsline {chapter}{\numberline {5}Evaluation}{19}{chapter.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {6}Conclusion}{19}{chapter.6}
+\contentsline {chapter}{\numberline {6}Conclusion}{21}{chapter.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Bibliography}{19}{chapter.6}
+\contentsline {chapter}{Bibliography}{21}{chapter.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{21}{chapter*.6}
+\contentsline {chapter}{\nonumberline Bibliography}{23}{chapter*.6}

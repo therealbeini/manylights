@@ -7,6 +7,12 @@
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 2.1}{\ignorespaces Two-dimensional bounding box for two triangles}}{9}{figure.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 2.2}{\ignorespaces On the left side the geometric representation of the primitives in the room and on the right side the representation in the BVH}}{10}{figure.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 2.3}{\ignorespaces Three different split strategies: "Middle" in the top, "EqualCounts" in the middle and SAH in the bottom}}{11}{figure.2.3}
+\defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
