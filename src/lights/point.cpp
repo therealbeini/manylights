@@ -81,7 +81,7 @@ Vector3f PointLight::Axis() const { return Vector3f(1.f, 0.f, 0.f); }
 
 float PointLight::Theta_o() const { return Pi; }
 
-float PointLight::Theta_e() const { return Pi / 2; }
+float PointLight::Theta_e() const { return 0; }
 
 Bounds3f PointLight::Bounds() const {
 	Point3f point = LightToWorld(Point3f(0.f, 0.f, 0.f));

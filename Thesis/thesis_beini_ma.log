@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  18 JUL 2018 19:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.14)  31 JUL 2018 19:16
 entering extended mode
 **./thesis_beini_ma.tex
 (thesis_beini_ma.tex
@@ -1392,13 +1392,51 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip80
 ))
+("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\algorithms\algorit
+hm.sty"
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\float\float.sty"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count142
+\float@exts=\toks28
+\float@box=\box35
+\@float@everytoks=\toks29
+\@floatcapt=\box36
+)
+\@float@every@algorithm=\toks30
+\c@algorithm=\count143
+)
+("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\algorithmicx\algps
+eudocode.sty"
+Package: algpseudocode 
+
+("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\algorithmicx\algor
+ithmicx.sty"
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count144
+\c@ALG@rem=\count145
+\c@ALG@nested=\count146
+\ALG@tlm=\skip81
+\ALG@thistlm=\skip82
+\c@ALG@Lnr=\count147
+\c@ALG@blocknr=\count148
+\c@ALG@storecount=\count149
+\c@ALG@tmpcounter=\count150
+\ALG@tmplength=\skip83
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\biblatex\biblatex.
 sty"
 Package: biblatex 2018/03/04 v3.11 programmable bibliographies (PK/MW)
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\logreq\logreq.sty"
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count142
+\lrq@indent=\count151
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\logreq\logreq.def"
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 ))
@@ -1407,62 +1445,62 @@ y"
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\generic\xstring\xstring.
 tex"
 \@xs@message=\write3
-\integerpart=\count143
-\decimalpart=\count144
+\integerpart=\count152
+\decimalpart=\count153
 )
 Package: xstring 2013/10/13  v1.7c  String manipulations (C Tellechea)
 )
-\c@tabx@nest=\count145
-\c@listtotal=\count146
-\c@listcount=\count147
-\c@liststart=\count148
-\c@liststop=\count149
-\c@citecount=\count150
-\c@citetotal=\count151
-\c@multicitecount=\count152
-\c@multicitetotal=\count153
-\c@instcount=\count154
-\c@maxnames=\count155
-\c@minnames=\count156
-\c@maxitems=\count157
-\c@minitems=\count158
-\c@citecounter=\count159
-\c@savedcitecounter=\count160
-\c@uniquelist=\count161
-\c@uniquename=\count162
-\c@refsection=\count163
-\c@refsegment=\count164
-\c@maxextratitle=\count165
-\c@maxextratitleyear=\count166
-\c@maxextradate=\count167
-\c@maxextraalpha=\count168
-\c@abbrvpenalty=\count169
-\c@highnamepenalty=\count170
-\c@lownamepenalty=\count171
-\c@maxparens=\count172
-\c@parenlevel=\count173
-\blx@tempcnta=\count174
-\blx@tempcntb=\count175
-\blx@tempcntc=\count176
-\blx@maxsection=\count177
-\blx@maxsegment@0=\count178
-\blx@notetype=\count179
-\blx@parenlevel@text=\count180
-\blx@parenlevel@foot=\count181
-\blx@sectionciteorder@0=\count182
-\labelnumberwidth=\skip81
-\labelalphawidth=\skip82
-\biblabelsep=\skip83
-\bibitemsep=\skip84
-\bibnamesep=\skip85
-\bibinitsep=\skip86
-\bibparsep=\skip87
-\bibhang=\skip88
+\c@tabx@nest=\count154
+\c@listtotal=\count155
+\c@listcount=\count156
+\c@liststart=\count157
+\c@liststop=\count158
+\c@citecount=\count159
+\c@citetotal=\count160
+\c@multicitecount=\count161
+\c@multicitetotal=\count162
+\c@instcount=\count163
+\c@maxnames=\count164
+\c@minnames=\count165
+\c@maxitems=\count166
+\c@minitems=\count167
+\c@citecounter=\count168
+\c@savedcitecounter=\count169
+\c@uniquelist=\count170
+\c@uniquename=\count171
+\c@refsection=\count172
+\c@refsegment=\count173
+\c@maxextratitle=\count174
+\c@maxextratitleyear=\count175
+\c@maxextradate=\count176
+\c@maxextraalpha=\count177
+\c@abbrvpenalty=\count178
+\c@highnamepenalty=\count179
+\c@lownamepenalty=\count180
+\c@maxparens=\count181
+\c@parenlevel=\count182
+\blx@tempcnta=\count183
+\blx@tempcntb=\count184
+\blx@tempcntc=\count185
+\blx@maxsection=\count186
+\blx@maxsegment@0=\count187
+\blx@notetype=\count188
+\blx@parenlevel@text=\count189
+\blx@parenlevel@foot=\count190
+\blx@sectionciteorder@0=\count191
+\labelnumberwidth=\skip84
+\labelalphawidth=\skip85
+\biblabelsep=\skip86
+\bibitemsep=\skip87
+\bibnamesep=\skip88
+\bibinitsep=\skip89
+\bibparsep=\skip90
+\bibhang=\skip91
 \blx@bcfin=\read1
 \blx@bcfout=\write4
-\c@mincomprange=\count183
-\c@maxcomprange=\count184
-\c@mincompwidth=\count185
+\c@mincomprange=\count192
+\c@maxcomprange=\count193
+\c@mincompwidth=\count194
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -1474,88 +1512,88 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'alphabetic.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count186
-\c@savedafterword=\count187
-\c@annotator=\count188
-\c@savedannotator=\count189
-\c@author=\count190
-\c@savedauthor=\count191
-\c@bookauthor=\count192
-\c@savedbookauthor=\count193
-\c@commentator=\count194
-\c@savedcommentator=\count195
-\c@editor=\count196
-\c@savededitor=\count197
-\c@editora=\count198
-\c@savededitora=\count199
-\c@editorb=\count266
-\c@savededitorb=\count267
-\c@editorc=\count268
-\c@savededitorc=\count269
-\c@foreword=\count270
-\c@savedforeword=\count271
-\c@holder=\count272
-\c@savedholder=\count273
-\c@introduction=\count274
-\c@savedintroduction=\count275
-\c@namea=\count276
-\c@savednamea=\count277
-\c@nameb=\count278
-\c@savednameb=\count279
-\c@namec=\count280
-\c@savednamec=\count281
-\c@translator=\count282
-\c@savedtranslator=\count283
-\c@shortauthor=\count284
-\c@savedshortauthor=\count285
-\c@shorteditor=\count286
-\c@savedshorteditor=\count287
-\c@labelname=\count288
-\c@savedlabelname=\count289
-\c@institution=\count290
-\c@savedinstitution=\count291
-\c@lista=\count292
-\c@savedlista=\count293
-\c@listb=\count294
-\c@savedlistb=\count295
-\c@listc=\count296
-\c@savedlistc=\count297
-\c@listd=\count298
-\c@savedlistd=\count299
-\c@liste=\count300
-\c@savedliste=\count301
-\c@listf=\count302
-\c@savedlistf=\count303
-\c@location=\count304
-\c@savedlocation=\count305
-\c@organization=\count306
-\c@savedorganization=\count307
-\c@origlocation=\count308
-\c@savedoriglocation=\count309
-\c@origpublisher=\count310
-\c@savedorigpublisher=\count311
-\c@publisher=\count312
-\c@savedpublisher=\count313
-\c@language=\count314
-\c@savedlanguage=\count315
-\c@origlanguage=\count316
-\c@savedoriglanguage=\count317
-\c@pageref=\count318
-\c@savedpageref=\count319
-\shorthandwidth=\skip89
-\shortjournalwidth=\skip90
-\shortserieswidth=\skip91
-\shorttitlewidth=\skip92
-\shortauthorwidth=\skip93
-\shorteditorwidth=\skip94
-\locallabelnumberwidth=\skip95
-\locallabelalphawidth=\skip96
-\localshorthandwidth=\skip97
-\localshortjournalwidth=\skip98
-\localshortserieswidth=\skip99
-\localshorttitlewidth=\skip100
-\localshortauthorwidth=\skip101
-\localshorteditorwidth=\skip102
+\c@afterword=\count195
+\c@savedafterword=\count196
+\c@annotator=\count197
+\c@savedannotator=\count198
+\c@author=\count199
+\c@savedauthor=\count266
+\c@bookauthor=\count267
+\c@savedbookauthor=\count268
+\c@commentator=\count269
+\c@savedcommentator=\count270
+\c@editor=\count271
+\c@savededitor=\count272
+\c@editora=\count273
+\c@savededitora=\count274
+\c@editorb=\count275
+\c@savededitorb=\count276
+\c@editorc=\count277
+\c@savededitorc=\count278
+\c@foreword=\count279
+\c@savedforeword=\count280
+\c@holder=\count281
+\c@savedholder=\count282
+\c@introduction=\count283
+\c@savedintroduction=\count284
+\c@namea=\count285
+\c@savednamea=\count286
+\c@nameb=\count287
+\c@savednameb=\count288
+\c@namec=\count289
+\c@savednamec=\count290
+\c@translator=\count291
+\c@savedtranslator=\count292
+\c@shortauthor=\count293
+\c@savedshortauthor=\count294
+\c@shorteditor=\count295
+\c@savedshorteditor=\count296
+\c@labelname=\count297
+\c@savedlabelname=\count298
+\c@institution=\count299
+\c@savedinstitution=\count300
+\c@lista=\count301
+\c@savedlista=\count302
+\c@listb=\count303
+\c@savedlistb=\count304
+\c@listc=\count305
+\c@savedlistc=\count306
+\c@listd=\count307
+\c@savedlistd=\count308
+\c@liste=\count309
+\c@savedliste=\count310
+\c@listf=\count311
+\c@savedlistf=\count312
+\c@location=\count313
+\c@savedlocation=\count314
+\c@organization=\count315
+\c@savedorganization=\count316
+\c@origlocation=\count317
+\c@savedoriglocation=\count318
+\c@origpublisher=\count319
+\c@savedorigpublisher=\count320
+\c@publisher=\count321
+\c@savedpublisher=\count322
+\c@language=\count323
+\c@savedlanguage=\count324
+\c@origlanguage=\count325
+\c@savedoriglanguage=\count326
+\c@pageref=\count327
+\c@savedpageref=\count328
+\shorthandwidth=\skip92
+\shortjournalwidth=\skip93
+\shortserieswidth=\skip94
+\shorttitlewidth=\skip95
+\shortauthorwidth=\skip96
+\shorteditorwidth=\skip97
+\locallabelnumberwidth=\skip98
+\locallabelalphawidth=\skip99
+\localshorthandwidth=\skip100
+\localshortjournalwidth=\skip101
+\localshortserieswidth=\skip102
+\localshorttitlewidth=\skip103
+\localshortauthorwidth=\skip104
+\localshorteditorwidth=\skip105
 Package biblatex Info: Trying to load compatibility code...
 Package biblatex Info: ... file 'blx-compat.def' found.
 
@@ -1569,13 +1607,13 @@ Package biblatex Info: ... file 'biblatex.def' found.
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\biblatex\biblatex.
 def"
 File: biblatex.def 2018/03/04 v3.11 biblatex compatibility (PK/MW)
-\c@textcitecount=\count320
-\c@textcitetotal=\count321
-\c@textcitemaxnames=\count322
-\c@biburlnumpenalty=\count323
-\c@biburlucpenalty=\count324
-\c@biburllcpenalty=\count325
-\c@smartand=\count326
+\c@textcitecount=\count329
+\c@textcitetotal=\count330
+\c@textcitemaxnames=\count331
+\c@biburlnumpenalty=\count332
+\c@biburlucpenalty=\count333
+\c@biburllcpenalty=\count334
+\c@smartand=\count335
 )
 Package biblatex Info: Trying to load bibliography style 'alphabetic'...
 Package biblatex Info: ... file 'alphabetic.bbx' found.
@@ -1589,8 +1627,8 @@ Package biblatex Info: ... file 'standard.bbx' found.
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\biblatex\bbx\stand
 ard.bbx"
 File: standard.bbx 2018/03/04 v3.11 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count327
-\c@bbx:relatedtotal=\count328
+\c@bbx:relatedcount=\count336
+\c@bbx:relatedtotal=\count337
 ))
 Package biblatex Info: Trying to load citation style 'alphabetic'...
 Package biblatex Info: ... file 'alphabetic.cbx' found.
@@ -1647,67 +1685,67 @@ File: german.lbx 2018/03/04 v3.11 biblatex localization (PK/MW)
 Package biblatex Warning: 'babel/polyglossia' detected but 'csquotes' missing.
 (biblatex)                Loading 'csquotes' recommended.
 
-\@quotelevel=\count329
-\@quotereset=\count330
+\@quotelevel=\count338
+\@quotereset=\count339
 (thesis_beini_ma.aux)
 \openout1 = `thesis_beini_ma.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 88.
-LaTeX Font Info:    Try loading font information for OML+nxlmi on input line 88
+LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 90.
+LaTeX Font Info:    Try loading font information for OML+nxlmi on input line 90
 .
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\newtx\omlnxlmi.fd"
 File: omlnxlmi.fd 2013/11/19 Fontinst v1.933 font definitions for OML/nxlmi.
 )
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 88.
-LaTeX Font Info:    Try loading font information for U+ntxexa on input line 88.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 90.
+LaTeX Font Info:    Try loading font information for U+ntxexa on input line 90.
 
  ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\newtx\untxexa.fd"
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 88.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 88.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 90.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 90.
  ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 88.
-LaTeX Font Info:    Try loading font information for LMS+ntxsy on input line 88
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 90.
+LaTeX Font Info:    Try loading font information for LMS+ntxsy on input line 90
 .
  ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\newtx\lmsntxsy.fd
 "
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 88.
-LaTeX Font Info:    Try loading font information for LMX+ntxexx on input line 8
-8.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 90.
+LaTeX Font Info:    Try loading font information for LMX+ntxexx on input line 9
+0.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\newtx\lmxntxexx.fd
 "
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for LY1/ptm/m/n on input line 88.
-LaTeX Font Info:    Try loading font information for LY1+ptm on input line 88.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for LY1/ptm/m/n on input line 90.
+LaTeX Font Info:    Try loading font information for LY1+ptm on input line 90.
  ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ly1\ly1ptm.fd"
 File: ly1ptm.fd 2001/02/01 font definitions for LY1/ptm using Berry names.
 )
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 90.
+LaTeX Font Info:    ... okay on input line 90.
 LaTeX Font Info:    Try loading font information for T1+LinuxLibertineT-TLF on 
-input line 88.
+input line 90.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\libertine\t1linuxl
 ibertinet-tlf.fd"
@@ -1715,7 +1753,7 @@ File: T1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/Li
 nuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 88.
+(Font)              scaled to size 12.0pt on input line 90.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\translations\dicts
 \translations-basic-dictionary-english.trsl"
@@ -1723,32 +1761,32 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 88.
-\c@mv@tabular=\count331
-\c@mv@boldtabular=\count332
-LaTeX Info: Redefining \microtypecontext on input line 88.
+or `english'. on input line 90.
+\c@mv@tabular=\count340
+\c@mv@boldtabular=\count341
+LaTeX Info: Redefining \microtypecontext on input line 90.
 
 
 Package microtype Warning: `draft' option active.
 (microtype)                Disabling all micro-typographic extensions.
 (microtype)                This might lead to different line and page breaks.
 
-\AtBeginShipoutBox=\box35
+\AtBeginShipoutBox=\box37
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\context\base\supp-pdf.mk
 ii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count333
+\scratchcounter=\count342
 \scratchdimen=\dimen139
-\scratchbox=\box36
-\nofMPsegments=\count334
-\nofMParguments=\count335
-\everyMPshowfont=\toks28
-\MPscratchCnt=\count336
+\scratchbox=\box38
+\nofMPsegments=\count343
+\nofMParguments=\count344
+\everyMPshowfont=\toks31
+\MPscratchCnt=\count345
 \MPscratchDim=\dimen140
-\MPnumerator=\count337
-\makeMPintoPDFobject=\count338
-\everyMPtoPDFconversion=\toks29
+\MPnumerator=\count346
+\makeMPintoPDFobject=\count347
+\everyMPtoPDFconversion=\toks32
 )
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-
 base.sty"
@@ -1768,7 +1806,7 @@ G,.JBIG2,.JB2,.eps]
 
 Package hyperref Warning: Draft mode on.
 
-Package hyperref Info: Link coloring OFF on input line 88.
+Package hyperref Info: Link coloring OFF on input line 90.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\hyperref\nameref.s
 ty"
@@ -1778,11 +1816,11 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 estring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count339
+\c@section@level=\count348
 )
-LaTeX Info: Redefining \ref on input line 88.
-LaTeX Info: Redefining \pageref on input line 88.
-LaTeX Info: Redefining \nameref on input line 88.
+LaTeX Info: Redefining \ref on input line 90.
+LaTeX Info: Redefining \pageref on input line 90.
+LaTeX Info: Redefining \nameref on input line 90.
 Package biblatex Info: Input encoding 'utf8' detected.
 Package biblatex Info: Automatic encoding selection.
 (biblatex)             Assuming data encoding 'utf8'.
@@ -1791,17 +1829,17 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'thesis_beini_ma.bbl' found.
  (thesis_beini_ma.bbl)
-Package biblatex Info: Reference section=0 on input line 88.
-Package biblatex Info: Reference segment=0 on input line 88.
+Package biblatex Info: Reference section=0 on input line 90.
+Package biblatex Info: Reference segment=0 on input line 90.
 <logos/kitlogo_en_cmyk.pdf, id=1, 198.7425pt x 92.345pt>
 File: logos/kitlogo_en_cmyk.pdf Graphic file (type pdf)
 <use logos/kitlogo_en_cmyk.pdf>
-Package pdftex.def Info: logos/kitlogo_en_cmyk.pdf  used on input line 95.
+Package pdftex.def Info: logos/kitlogo_en_cmyk.pdf  used on input line 97.
 (pdftex.def)             Requested size: 110.22453pt x 51.21504pt.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 24.88pt on input line 95.
+(Font)              scaled to size 24.88pt on input line 97.
 LaTeX Font Info:    Try loading font information for T1+SourceSansPro-LF on inp
-ut line 95.
+ut line 97.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\sourcesanspro\t1so
 urcesanspro-lf.fd"
@@ -1809,15 +1847,15 @@ File: T1SourceSansPro-LF.fd 2016/12/03 (autoinst) Font definitions for T1/Sourc
 eSansPro-LF.
 )
 LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/m/n' will be
-(Font)              scaled to size 22.88956pt on input line 95.
+(Font)              scaled to size 22.88956pt on input line 97.
 LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/b/n' will be
-(Font)              scaled to size 22.88956pt on input line 95.
+(Font)              scaled to size 22.88956pt on input line 97.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 95.
+(Font)              scaled to size 14.4pt on input line 97.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 95.
+(Font)              scaled to size 17.28pt on input line 97.
 LaTeX Font Info:    Try loading font information for OT1+LinuxLibertineT-TLF on
- input line 95.
+ input line 97.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\libertine\ot1linux
 libertinet-tlf.fd"
@@ -1825,37 +1863,37 @@ File: OT1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for OT1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 95.
+(Font)              scaled to size 17.28pt on input line 97.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.5pt on input line 95.
+(Font)              scaled to size 12.5pt on input line 97.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.4pt on input line 95.
-LaTeX Font Info:    Try loading font information for U+ntxmia on input line 95.
+(Font)              scaled to size 9.4pt on input line 97.
+LaTeX Font Info:    Try loading font information for U+ntxmia on input line 97.
 
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\newtx\untxmia.fd"
 File: untxmia.fd 2018/04/14 Fontinst v1.933 font definitions for U/ntxmia.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsym on input line 95.
+LaTeX Font Info:    Try loading font information for U+ntxsym on input line 97.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\newtx\untxsym.fd"
 File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 95.
+LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 97.
 
 ("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\newtx\untxsyc.fd"
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 95.
+(Font)              scaled to size 14.4pt on input line 97.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.5pt on input line 95.
+(Font)              scaled to size 10.5pt on input line 97.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.9pt on input line 95.
+(Font)              scaled to size 7.9pt on input line 97.
 <title-background.pdf, id=2, 597.50786pt x 845.04686pt>
 File: title-background.pdf Graphic file (type pdf)
 <use title-background.pdf>
-Package pdftex.def Info: title-background.pdf  used on input line 95.
+Package pdftex.def Info: title-background.pdf  used on input line 97.
 (pdftex.def)             Requested size: 597.5064pt x 845.0448pt.
 [1
 
@@ -1921,14 +1959,14 @@ Package babel Info: Redefining ngerman shorthand "~
 
 ]
 Package tocbasic Info: character protrusion at toc deactivated on input line 12
-1.
+3.
  (thesis_beini_ma.toc)
 \tf@toc=\write5
 \openout5 = `thesis_beini_ma.toc'.
 
  [5] [6]
 Package tocbasic Info: character protrusion at lof deactivated on input line 12
-3.
+5.
  (thesis_beini_ma.lof)
 \tf@lof=\write6
 \openout6 = `thesis_beini_ma.lof'.
@@ -1941,7 +1979,7 @@ Package tocbasic Info: character protrusion at lof deactivated on input line 12
 
 ]
 Package tocbasic Info: character protrusion at lot deactivated on input line 12
-4.
+6.
 
 (thesis_beini_ma.lot)
 \tf@lot=\write7
@@ -1952,6 +1990,21 @@ Package tocbasic Info: character protrusion at lot deactivated on input line 12
 
 ] (sections/introduction.tex
 chapter 1.
+
+Class scrbook Warning: \float@addtolists detected!
+(scrbook)              Implementation of \float@addtolist became
+(scrbook)              deprecated in KOMA-Script v3.01 2008/11/14 and
+(scrbook)              has been replaced by several more flexible
+(scrbook)              features of package `tocbasic`.
+(scrbook)              Since Version 3.12 support for deprecated
+(scrbook)              \float@addtolist interface has been
+(scrbook)              restricted to only some of the KOMA-Script
+(scrbook)              features and been removed from others.
+(scrbook)              Loading of package `scrhack' may help to
+(scrbook)              avoid this warning, if you are using a
+(scrbook)              a package that still implements the
+(scrbook)              deprecated \float@addtolist interface .
+
 LaTeX Font Info:    Font shape `T1/SourceSansPro-LF/b/n' will be
 (Font)              scaled to size 15.89755pt on input line 16.
 ) (sections/preliminaries.tex [1
@@ -1999,75 +2052,134 @@ Package pdftex.def Info: images/sah.pdf  used on input line 203.
 
 Underfull \vbox (badness 7631) has occurred while \output is active []
 
- [11 <./images/sah.pdf>] [12]) (sections/datastructures.tex [13] [14
-
-
-]
+ [11 <./images/sah.pdf>] [12]
+<images/path.pdf, id=152, 1288.38443pt x 527.41408pt>
+File: images/path.pdf Graphic file (type pdf)
+<use images/path.pdf>
+Package pdftex.def Info: images/path.pdf  used on input line 256.
+(pdftex.def)             Requested size: 302.73604pt x 123.92622pt.
+) (sections/algorithm.tex [13] [14 <./images/path.pdf>]
 chapter 3.
-) (sections/algorithm.tex [15] [16
+[15
 
 
 ]
+<images/bounds_o.png, id=173, 107.65219pt x 68.50594pt>
+File: images/bounds_o.png Graphic file (type png)
+<use images/bounds_o.png>
+Package pdftex.def Info: images/bounds_o.png  used on input line 38.
+(pdftex.def)             Requested size: 129.7459pt x 82.57361pt.
+LaTeX Font Info:    Try loading font information for TS1+LinuxLibertineT-TLF on
+ input line 48.
+
+("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\libertine\ts1linux
+libertinet-tlf.fd"
+File: TS1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/
+LinuxLibertineT-TLF.
+)
+LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 12.0pt on input line 48.
+ [16 <./images/bounds_o.png>]
+<images/bounds_o.pdf, id=179, 939.76523pt x 671.22699pt>
+File: images/bounds_o.pdf Graphic file (type pdf)
+<use images/bounds_o.pdf>
+Package pdftex.def Info: images/bounds_o.pdf  used on input line 73.
+(pdftex.def)             Requested size: 259.4918pt x 185.34079pt.
+ [17 <./images/bounds_o.pdf>]
+<images/lightbvhnode.png, id=193, 203.25937pt x 105.39375pt>
+File: images/lightbvhnode.png Graphic file (type png)
+<use images/lightbvhnode.png>
+Package pdftex.def Info: images/lightbvhnode.png  used on input line 87.
+(pdftex.def)             Requested size: 216.24097pt x 112.12851pt.
+<images/linearbvhnode.png, id=194, 172.39406pt x 138.5175pt>
+File: images/linearbvhnode.png Graphic file (type png)
+<use images/linearbvhnode.png>
+Package pdftex.def Info: images/linearbvhnode.png  used on input line 95.
+(pdftex.def)             Requested size: 172.99013pt x 138.99693pt.
+
+[18 <./images/lightbvhnode.png> <./images/linearbvhnode.png>]
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 109.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 10.0pt on input line 112.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
+(Font)              scaled to size 12.0pt on input line 112.
+LaTeX Font Info:    Try loading font information for T1+fvm on input line 132.
+
+("C:\Users\beini\AppData\Local\Programs\MiKTeX 2.9\tex\latex\bera\t1fvm.fd"
+File: t1fvm.fd 2004/09/07 scalable font definitions for T1/fvm.
+)
+LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
+(Font)              scaled to size 9.35999pt on input line 132.
+)
+(sections/evaluation.tex [19] [20]
 chapter 4.
-) (sections/evaluation.tex [17] [18
+) (sections/conclusion.tex [21
+
+
+] [22
 
 
 ]
 chapter 5.
-) (sections/conclusion.tex [19] [20
-
-
-]
-chapter 6.
-) [21] [22
+) [23] [24
 
 
 ]
 chapter without number
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 152.
-[23]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 152.
+
+Overfull \hbox (139.12071pt too wide) in paragraph at lines 146--146
+\T1/fvm/m/n/12 google . com / viewer ? a = v & pid = sites & srcid = ZGVmYXVsdG
+RvbWFpbnxja3VsbGF8Z3g6NWM0NmU2YWVlNjE3ODk1Yw$\T1/LinuxLibertineT-TLF/m/n/12 . 
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 153.
+[25]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 153.
  (thesis_beini_ma.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 152.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 152.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 153.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 153.
 Package logreq Info: Writing requests to 'thesis_beini_ma.run.xml'.
 \openout1 = `thesis_beini_ma.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 24545 strings out of 493305
- 462391 string characters out of 3129802
- 1038193 words of memory out of 3000000
- 27635 multiletter control sequences out of 15000+200000
- 168012 words of font info for 164 fonts, out of 3000000 for 9000
+ 25244 strings out of 493305
+ 473881 string characters out of 3129802
+ 1047906 words of memory out of 3000000
+ 28306 multiletter control sequences out of 15000+200000
+ 178826 words of font info for 172 fonts, out of 3000000 for 9000
  1143 hyphenation exceptions out of 8191
  61i,20n,80p,9117b,2269s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/newtx/liber
-tinealt.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/l
-ibertine/lbtn_oexx6f.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/font
-s/enc/dvips/base/8r.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts
-/enc/dvips/sourcesanspro/a_ggs4wk.enc}{C:/Users/beini/AppData/Local/Programs/Mi
-KTeX 2.9/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{C:/Users/beini/AppData/Loca
-l/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{C:/Users/beini
-/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}<C
-:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/libertine/Li
-nLibertineT.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/p
-ublic/libertine/LinLibertineTB.pfb><C:/Users/beini/AppData/Local/Programs/MiKTe
-X 2.9/fonts/type1/public/libertine/LinLibertineTI.pfb><C:/Users/beini/AppData/L
-ocal/Programs/MiKTeX 2.9/fonts/type1/adobe/sourcesanspro/SourceSansPro-Bold.pfb
+{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc
+}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/lb
+tn_ncsllp.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips
+/libertine/lbtn_naooyc.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fo
+nts/enc/dvips/newtx/libertinealt.enc}{C:/Users/beini/AppData/Local/Programs/MiK
+TeX 2.9/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{C:/Users/beini/AppData/Local
+/Programs/MiKTeX 2.9/fonts/enc/dvips/sourcesanspro/a_ggs4wk.enc}{C:/Users/beini
+/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{C
+:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/libertine/lbtn_
+nh77jq.enc}{C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/li
+bertine/lbtn_76gpa5.enc}<C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts
+/type1/public/libertine/LinLibertineT.pfb><C:/Users/beini/AppData/Local/Program
+s/MiKTeX 2.9/fonts/type1/public/libertine/LinLibertineTB.pfb><C:/Users/beini/Ap
+pData/Local/Programs/MiKTeX 2.9/fonts/type1/public/libertine/LinLibertineTI.pfb
 ><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/adobe/sourcesans
-pro/SourceSansPro-Semibold.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.
-9/fonts/type1/public/newtx/fxlri-7letters.pfb><C:/Users/beini/AppData/Local/Pro
-grams/MiKTeX 2.9/fonts/type1/public/txfonts/rtxmi.pfb><C:/Users/beini/AppData/L
-ocal/Programs/MiKTeX 2.9/fonts/type1/public/txfonts/rtxr.pfb><C:/Users/beini/Ap
-pData/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/txexs.pfb><C:/Users/be
-ini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/txfonts/txsyb.pfb><C:/
-Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/txsys.pf
-b><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/zx
-lri.pfb>
-Output written on thesis_beini_ma.pdf (37 pages, 511509 bytes).
+pro/SourceSansPro-Bold.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fo
+nts/type1/adobe/sourcesanspro/SourceSansPro-Semibold.pfb><C:/Users/beini/AppDat
+a/Local/Programs/MiKTeX 2.9/fonts/type1/bera/fvmr8a.pfb><C:/Users/beini/AppData
+/Local/Programs/MiKTeX 2.9/fonts/type1/public/newtx/fxlri-7letters.pfb><C:/User
+s/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/txfonts/rtxmi.pfb>
+<C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/txfonts/rt
+xr.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/new
+tx/txexs.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publ
+ic/txfonts/txsyb.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fonts/ty
+pe1/public/newtx/txsys.pfb><C:/Users/beini/AppData/Local/Programs/MiKTeX 2.9/fo
+nts/type1/public/newtx/zxlri.pfb>
+Output written on thesis_beini_ma.pdf (39 pages, 572773 bytes).
 PDF statistics:
- 237 PDF objects out of 1000 (max. 8388607)
+ 281 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -97,9 +97,9 @@ namespace pbrt {
 		Bounds3f bounds_w;
 		Bounds_o bounds_o;
 		Point3f centroid;
+		float energy;
 		LightBVHNode *children[2];
 		int splitAxis, nLights, lightNum;
-		float energy;
 	};
 
 	struct LinearLightBVHNode {
@@ -111,9 +111,8 @@ namespace pbrt {
 			int lightNum;   // leaf
 			int secondChildOffset;  // interior
 		};
-		uint16_t nLights;  // 1 for interior nodes
-		uint8_t splitAxis;          // interior node: xyz
-
+		uint16_t nLights;  
+		uint8_t splitAxis;          
 	};
 
 
@@ -131,7 +130,6 @@ namespace pbrt {
 
 		// Build LightBVH tree for lights using _lightInfo_
 		int totalNodes = 0;
-		std::vector<std::shared_ptr<Light>> orderedLights;
 		MemoryArena arena(1024 * 1024);
 		root = recursiveBuild(arena, lightInfo, 0, lights.size(), &totalNodes);
 		// root->PrintNode(0, lightInfo);
@@ -280,7 +278,6 @@ namespace pbrt {
 						}
 
 						// calculating the cost for the current split
-						float integral = ((2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4);
 						float leftAngle = 2 * Pi * ((1 - cos(leftO)) + ((2 * sin(leftO) * leftE + cos(leftO) - cos(2 * leftE + leftO)) / 4));
 						float rightAngle = 2 * Pi * ((1 - cos(rightO)) + ((2 * sin(rightO) * rightE + cos(rightO) - cos(2 * rightE + rightO)) / 4));
 						float leftCost = b0.SurfaceArea() * leftAngle * leftEnergy;
@@ -430,14 +427,15 @@ namespace pbrt {
 			Vector3f wi;
 			float scatteringPdf;
 			BxDFType sampledType;
-			isect.bsdf->Sample_Dir(isect.wo, &wi, uScattering, &scatteringPdf,
+			isect.bsdf->Sample_f(isect.wo, &wi, uScattering, &scatteringPdf,
 				bsdfFlags, &sampledType);
-			if (wi == Vector3f(0.f, 0.f, 0.f)) {
-				std::cout << "doshite";
-			}
-			if (wi != Vector3f(0.f,0.f,0.f)) {
+			//Normal3f n = it.n;
+			//if (Dot(it.wo, n) < 0) {
+			//	n *= -1;
+			//}
+			if (scatteringPdf != 0) {
 				wi = Normalize(wi);
-				Vector3f d = Normalize(o - node->centroid);
+				Vector3f d = Normalize(node->centroid - o);
 				float maxCos = acos(Dot(wi, d)) / Pi;
 				float maxAngle = 0;
 				Vector3f c[8];
@@ -450,9 +448,10 @@ namespace pbrt {
 					}
 				}
 				maxAngle /= Pi;
-				if (maxAngle * maxCos > splitThreshold) {
+				if (maxAngle * maxCos * scatteringPdf / Pi > splitThreshold) {
 					split = true;
 				}
+				//}
 			}
 		}
 		if (split) {

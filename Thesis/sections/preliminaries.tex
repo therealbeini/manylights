@@ -243,3 +243,20 @@ and save a lot of time.
 
 In this section we will discuss some of the basics of path tracing. Although most readers probably already have a good understanding of path tracing, it does not hurt to refresh the reader's mind and also helps the reader to understand what this thesis is exactly about. Still, we will try to keep this section as short as possible to avoid boring the reader.
 
+Path tracing was first introduced in 1986 by James Kajiya. The general idea is to generate paths along the scene that start at the camera and end at a light source of the scene. In the beginning, we will be spawning rays that start at the point of the camera. Each of these rays will gather the color at the respective pixel they represent. At the intersection of the ray with the scene, we will be evaluating the light transport equation we have mentioned earlier:
+
+\begin{equation}
+L_o(p, \omega_o) = \int_{\varsigma^2}f(p, \omega_o, \omega_i)L_d(p, \omega_i)|cos\theta_i|d\omega_i
+\end{equation}
+
+We have mentioned earlier, that this problem is a infinite-dimensional problem. That is because in order to calculate the color at the point we hit, we have to evaluate this equation for different directions $\omega_i$ according to the Monte Carlo integration. The reason for that is, as we have mentioned earlier, it is impossible to calculate the result of this integral analytically. Instead, we will be sampling directions according to multiple distribution functions and estimate the contribution of these directions. Therefore, we have to spawn rays that will hit another point in the scene. Obviously, we will get more light transport equations that need to be evaluated. To render the perfect image with path tracing, we could not stop after a finite number of steps, but in practice, we will break after a certain number of bounces or after the contribution of the point would be too low to actually change the image for the human eye. Instead, we will connect the current point with a sampled light source and finish the path. Such a path can be seen in \ref{fig:path}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.7\textwidth]{path.pdf}
+		\caption{A typical path for the path tracer starting at the camera and sampling a light source as the last vertex.}
+		\label{fig:path}
+	\end{center}
+\end{figure}
+
+We have already acknowledged the importance of using a sampling distribution that has a similar form to the functions of the integrand, when using Monte Carlo integration. In our light transport equation, we have two different functions. $f(p, \omega_o, \omega_i)$ is defined by the BSDF of the material of the point and consequently, we can use a distribution function similar to it to sample the directions $\omega_i$. The other function is the contribution of the light sources for the point $L_d(p, \omega_i)$. The sampling distribution needed to importance sample this function would be a distribution that reflects the amount of incident lighting from a given direction $\omega_i$. Now, suppose we have a situation where the scene has a substantial number of light sources, say 10.000 or even one million light sources. In this case, it would take a great time to estimate this distribution. In this thesis, our goal is to deal with these kinds of scenes with a gigantic number of light sources by creating an accelerator data structure, the light bounding volume hierarchy. This data structure importance samples a light given the intersection point that can be then used to estimate the light transport equation.

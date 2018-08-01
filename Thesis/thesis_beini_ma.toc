@@ -43,24 +43,26 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.7}Path Tracing Basics}{13}{section.2.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}Own Data Structures}{15}{chapter.3}
+\contentsline {chapter}{\numberline {3}Our Algorithm}{15}{chapter.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Node}{15}{section.3.1}
+\contentsline {section}{\numberline {3.1}Informal Description of the Algorithm}{15}{section.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{15}{section.3.2}
+\contentsline {section}{\numberline {3.2}Own Data Structures}{16}{section.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Our Algorithm}{17}{chapter.4}
+\contentsline {subsection}{\numberline {3.2.1}Bounds\_o}{16}{subsection.3.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.1}General Idea}{17}{section.4.1}
+\contentsline {subsection}{\numberline {3.2.2}Node representation}{17}{subsection.3.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.2}Tree Construction}{17}{section.4.2}
+\contentsline {section}{\numberline {3.3}Tree Construction}{18}{section.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4.3}Tree Traversal}{17}{section.4.3}
+\contentsline {section}{\numberline {3.4}Tree Traversal}{20}{section.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Evaluation}{19}{chapter.5}
+\contentsline {subsection}{\numberline {3.4.1}Splitting}{20}{subsection.3.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {6}Conclusion}{21}{chapter.6}
+\contentsline {chapter}{\numberline {4}Evaluation}{21}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Bibliography}{21}{chapter.6}
+\contentsline {chapter}{\numberline {5}Conclusion}{23}{chapter.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{23}{chapter*.6}
+\contentsline {chapter}{Bibliography}{23}{chapter.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Bibliography}{25}{chapter*.6}

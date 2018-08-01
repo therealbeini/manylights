@@ -3,7 +3,7 @@ LookAt 0 -10 1.5  # eye
        0 0 1    # up vector
 Camera "perspective" "float fov" 45
 
-Sampler "halton" "integer pixelsamples" 16
+Sampler "halton" "integer pixelsamples" 44
 Integrator "pathtree" "string lightsamplestrategy" "1.0"
 Film "image" "string filename" "area_many_sphere.png"
      "integer xresolution" [800] "integer yresolution" [800]

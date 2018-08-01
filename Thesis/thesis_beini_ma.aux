@@ -30,6 +30,7 @@
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
 \newlabel{ch:Introduction}{{1}{1}{Introduction}{chapter.1}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {1.1}Problem/Motivation}{1}{section.1.1}}
 \newlabel{sec:Introduction:Motivation}{{1.1}{1}{Problem/Motivation}{section.1.1}{}}
@@ -40,6 +41,7 @@
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {2}Preliminaries}{3}{chapter.2}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
 \newlabel{ch:preliminaries}{{2}{3}{Preliminaries}{chapter.2}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {2.1}Probability Theory Basics}{3}{section.2.1}}
 \newlabel{ch:preliminaries:ptb}{{2.1}{3}{Probability Theory Basics}{section.2.1}{}}
@@ -73,41 +75,60 @@
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.2}BVH Traversal}{12}{subsection.2.6.2}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {2.7}Path Tracing Basics}{13}{section.2.7}}
 \newlabel{sec:preliminaries:pat}{{2.7}{13}{Path Tracing Basics}{section.2.7}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {3}Own Data Structures}{15}{chapter.3}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2.4}{\ignorespaces A typical path for the path tracer starting at the camera and sampling a light source as the last vertex.}}{14}{figure.2.4}}
+\newlabel{fig:path}{{\relax 2.4}{14}{A typical path for the path tracer starting at the camera and sampling a light source as the last vertex}{figure.2.4}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {3}Our Algorithm}{15}{chapter.3}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{ch:data}{{3}{15}{Own Data Structures}{chapter.3}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.1}Node}{15}{section.3.1}}
-\newlabel{sec:data:node}{{3.1}{15}{Node}{section.3.1}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.2}Light Bounding Volume Hiarachy}{15}{section.3.2}}
-\newlabel{sec:data:lbvh}{{3.2}{15}{Light Bounding Volume Hiarachy}{section.3.2}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {4}Our Algorithm}{17}{chapter.4}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{ch:alg}{{3}{15}{Our Algorithm}{chapter.3}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.1}Informal Description of the Algorithm}{15}{section.3.1}}
+\newlabel{sec:alg:idea}{{3.1}{15}{Informal Description of the Algorithm}{section.3.1}{}}
+\abx@aux@cite{MLS}
+\abx@aux@segm{0}{0}{MLS}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.1}{\ignorespaces Our internal representation of the Bounds\_o struct}}{16}{figure.3.1}}
+\newlabel{fig:boundso}{{\relax 3.1}{16}{Our internal representation of the Bounds\_o struct}{figure.3.1}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.2}Own Data Structures}{16}{section.3.2}}
+\newlabel{sec:alg:ows}{{3.2}{16}{Own Data Structures}{section.3.2}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Bounds\_o}{16}{subsection.3.2.1}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.2}{\ignorespaces geometric idea of the Bounds\_o struct}}{17}{figure.3.2}}
+\newlabel{fig:boundsogeo}{{\relax 3.2}{17}{geometric idea of the Bounds\_o struct}{figure.3.2}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Node representation}{17}{subsection.3.2.2}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.3}{\ignorespaces Our internal representation of the LightBVHNode struct}}{18}{figure.3.3}}
+\newlabel{fig:lightbvhnode}{{\relax 3.3}{18}{Our internal representation of the LightBVHNode struct}{figure.3.3}{}}
+\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.4}{\ignorespaces Our internal representation of the LinearLightBVHNode struct}}{18}{figure.3.4}}
+\newlabel{fig:linearlightbvhnode}{{\relax 3.4}{18}{Our internal representation of the LinearLightBVHNode struct}{figure.3.4}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.3}Tree Construction}{18}{section.3.3}}
+\newlabel{sec:alg:con}{{3.3}{18}{Tree Construction}{section.3.3}{}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces LightBVHAccelerator constructor}}{19}{algorithm.1}}
+\newlabel{LightBVHAccelerator}{{1}{19}{Tree Construction}{algorithm.1}{}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces LightBVHAccelerator recursive build}}{19}{algorithm.2}}
+\newlabel{recursiveBuild}{{2}{19}{Tree Construction}{algorithm.2}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.4}Tree Traversal}{20}{section.3.4}}
+\newlabel{sec:alg:tra}{{3.4}{20}{Tree Traversal}{section.3.4}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Splitting}{20}{subsection.3.4.1}}
+\newlabel{subs:split}{{3.4.1}{20}{Splitting}{subsection.3.4.1}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {4}Evaluation}{21}{chapter.4}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{ch:alg}{{4}{17}{Our Algorithm}{chapter.4}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.1}General Idea}{17}{section.4.1}}
-\newlabel{sec:alg:idea}{{4.1}{17}{General Idea}{section.4.1}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.2}Tree Construction}{17}{section.4.2}}
-\newlabel{sec:alg:con}{{4.2}{17}{Tree Construction}{section.4.2}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {4.3}Tree Traversal}{17}{section.4.3}}
-\newlabel{sec:alg:tra}{{4.3}{17}{Tree Traversal}{section.4.3}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {5}Evaluation}{19}{chapter.5}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{ch:Evaluation}{{4}{21}{Evaluation}{chapter.4}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusion}{23}{chapter.5}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{ch:Evaluation}{{5}{19}{Evaluation}{chapter.5}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusion}{21}{chapter.6}}
-\@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
-\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{ch:Conclusion}{{6}{21}{Conclusion}{chapter.6}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{Bibliography}{21}{chapter.6}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
+\newlabel{ch:Conclusion}{{5}{23}{Conclusion}{chapter.5}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{Bibliography}{23}{chapter.5}}
 \abx@aux@refcontextdefaultsdone
+\abx@aux@defaultrefcontext{0}{MLS}{anyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{PTTLS}{anyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{PBR}{anyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{RMCM}{anyt/global//global/global}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Bibliography}{23}{chapter*.6}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Bibliography}{25}{chapter*.6}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
-\global\@namedef{scr@dte@chapter@lastmaxnumwidth}{10.62038pt}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
+\global\@namedef{scr@dte@chapter@lastmaxnumwidth}{10.5983pt}
 \global\@namedef{scr@dte@section@lastmaxnumwidth}{18.59993pt}
 \global\@namedef{scr@dte@subsection@lastmaxnumwidth}{26.81993pt}
 \global\@namedef{scr@dte@figure@lastmaxnumwidth}{18.59993pt}

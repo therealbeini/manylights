@@ -19,6 +19,40 @@
 
 \refsection{0}
   \datalist[entry]{anyt/global//global/global}
+    \entry{MLS}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=5369b95a4694ecdb5fde735a2b99f1f6}{%
+           family={Conty},
+           familyi={C\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=a6bb0c5c083125ebb19a06aff95d1dc7}{%
+           family={Kulla},
+           familyi={K\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{fullhash}{21cf11d445db59805d128253faadfbe9}
+      \strng{bibnamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authorbibnamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authornamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authorfullhash}{21cf11d445db59805d128253faadfbe9}
+      \field{labelalpha}{CK17}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Presentation in SIGGRAPH '17}
+      \field{title}{{Importance Sampling of many Lights with Adaptive Tree Splitting Slides}}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NWM0NmU2YWVlNjE3ODk1Yw
+      \endverb
+      \verb{url}
+      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NWM0NmU2YWVlNjE3ODk1Yw
+      \endverb
+    \endentry
     \entry{PTTLS}{book}{}
       \name{author}{1}{}{%
         {{hash=60cf9e44033fe2d5e8d20578f696e158}{%

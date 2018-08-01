@@ -13,9 +13,17 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 2.3}{\ignorespaces Three different split strategies: "Middle" in the top, "EqualCounts" in the middle and SAH in the bottom}}{11}{figure.2.3}
 \defcounter {refsection}{0}\relax 
-\addvspace {10\p@ }
+\contentsline {figure}{\numberline {\relax 2.4}{\ignorespaces A typical path for the path tracer starting at the camera and sampling a light source as the last vertex.}}{14}{figure.2.4}
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.1}{\ignorespaces Our internal representation of the Bounds\_o struct}}{16}{figure.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.2}{\ignorespaces geometric idea of the Bounds\_o struct}}{17}{figure.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.3}{\ignorespaces Our internal representation of the LightBVHNode struct}}{18}{figure.3.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.4}{\ignorespaces Our internal representation of the LinearLightBVHNode struct}}{18}{figure.3.4}
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
