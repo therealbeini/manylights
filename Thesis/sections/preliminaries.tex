@@ -163,6 +163,7 @@ w_s(x) = \frac{(n_s p_s(x))^2}{\sum_{i}(n_i p_i(x))^2}
 For a more detailed explanation of the weighting heuristics, we recommend "Robust Monte Carlo Methods for Light Transport Simulation" by Veach to the reader. \cite{RMCM}
 
 \section{Axis-Aligned Bounding Box}
+\label{sec:aabb}
 \begin{figure}
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{aabb.pdf}
@@ -171,7 +172,7 @@ For a more detailed explanation of the weighting heuristics, we recommend "Robus
 	\end{center}
 \end{figure}
 
-A data structure we will be using frequently is minimum bounding boxes. A minimum bounding box for a set of geometric primitives is defined as the box with a certain smallest measure, that contains every single primitive in the set. While path tracing, these boxes can be two- or three-dimensional, making their respective measures the area and the volume. Because many parts of the path-tracing algorithm operate on axis-aligned regions of space, it makes sense to define use boxes, where the edges are parallel to the coordinate axes. These boxes are called axis-aligned bounding boxes (AABB) and we can see an example of it in {\ref{fig:aabb}}. Note, that in this case we have a two-dimensional bounding box but it is not hard to imagine, that AABBs work the same way in higher dimensions.
+A data structure we will be using frequently is minimum bounding boxes. A minimum bounding box for a set of geometric primitives is defined as the box with a certain smallest measure, that contains every single primitive in the set. While path tracing, these boxes can be two- or three-dimensional, making their respective measures the area and the volume. Because many parts of the path-tracing algorithm operate on axis-aligned regions of space, it makes sense to define use boxes, where the edges are parallel to the coordinate axes. These boxes are called axis-aligned bounding boxes (AABB) and we can see an example of it in {\ref{fig:aabb}}. Note, that in this case we have a two-dimensional bounding box but it is not hard to imagine, that AABBs work the same way in higher dimensions. To combine two AABBs, we just need to take the minimum and the maximum for each dimension of the two AABBs.
 
 \section{Bounding Volume Hierarchies}
 \label{sec:preliminaries:bvh}

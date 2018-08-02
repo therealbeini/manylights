@@ -61,6 +61,7 @@
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2.1}{\ignorespaces Two-dimensional bounding box for two triangles}}{9}{figure.2.1}}
 \newlabel{fig:aabb}{{\relax 2.1}{9}{Two-dimensional bounding box for two triangles}{figure.2.1}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {2.5}Axis-Aligned Bounding Box}{9}{section.2.5}}
+\newlabel{sec:aabb}{{2.5}{9}{Axis-Aligned Bounding Box}{section.2.5}{}}
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {2.6}Bounding Volume Hierarchies}{9}{section.2.6}}
 \newlabel{sec:preliminaries:bvh}{{2.6}{9}{Bounding Volume Hierarchies}{section.2.6}{}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 2.2}{\ignorespaces On the left side the geometric representation of the primitives in the room and on the right side the representation in the BVH}}{10}{figure.2.2}}
@@ -93,38 +94,54 @@
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Bounds\_o}{16}{subsection.3.2.1}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.2}{\ignorespaces geometric idea of the Bounds\_o struct}}{17}{figure.3.2}}
 \newlabel{fig:boundsogeo}{{\relax 3.2}{17}{geometric idea of the Bounds\_o struct}{figure.3.2}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Node representation}{17}{subsection.3.2.2}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.3}{\ignorespaces Our internal representation of the LightBVHNode struct}}{18}{figure.3.3}}
 \newlabel{fig:lightbvhnode}{{\relax 3.3}{18}{Our internal representation of the LightBVHNode struct}{figure.3.3}{}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\contentsline {figure}{\numberline {\relax 3.4}{\ignorespaces Our internal representation of the LinearLightBVHNode struct}}{18}{figure.3.4}}
 \newlabel{fig:linearlightbvhnode}{{\relax 3.4}{18}{Our internal representation of the LinearLightBVHNode struct}{figure.3.4}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.3}Tree Construction}{18}{section.3.3}}
-\newlabel{sec:alg:con}{{3.3}{18}{Tree Construction}{section.3.3}{}}
-\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces LightBVHAccelerator constructor}}{19}{algorithm.1}}
-\newlabel{LightBVHAccelerator}{{1}{19}{Tree Construction}{algorithm.1}{}}
-\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces LightBVHAccelerator recursive build}}{19}{algorithm.2}}
-\newlabel{recursiveBuild}{{2}{19}{Tree Construction}{algorithm.2}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.4}Tree Traversal}{20}{section.3.4}}
-\newlabel{sec:alg:tra}{{3.4}{20}{Tree Traversal}{section.3.4}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Splitting}{20}{subsection.3.4.1}}
-\newlabel{subs:split}{{3.4.1}{20}{Splitting}{subsection.3.4.1}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {4}Evaluation}{21}{chapter.4}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Node representation}{18}{subsection.3.2.2}}
+\abx@aux@segm{0}{0}{MLS}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.3}Surface Area Orientation Heuristic}{19}{section.3.3}}
+\newlabel{sec:saoh}{{3.3}{19}{Surface Area Orientation Heuristic}{section.3.3}{}}
+\newlabel{eq:cone}{{\relax 3.3}{19}{Surface Area Orientation Heuristic}{equation.3.3.3}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.4}Light Bounding Volume Hierarchy Construction}{20}{section.3.4}}
+\newlabel{sec:alg:con}{{3.4}{20}{Light Bounding Volume Hierarchy Construction}{section.3.4}{}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces LightBVHAccelerator constructor}}{20}{algorithm.1}}
+\newlabel{LightBVHAccelerator}{{1}{20}{Light Bounding Volume Hierarchy Construction}{algorithm.1}{}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces LightBVHAccelerator recursive build}}{21}{algorithm.2}}
+\newlabel{recursiveBuild}{{2}{21}{Light Bounding Volume Hierarchy Construction}{algorithm.2}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Axis Calculation}{21}{subsection.3.4.1}}
+\newlabel{subs:axis}{{3.4.1}{21}{Axis Calculation}{subsection.3.4.1}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Theta Calculations}{22}{subsection.3.4.2}}
+\newlabel{subs:theta}{{3.4.2}{22}{Theta Calculations}{subsection.3.4.2}{}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces Theta calculations}}{22}{algorithm.3}}
+\newlabel{thetacalculations}{{3}{22}{Theta Calculations}{algorithm.3}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.3}Buckets}{22}{subsection.3.4.3}}
+\newlabel{subs:buckets}{{3.4.3}{22}{Buckets}{subsection.3.4.3}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.4}Split Cost Calculation}{23}{subsection.3.4.4}}
+\newlabel{subs:splitcost}{{3.4.4}{23}{Split Cost Calculation}{subsection.3.4.4}{}}
+\@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\contentsline {algorithm}{\numberline {4}{\ignorespaces Split Cost Calculation}}{23}{algorithm.4}}
+\newlabel{alg:splitcostcalculation}{{4}{23}{Split Cost Calculation}{algorithm.4}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {section}{\numberline {3.5}Light Bounding Volume Hierarchy Traversal}{24}{section.3.5}}
+\newlabel{sec:alg:tra}{{3.5}{24}{Light Bounding Volume Hierarchy Traversal}{section.3.5}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}Splitting}{24}{subsection.3.5.1}}
+\newlabel{subs:split}{{3.5.1}{24}{Splitting}{subsection.3.5.1}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {4}Evaluation}{25}{chapter.4}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{ch:Evaluation}{{4}{21}{Evaluation}{chapter.4}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusion}{23}{chapter.5}}
+\newlabel{ch:Evaluation}{{4}{25}{Evaluation}{chapter.4}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusion}{27}{chapter.5}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{ch:Conclusion}{{5}{23}{Conclusion}{chapter.5}{}}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{Bibliography}{23}{chapter.5}}
+\newlabel{ch:Conclusion}{{5}{27}{Conclusion}{chapter.5}{}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{Bibliography}{27}{chapter.5}}
 \abx@aux@refcontextdefaultsdone
 \abx@aux@defaultrefcontext{0}{MLS}{anyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{PTTLS}{anyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{PBR}{anyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{RMCM}{anyt/global//global/global}
-\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Bibliography}{25}{chapter*.6}}
+\@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\contentsline {chapter}{\nonumberline Bibliography}{29}{chapter*.6}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\defcounter {refsection}{0}\relax }\@writefile{loa}{\addvspace {10\p@ }}
