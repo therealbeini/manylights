@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="187.85416mm"
+   height="221.75758mm"
+   viewBox="0 0 187.85416 221.75758"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="idealsplit.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="656.87299"
+     inkscape:cy="449.85288"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-13.229166,-8.1228379)">
+    <circle
+       style="opacity:1;fill:#000000;fill-opacity:0.31372549;stroke:#000000;stroke-width:0.60000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path815"
+       cx="61.232136"
+       cy="63.788692"
+       r="45.735119" />
+    <circle
+       style="opacity:1;fill:#000000;fill-opacity:0.31372549;stroke:#000000;stroke-width:0.60000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path815-8"
+       cx="152.89137"
+       cy="63.599705"
+       r="45.735119" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.23518486;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.41110925, 1.41110925;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 201.08333,63.410713 H 13.229166"
+       id="path834"
+       inkscape:connector-curvature="0" />
+    <circle
+       style="opacity:1;fill:#000000;fill-opacity:0.31372549;stroke:#000000;stroke-width:0.60000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path815-7"
+       cx="61.288746"
+       cy="170.29585"
+       r="45.735119" />
+    <circle
+       style="opacity:1;fill:#000000;fill-opacity:0.31372549;stroke:#000000;stroke-width:0.60000002;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path815-8-7"
+       cx="152.94798"
+       cy="170.10686"
+       r="45.735119" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.16546218;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.99277313, 0.99277313;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 106.83488,217.73187 V 124.74972"
+       id="path834-1"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="81.64286"
+       y="16.163691"
+       id="text859"><tspan
+         sodipodi:role="line"
+         id="tspan857"
+         x="81.64286"
+         y="16.163691"
+         style="stroke-width:0.26458332">θo = π/2 </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="88.068459"
+       y="229.72023"
+       id="text881"><tspan
+         sodipodi:role="line"
+         id="tspan879"
+         x="88.068459"
+         y="229.72023"
+         style="stroke-width:0.26458332">θo = π </tspan></text>
+  </g>
+</svg>

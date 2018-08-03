@@ -55,24 +55,28 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3.3}Surface Area Orientation Heuristic}{19}{section.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.4}Light Bounding Volume Hierarchy Construction}{20}{section.3.4}
+\contentsline {section}{\numberline {3.4}Light Bounding Volume Hierarchy Construction}{21}{section.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.1}Axis Calculation}{21}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.1}Axis Calculation}{22}{subsection.3.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.2}Theta Calculations}{22}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.2}Theta Calculations}{23}{subsection.3.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.3}Buckets}{22}{subsection.3.4.3}
+\contentsline {subsection}{\numberline {3.4.3}Buckets}{24}{subsection.3.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.4}Split Cost Calculation}{23}{subsection.3.4.4}
+\contentsline {subsection}{\numberline {3.4.4}Split Cost Calculation}{24}{subsection.3.4.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.5}Light Bounding Volume Hierarchy Traversal}{24}{section.3.5}
+\contentsline {subsection}{\numberline {3.4.5}Choosing the best split}{25}{subsection.3.4.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5.1}Splitting}{24}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.4.6}Creating the children nodes}{25}{subsection.3.4.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Evaluation}{25}{chapter.4}
+\contentsline {section}{\numberline {3.5}Light Bounding Volume Hierarchy Traversal}{26}{section.3.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Conclusion}{27}{chapter.5}
+\contentsline {subsection}{\numberline {3.5.1}Splitting}{26}{subsection.3.5.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Bibliography}{27}{chapter.5}
+\contentsline {chapter}{\numberline {4}Evaluation}{27}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{29}{chapter*.6}
+\contentsline {chapter}{\numberline {5}Conclusion}{29}{chapter.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Bibliography}{29}{chapter.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Bibliography}{31}{chapter*.6}

@@ -350,12 +350,9 @@ namespace pbrt {
 			float o = 0.f;
 			float e = 0.f;
 			float angle = acos(Dot(axis, l.bounds_o.axis));
-			if ((o = angle + l.bounds_o.theta_o) > *theta_o) {
-				*theta_o = o;
-			}
-			if ((e = o + l.bounds_o.theta_e) > *theta_e) {
-				*theta_e = e;
-			}
+
+
+			*theta_e = std::max(*theta_e, o + l.bounds_o.theta_e);
 		}
 		*theta_e -= *theta_o;
 		*theta_e = std::min(*theta_e, Pi - *theta_o);

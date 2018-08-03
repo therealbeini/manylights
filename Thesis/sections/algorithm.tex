@@ -116,7 +116,7 @@ M_A(C) = 2(lw + wh + hl).
 We used a weighted definition for our bounding cone measure. Remember that we have defined $\theta\_o$ as the bounding angle that encloses the orientation vectors of all the light sources in the cluster, while $\theta_e$ describes their emission range. Obviously, the cone enclosed with $\theta_o$ will most likely have a greater in emission power and thus, we will weight the volume confined by $\theta_o$ with a cosine. The measure we have used and has been described in \Cite{MLS} is as follows:
 
 \begin{equation}\label{eq:cone}
-M_\Omega(C) = 2\Pi * \bigg[(1-\cos(\theta_o)) + \int_{\theta_o}^{\theta_o + \theta_e}\cos(\omega - \theta_o) * sin(\omega)d\omega\bigg]
+M_\Omega(C) = 2\pi * \bigg[(1-\cos(\theta_o)) + \int_{\theta_o}^{\theta_o + \theta_e}\cos(\omega - \theta_o) * sin(\omega)d\omega\bigg]
 \end{equation} 
 
 TODO:Zeichnung
@@ -133,7 +133,18 @@ Consequently, the quality of a split is inverse to its cost:
 q(C_{left}, C_{right}) = \frac{1}{c(C_{left}, C_{right})}.
 \end{equation}
 
-It is important to note that our heuristic tries to find out the possible split in all three dimensions with the given cluster. Therefore, we will try to find the split with the highest quality and split the cluster there.
+It is notable that our heuristic tries to find out the possible split in all three dimensions with the given cluster. Therefore, we will try to find the split with the highest quality and split the cluster there.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{idealsplit.pdf}
+		\caption{Preferred split example}
+		\label{fig:idealsplit}
+	\end{center}
+\end{figure}
+
+
+Now, what does our heuristic exactly do for specific clusters? The general idea is that we try find splits in a way that the orientation cones of both children are as focused as possible. Suppose we have a great number of small triangle emitters that shape up together as two spheres like modelled in \ref{fig:idealsplit}. Obviously, the normals of the triangle emitters of a single sphere point to all possible directions in the scene. If we would have a cluster containing every single triangle emitter of the two spheres, our $\theta_o$ value of that cluster would be $\pi$; the normals over the unit sphere of $2\pi$ or 360°. Making the bottom split which splits the two spheres would result in not much change: The axis of the emitters would still cover every possible direction and the $\theta_o$ values of both children would still be $\pi$. In this case, we would definitely prefer the top split that splits both spheres in half, resulting in the normals over covering half of the unit sphere. We reduced $\theta_o$ to $\pi/2$. SAH alone would have not told the difference between those two splits and that's why the bounding cone measure is a very integral part of our cost calculation algorithm
 
 \section{Light Bounding Volume Hierarchy Construction}
 \label{sec:alg:con}
@@ -144,7 +155,7 @@ In this section we will be talking about our in-depth implementation of the tree
 	\caption{LightBVHAccelerator constructor}
 	\label{LightBVHAccelerator}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{LightBVHAccel}{vector<Light> lights, float splitThreshold}
+		\Procedure{LightBVHAccel}{vector<Light> \&lights, float splitThreshold}
 		\State $LightBVHNode \; *root  \gets recursiveBuild(lights, 0, lights.size());$
 		\State $LinearLightBVHNode \; *nodes \gets AllocAligned(totalNodes);$ 
 		\State $flattenLightBVHTree(nodes, root, 0);$
@@ -158,7 +169,7 @@ The $lightBVHAccel$ constructor initializes the tree construction. First, we wil
 	\caption{LightBVHAccelerator recursive build}
 	\label{recursiveBuild}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{recursiveBuild}{vector<Light> lights, int start, int end}
+		\Procedure{recursiveBuild}{vector<Light> \&lights, int start, int end}
 		\State LightBVHNode *node;
 		\If{end - start == 1}
 			\State *node = $initLeaf()$;
@@ -169,20 +180,28 @@ The $lightBVHAccel$ constructor initializes the tree construction. First, we wil
 			\State <calculate all split costs for current dimension>
 		\EndFor
 		\State <find out best split>
-		\State *node = $initInterior(recursiveBuild$(leftChild), $recursiveBuild$(rightChild)); \\
-		\Return node;
+		\State <initialize child nodes and make reference as children>
+		\State \Return node;
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-Our implementation of the light BVH construction can be split into multiple sections. Obviously, we want to cover the base case first, when we only have a single light source under the node. In this case, we cannot split further, so we will just initialize a leaf node with the one light source and return this leaf node. 
+Our recursive implementation of the light BVH construction take a vector including all lights of the scene, as well as start and end indices for the current node. The implementation can be split into multiple sections. Obviously, we want to cover the base case first, when we only have a single light source under the node. In this case, we cannot split further, so we will just initialize a leaf node with the one light source and return this leaf node. Next, we will be calculating the axis and $\theta$ values for the whole node for all three dimensions. This is required for the split cost calculations for every split in the current dimension we are working on. After we have computed the split qualities for every individual split in all dimensions, we will find out the best possible split among these we have calculated and initialize the left and right child, which we will reference as children of the current node.
+
+The reader may have already realized that our implementation is very close to popular implementations of BVH constructions; that makes sense since our implementation was heavily influenced by BVH constructions the structure of our tree is analogical to that of BVHs.
 
 \subsection{Axis Calculation}
 \label{subs:axis}
 
-Next, we will do axis calculations for the whole cluster for a specific dimension. We have tried two different approaches for the axis calculations. Our first approach used the median of the individual axes of all lights included in the cluster sorted by the specific dimension we are working on. So, if we wanted to find out the qualities of the individual splits if we split the lights at a particular x-coordinate, we would take the axis of the median light if we sorted them according the x-coordinate of their axes. This approach leads to a major problem. Since our geometric representation is three-dimensional, taking the median axis sorted by a single dimension does not always represent the ideal axis that we are looking for. Suppose we have a scene as modelled in \ref{TODO}. TODO: Zeichnung Beschreibung
+Next, we will do axis calculations for the whole cluster for a specific dimension. We have tried two different approaches for the axis calculations. Our first approach used the median of the individual axes of all lights included in the cluster sorted by the specific dimension we are working on. So, if we wanted to find out the qualities of the individual splits if we split the lights at a particular x-coordinate, we would take the axis of the median light if we sorted them according the x-coordinate of their axes. This approach leads to a major problem. Since our geometric representation is three-dimensional, taking the median axis sorted by a single dimension does not always represent the ideal axis that we are looking for. Suppose we have a scene as modelled in \ref{fig:axis} and suppose we have chose to split the sphere in half along the axis y. Like previously discussed in \ref{fig:idealsplit}, the axis of our hemisphere should be $a$ or at least close to $a$. Calculating the cluster axis like just described would result to a very different and unexpected result. Instead of finding $a$ as the axis, instead, we would find one of the other two axis plotted in the image. Those are the two median axis if you sort the axis of the individual emitters according to their y-value. It is evident, that this approach does not archive the desired results. 
 
-TODO:Zeichnung
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{axis.pdf}
+		\caption{Axis calculation}
+		\label{fig:axis}
+	\end{center}
+\end{figure}
 
 Our second approach that we are using now deals with this problem properly. Instead of using the median axis, we use the average or the normalized sum of the individual axes of all light sources in the cluster:
 
@@ -203,23 +222,17 @@ with $a_i$ being the axis of the i-th light source in the cluster. This axis def
 		\For{\texttt{int i = 0; i < vector.$size$(); i++}}
 			\State Light l $\gets$ lights[i];
 			\State float current\_o $\gets$ 0.f;
-			\State float current\_e $\gets$ 0.f;
-			\If{(current\_o $\gets$ $radianAngle$(axis, l.axis) + l.theta\_o) > *theta\_o}
-				\State *theta\_o $\gets$ current\_o;
-			\EndIf
-			\If{(current\_e $\gets$ current\_o + l.theta\_e) > *theta\_e}
-				\State *theta\_e $\gets$ current\_e;
-			\EndIf
+			\State float current\_e $\gets$ 0.f;	
+			\State 	*theta\_o $\gets$ $max$(*theta\_o, $radianAngle$(axis, l.axis) + l.theta\_o);
+			\State *theta\_e $\gets$ $max$(*theta\_e, o + l.theta\_e);
 		\EndFor
 		\State *theta\_e -= *theta\_o;
-		\State *theta\_e $\gets$ $min$(*theta\_e, $\Pi$ - *theta\_o);
+		\State *theta\_e $\gets$ $min$(*theta\_e, $\pi$ - *theta\_o);
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-TODO: this code is shit wtf dude
-
-We have listed our the calculations for $\theta_o$ and $\theta_e$ in \ref{thetacalculations}. The procedure takes the base address of a vector containing of the lights that define the specific cluster, as well as the axis of the cluster. Also, pointer to two floats are passed to return the $\theta$-values. The calculations made are very simple; we iterate through the lights that were passed to us and calculate the individual $\theta_o$ and $\theta_e$ values of the given axis with the axis of the whole cluster. If any of the $\theta$ values are greater than the current maximum $\theta$ values we have stored, we update our maximum $\theta$ values. At the end, when we have processed all light sources, we have to first subtract $\theta_o$ from $\theta_e$ as we only store the additional angle to $\theta_o$ in $\theta_e$. Next, we will also need to limit $\theta_e$ with $\Pi - \theta_o$, otherwise it is possible to get a negative integral in our bounding cone measure \ref{eq:cone}. This is something we want to avoid because the measured volume of the bounding cone should always be non-negative.
+We have listed our the calculations for $\theta_o$ and $\theta_e$ in \ref{thetacalculations}. The procedure takes the base address of a vector containing of the lights that define the specific cluster, as well as the axis of the cluster. Also, pointer to two floats are passed to return the $\theta$-values. The calculations made are very simple; we iterate through the lights that were passed to us and calculate the individual $\theta_o$ and $\theta_e$ values of the given axis with the axis of the whole cluster. If any of the $\theta$ values are greater than the current maximum $\theta$ values we have stored, we update our maximum $\theta$ values. At the end, when we have processed all light sources, we have to first subtract $\theta_o$ from $\theta_e$ as we only store the additional angle to $\theta_o$ in $\theta_e$. Next, we will also need to limit $\theta_e$ with $\pi - \theta_o$, otherwise it is possible to get a negative integral in our bounding cone measure \ref{eq:cone}. This is something we want to avoid because the measured volume of the bounding cone should always be non-negative.
 
 \subsection{Buckets}
 \label{subs:buckets}
@@ -256,7 +269,29 @@ with $N$ being the total number of emitters of the cluster. Then, we will split 
 \end{algorithmic}
 \end{algorithm}
 
-First, we have to sort the light sources by their coordinate value of the current dimension we are working on, since we split in world space. Then, we use the previously discussed buckets to determine positions where to split the emitters. For each individual split, we will be doing axis, theta and AABB as described in \ref{subs:axis}, \ref{subs:theta} and \ref{sec:aabb}. The total energy of a cluster is simply the sum of the energy values of the individual light sources. Afterwards, we will do the split cost calculations according to \ref{sec:saoh}.
+First, we have to sort the light sources by their coordinate value of the current dimension we are working on, since we split in world space. Then, we use the previously discussed buckets to determine positions where to split the emitters. For each individual split, we will be doing axis, theta and AABB as described in \ref{subs:axis}, \ref{subs:theta} and \ref{sec:aabb}. The total energy of a cluster is simply the sum of the energy values of the individual light sources. Afterwards, we will do the cost calculations for the left part, the right part and the total cluster according to \ref{sec:saoh}. The split cost of this bucket is then stored in the respective entry of cost. After we have iterated through all the buckets for this particular dimension, we will return the array containing all split values of this dimension.
+
+\subsection{Choosing the best split}
+
+There is not much to talk in this subsection. We iterate through the arrays containing the cost values of each individual split and choose the split with the lowest cost value, i.e. the split that has the highest quality. Depending on the implementation and if we use buckets, we have to calculate the index where we split our cluster and perhaps the dimension of the split.
+
+\subsection{Creating the children nodes}
+
+\begin{algorithm}
+	\caption{Children creation}
+	\label{alg:childrencreation}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{createChildren}{vector<Light> lights, int splitIndex, int splitDimension}
+		\State $partialSort$(\$lights, splitIndex, splitDimension);
+		\State LightBVHNode *leftNode $\gets$ $recursiveBuild$(lights, 0, splitIndex + 1);
+		\State LightBVHNode *rightNode $\gets$ $recursiveBuild$(lights, splitIndex + 1, lights.$size$());
+		\State node $\gets$ $initInterior$(leftNode, rightNode);
+		\State \Return node;
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+At this point, we have found out the dimension of our optimal split, as well as the index where to split our cluster. Our first step is to make a partial sort at the split index with the individual lights of the cluster. We have to sort according to the world space coordinates of the given dimension. That makes sense, since our primary goal was the split the cluster in world space and use the orientation solely for split cost calculations while constructing the tree. Afterwards, we recursively call $recursiveBuild$ with the indices for the left and the right child and make references of the children in our parent node.
 
 \section{Light Bounding Volume Hierarchy Traversal}
 \label{sec:alg:tra}
