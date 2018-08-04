@@ -113,13 +113,19 @@ $M_A(C)$ being the surface area of the cluster, $M_\Omega(C)$ being the bounding
 M_A(C) = 2(lw + wh + hl).
 \end{equation}
 
-We used a weighted definition for our bounding cone measure. Remember that we have defined $\theta\_o$ as the bounding angle that encloses the orientation vectors of all the light sources in the cluster, while $\theta_e$ describes their emission range. Obviously, the cone enclosed with $\theta_o$ will most likely have a greater in emission power and thus, we will weight the volume confined by $\theta_o$ with a cosine. The measure we have used and has been described in \Cite{MLS} is as follows:
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.4\textwidth]{cone.pdf}
+		\caption{Bounding cone measure}
+		\label{fig:cone}
+	\end{center}
+\end{figure}
+
+We used a weighted definition for our bounding cone measure. Remember that we have defined $\theta\_o$ as the bounding angle that encloses the orientation vectors of all the light sources in the cluster, while $\theta_e$ describes their emission range. Obviously, the cone enclosed with $\theta_o$ will most likely have a greater in emission power and thus, we will weight the volume confined by $\theta_o$ with a cosine. A drawing of the individual cones can be seen in \ref{fig:cone}. The measure we have used and has been described in \Cite{MLS} is as follows:
 
 \begin{equation}\label{eq:cone}
 M_\Omega(C) = 2\pi * \bigg[(1-\cos(\theta_o)) + \int_{\theta_o}^{\theta_o + \theta_e}\cos(\omega - \theta_o) * sin(\omega)d\omega\bigg]
 \end{equation} 
-
-TODO:Zeichnung
 
 Then, we describe the quality of a split as:
 
@@ -188,12 +194,10 @@ The $lightBVHAccel$ constructor initializes the tree construction. First, we wil
 
 Our recursive implementation of the light BVH construction take a vector including all lights of the scene, as well as start and end indices for the current node. The implementation can be split into multiple sections. Obviously, we want to cover the base case first, when we only have a single light source under the node. In this case, we cannot split further, so we will just initialize a leaf node with the one light source and return this leaf node. Next, we will be calculating the axis and $\theta$ values for the whole node for all three dimensions. This is required for the split cost calculations for every split in the current dimension we are working on. After we have computed the split qualities for every individual split in all dimensions, we will find out the best possible split among these we have calculated and initialize the left and right child, which we will reference as children of the current node.
 
-The reader may have already realized that our implementation is very close to popular implementations of BVH constructions; that makes sense since our implementation was heavily influenced by BVH constructions the structure of our tree is analogical to that of BVHs.
+The reader may have already realized that our implementation is very close to popular implementations of BVH constructions; that makes sense since our implementation was heavily influenced by BVH constructions the structure of our tree is analogical to that of BVHs. It should be also noted that we count the number of nodes we create. This number is required for the flattening of our tree later (\ref{subs:flat}).
 
 \subsection{Axis Calculation}
 \label{subs:axis}
-
-Next, we will do axis calculations for the whole cluster for a specific dimension. We have tried two different approaches for the axis calculations. Our first approach used the median of the individual axes of all lights included in the cluster sorted by the specific dimension we are working on. So, if we wanted to find out the qualities of the individual splits if we split the lights at a particular x-coordinate, we would take the axis of the median light if we sorted them according the x-coordinate of their axes. This approach leads to a major problem. Since our geometric representation is three-dimensional, taking the median axis sorted by a single dimension does not always represent the ideal axis that we are looking for. Suppose we have a scene as modelled in \ref{fig:axis} and suppose we have chose to split the sphere in half along the axis y. Like previously discussed in \ref{fig:idealsplit}, the axis of our hemisphere should be $a$ or at least close to $a$. Calculating the cluster axis like just described would result to a very different and unexpected result. Instead of finding $a$ as the axis, instead, we would find one of the other two axis plotted in the image. Those are the two median axis if you sort the axis of the individual emitters according to their y-value. It is evident, that this approach does not archive the desired results. 
 
 \begin{figure}
 	\begin{center}
@@ -203,13 +207,24 @@ Next, we will do axis calculations for the whole cluster for a specific dimensio
 	\end{center}
 \end{figure}
 
-Our second approach that we are using now deals with this problem properly. Instead of using the median axis, we use the average or the normalized sum of the individual axes of all light sources in the cluster:
+Next, we will do axis calculations for the whole cluster for a specific dimension. We have tried two different approaches for the axis calculations. Our first approach used the median of the individual axes of all lights included in the cluster sorted by the specific dimension we are working on. So, if we wanted to find out the qualities of the individual splits if we split the lights at a particular x-coordinate, we would take the axis of the median light if we sorted them according the x-coordinate of their axes. This approach leads to a major problem. Since our geometric representation is three-dimensional, taking the median axis sorted by a single dimension does not always represent the ideal axis that we are looking for. Suppose we have a scene as modelled in \ref{fig:axis} and suppose we have chose to split the sphere in half along the axis y. Like previously discussed in \ref{fig:idealsplit}, the axis of our hemisphere should be $a$ or at least close to $a$. Calculating the cluster axis like just described would result to a very different and unexpected result. Instead of finding $a$ as the axis, instead, we would find one of the other two axis plotted in the image. Those are the two median axis if you sort the axis of the individual emitters according to their y-value. It is evident, that this approach does not archive the desired results. 
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{axis2.pdf}
+		\caption{Axis calculation}
+		\label{fig:axis2}
+	\end{center}
+\end{figure}
+
+
+Using the median axis sorted by another coordinate value works in this example, but does not yield the correct results in general either. Suppose we already have hemispheres like in \ref{fig:axis2} and the split you can see in the drawing. In this situation, we would actually want to use the median axis sorted by the x-coordinate after having split along the axis x. Sorting by the y-values would lead to unwanted results. As you can see, only considering the value of one of the dimensions of the axes is not enough; instead we have to regard all the three dimensions. Our second approach that we are using now deals with this problem properly. Instead of using the median axis, we use the average or the normalized sum of the individual axes of all light sources in the cluster:
 
 \begin{equation}
 C_{axis} = \frac{\sum_{i = 0} a_i}{|\sum_{i = 0} a_i|},
 \end{equation}
 
-with $a_i$ being the axis of the i-th light source in the cluster. This axis definition for a cluster eliminates the problem presented in \ref{TODO}. Both median and average calculations have $O(n)$ time complexity, but especially in scenes with symmetric objects that represent light sources, our current approach leads to much better results.
+with $a_i$ being the axis of the i-th light source in the cluster. This axis definition for a cluster eliminates the problem presented in \ref{fig:axis}. Both median and average calculations have $O(n)$ time complexity, but especially in scenes with symmetric objects that represent light sources, our current approach leads to much better results.
 
 \subsection{Theta Calculations}
 \label{subs:theta}
@@ -239,15 +254,23 @@ We have listed our the calculations for $\theta_o$ and $\theta_e$ in \ref{thetac
 
 Before we jump into our split cost implementation, we want to talk about a design decision we made. The first approach we tried was to split the light sources after every single light source, which means, if we had 1.000 lights, we would have 999 different splits in each dimension. We realized that this approach does not scale well for very large amounts of light sources. We measured the time for building the light BVH on different scenes with varying amounts of emitters on a computer with a Intel® Core™ i7-4770K processor and 16 gigabyte of main memory. For instance, a scene with 10.000 emitters works just fine with a rendering time of TODO. On the other hand, the tree construction time of another scene with one million light sources takes TODO. Obviously, this construction time is way too long and not useful for practical uses. 
 
-TODO: Zeichnung 
-
 Therefore, we decided to use specific amounts of buckets that determine the position where we split the light sources. At the start, we will define a maximum amount of splits that we want to calculate for any cluster. What has worked well for us is to calculate a maximum number of 10.000 splits. This way, we have an acceptable rendering time of TODO for the scene with one million light sources, while the split quality stays roughly the same like if we would calculate every possible split. When we have settled on $b$, the amount of buckets to use, we will define the number of light sources in each bucket as:
 
 \begin{equation}
 n = \frac{b}{N},
 \end{equation}
 
-with $N$ being the total number of emitters of the cluster. Then, we will split the lights of the cluster at the indices that are multiples of $n$, resulting to $b$ different splits.
+with $N$ being the total number of emitters of the cluster. Then, we will split the lights of the cluster at the indices that are multiples of $n$, resulting to $b$ different splits. 
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{bucket.pdf}
+		\caption{Bucket splits for area light sources, point light sources and spotlights}
+		\label{fig:bucket}
+	\end{center}
+\end{figure}
+
+Another approach to split the scene in multiple buckets is to split the world space coordinates for a specific dimension into equally big areas and projecting the centroid value of the light sources on the coordinate plane of that dimension. The general idea can be seen in \ref{fig:bucket}. So, instead of splitting after a certain amount of emitters, we split after a definite chunk of world space. The difference between these two ideas was not huge, but we decided to stick to splitting after a fixed number of emitters because especially in scenes, where the emitters are focused in a small area, this approach seemed to make more sense.
 
 \subsection{Split Cost Calculation}
 \label{subs:splitcost}
@@ -291,7 +314,12 @@ There is not much to talk in this subsection. We iterate through the arrays cont
 	\end{algorithmic}
 \end{algorithm}
 
-At this point, we have found out the dimension of our optimal split, as well as the index where to split our cluster. Our first step is to make a partial sort at the split index with the individual lights of the cluster. We have to sort according to the world space coordinates of the given dimension. That makes sense, since our primary goal was the split the cluster in world space and use the orientation solely for split cost calculations while constructing the tree. Afterwards, we recursively call $recursiveBuild$ with the indices for the left and the right child and make references of the children in our parent node.
+At this point, we have found out the dimension of our optimal split, as well as the index where to split our cluster. Our first step is to make a partial sort at the split index with individual lights of the cluster. We have to sort according to the centroids world space coordinates of the given dimension. That makes sense, since our primary goal was the split the cluster in world space and use the orientation solely for split cost calculations while constructing the tree. Afterwards, we recursively call $recursiveBuild$ with the indices for the left and the right child and make references of the children in our parent node.
+
+\subsection{Tree Flattening}
+\label{subs:flat}
+
+We have a representation of all light sources of the scene in a binary tree now and at this point, we say that we are finished with our tree construction and use this tree as the acceleration data structure to do the sampling on. At first, we did exactly that and did not bother to flatten the tree. But when traversing the tree, we have realized that the nodes were not ordered in a linear way in our memory. That leads to more cache misses, worse memory usage and just worse performance overall, which is why we looked for a way to change this aspect of our light BVH representation.
 
 \section{Light Bounding Volume Hierarchy Traversal}
 \label{sec:alg:tra}
