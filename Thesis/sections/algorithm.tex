@@ -319,10 +319,54 @@ At this point, we have found out the dimension of our optimal split, as well as 
 \subsection{Tree Flattening}
 \label{subs:flat}
 
-We have a representation of all light sources of the scene in a binary tree now and at this point, we say that we are finished with our tree construction and use this tree as the acceleration data structure to do the sampling on. At first, we did exactly that and did not bother to flatten the tree. But when traversing the tree, we have realized that the nodes were not ordered in a linear way in our memory. That leads to more cache misses, worse memory usage and just worse performance overall, which is why we looked for a way to change this aspect of our light BVH representation.
+\begin{algorithm}
+	\caption{Tree flattening}
+	\label{alg:treeflattening}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{flattenLightBVHTree}{LinearLightBVHNode *nodes, LightBVHNode *node, int *offset}
+		\State LinearLightBVHNode *linearNode $\gets$ \&nodes[*offset];
+		\State linearNode.$copy$(node);
+		\State int myOffset $\gets$ (*offset)++;
+		\If{node->nLights == 1}
+		\State linearNode->lightNum $\gets$ node->lightNum;
+		\Else
+		\State linearNode->splitAxis $\gets$ node->splitAxis;
+		\State $flattenLightBVHTree$(nodes, node->children[0], offset);
+		\State linearNode->secondOffset $\gets$ \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $flattenLightBVHTree$(nodes, node->children[1], offset);
+		\EndIf
+		\State \Return myOffset;
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+We have a representation of all light sources of the scene in a binary tree now and at this point, we say that we are finished with our tree construction and use this tree as the acceleration data structure to do the sampling on. At first, we did exactly that and did not bother to flatten the tree. But when traversing the tree, we have realized that the nodes were not ordered in a linear way in our memory. That leads to more cache misses, worse memory usage and just worse performance overall, which is why we looked for a way to change this aspect of our light BVH representation. We chose to use a implementation that uses a contiguous chunk of memory. How we modelled a single node in our code can be seen in \ref{fig:linearlightbvhnode}. The general idea is that the left child node is implicitly referenced because it is stored as the next child in the memory. Therefore, we only need to store the offset to the right child of each interior node explicitly. The pseudo code of our implementation can be seen in \ref{alg:treeflattening}. Remember that we call this method on the root of our light BVH tree before flattening with the base address of our pre-allocated memory passed in $*nodes$ (\ref{LightBVHAccelerator}) The offset passed is obviously 0 at the beginning.
+
+The function returns the offset for the current node we are working on. First, we will creating a $LinearLightBVHNode$ at the address given by $\&nodes + offset$ and will be copying the data from $*node$ that are used for all nodes, regardless if the node is an interior node or a leaf node. That includes:
+
+\begin{itemize}
+	\item World space bounds
+	\item Orientation bound
+	\item Energy of the node
+	\item Centroid of the node
+	\item Number of emitters under this node
+\end{itemize} 
+
+After incrementing the offset, so $\&nodes + offset$ points to the address where the next $LinearLightBVHNode$ should start, we will be dealing with two cases: Either the currently regarded node is a leaf node or an interior node. If the node is a leaf node, all we need to do is set the light number are finished. If the node is an interior node, the splitAxis need to be set and we will have to call the method recursively for the left and the right child, while storing the offset returned by the second child as the $secondChildOffset$. That will be our explicit reference to the second child when traversing the tree later.
+
+TODO:Zeichnung
+
+The effect of calling this method on the root of the light BVH tree can be seen in \ref{TODO}. Suppose we have a very simple tree with only five total nodes consisting of two interior nodes and three leaf nodes like in the drawing. In our pre-flattened version of our light BVH, the nodes do not necessarily need to be in a contiguous chunk of memory. Instead, every interior node would have references to two child nodes. After the flattening, the nodes are ordered in a linear way in a coherent chunk of memory. The left child is implicitly referenced by the next node in the memory and the right child can be referenced via an offset. Obviously, with the non-linear implementation, our cache, memory and overall system performance could be extremely lacking in worst cases and will definitely be worse in average cases than our flattened version.
 
 \section{Light Bounding Volume Hierarchy Traversal}
 \label{sec:alg:tra}
+
+We have successfully constructed an acceleration data structure for our light sampling problem. The next step will be obviously doing the tree traversal. If we think back to \ref{sec:preliminaries:pat}, in our light transport equation we have two different functions in the integrand. 
+
+\begin{equation}
+L_o(p, \omega_o) = \int_{\varsigma^2}f(p, \omega_o, \omega_i)L_d(p, \omega_i)|cos\theta_i|d\omega_i
+\end{equation}
+
+Both function can be sampled with Monte Carlo integration and while $f(p, \omega_o, \omega_i)$ depends on the BSDF of the material of the intersection point, $L_d(p, \omega_i)$ can be importance sampled when we choose an emitter that has a big contribution to the intersection point. Our goal, in summary, is to return light sources that have a high contribution to the intersection point more often. In most cases that would be done by creating a distribution that has a similar form to that of $L_d(p, \omega_i)$, but in our situation, that is not practicable. Calculating a distribution for every single new intersection point would not make a lot of sense since these distribution cannot be reused. In special scenes, we might sample light sources for a single point multiple times, but in general that will not be the case. Instead of generating distributions, we will make a decision at every branch of our tree to go left or right based on a random number.
 
 \subsection{Splitting}
 \label{subs:split}

@@ -20,7 +20,7 @@ Path tracing is one of the most important rendering techniques when creating hig
 
 There are sampling approaches that try to limit the time required to render these scenes with a big amount of lights. For instance, we could say that the probability of a point of the scene sampling a certain light is only dependent on the emission power of said light. We would make a distribution that only takes into account the emission power of the lights. To light a specific point we would then sample a single light according to the distribution function we built earlier. Obviously there are a lot of problems with this approach. An area light source or a spotlight could be facing towards a completely different direction and may not have any effect on the point. Or the light source could be potentially too far away to have a noticeable effect on the point. This sampling technique asserts a fast sampling speed but can lead to very noisy images that we are trying to avoid.
 
-For this bachelor's thesis we will introduce a light sampling technique that improves the rendering speed without making the rendered image too noisy.
+For this bachelor's thesis we will introduce a light sampling technique that improves the rendering speed in scenes with many emitters while still maintaining an comparable quality.
 
 \section{Content}
 \label{sec:Introduction:Content}
