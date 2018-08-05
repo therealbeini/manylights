@@ -175,7 +175,7 @@ The $lightBVHAccel$ constructor initializes the tree construction. First, we wil
 	\caption{LightBVHAccelerator recursive build}
 	\label{recursiveBuild}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{recursiveBuild}{vector<Light> \&lights, int start, int end}
+		\Procedure{LightBVHNode* recursiveBuild}{vector<Light> \&lights, int start, int end}
 		\State LightBVHNode *node;
 		\If{end - start == 1}
 			\State *node = $initLeaf()$;
@@ -279,7 +279,7 @@ Another approach to split the scene in multiple buckets is to split the world sp
 	\caption{Split Cost Calculation}
 	\label{alg:splitcostcalculation}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{calculateCost}{vector<Light> \$lights, int buckets}
+		\Procedure{int[] calculateCost}{vector<Light> \$lights, int buckets}
 		\State float[buckets] cost;
         \ForEach {\texttt{split i}}
 		\State <calculate axis, thetas, AABB and energy for the left part>
@@ -304,7 +304,7 @@ There is not much to talk in this subsection. We iterate through the arrays cont
 	\caption{Children creation}
 	\label{alg:childrencreation}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{createChildren}{vector<Light> lights, int splitIndex, int splitDimension}
+		\Procedure{LightBVHNode* createChildren}{vector<Light> lights, int splitIndex, int splitDimension}
 		\State $partialSort$(\$lights, splitIndex, splitDimension);
 		\State LightBVHNode *leftNode $\gets$ $recursiveBuild$(lights, 0, splitIndex + 1);
 		\State LightBVHNode *rightNode $\gets$ $recursiveBuild$(lights, splitIndex + 1, lights.$size$());
@@ -323,7 +323,7 @@ At this point, we have found out the dimension of our optimal split, as well as 
 	\caption{Tree flattening}
 	\label{alg:treeflattening}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{flattenLightBVHTree}{LinearLightBVHNode *nodes, LightBVHNode *node, int *offset}
+		\Procedure{int flattenLightBVHTree}{LinearLightBVHNode *nodes, LightBVHNode *node, int *offset}
 		\State LinearLightBVHNode *linearNode $\gets$ \&nodes[*offset];
 		\State linearNode.$copy$(node);
 		\State int myOffset $\gets$ (*offset)++;
@@ -353,9 +353,15 @@ The function returns the offset for the current node we are working on. First, w
 
 After incrementing the offset, so $\&nodes + offset$ points to the address where the next $LinearLightBVHNode$ should start, we will be dealing with two cases: Either the currently regarded node is a leaf node or an interior node. If the node is a leaf node, all we need to do is set the light number are finished. If the node is an interior node, the splitAxis need to be set and we will have to call the method recursively for the left and the right child, while storing the offset returned by the second child as the $secondChildOffset$. That will be our explicit reference to the second child when traversing the tree later.
 
-TODO:Zeichnung
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{flattening.pdf}
+		\caption{Tree representation before and after flattening}
+		\label{fig:flattening}
+	\end{center}
+\end{figure}
 
-The effect of calling this method on the root of the light BVH tree can be seen in \ref{TODO}. Suppose we have a very simple tree with only five total nodes consisting of two interior nodes and three leaf nodes like in the drawing. In our pre-flattened version of our light BVH, the nodes do not necessarily need to be in a contiguous chunk of memory. Instead, every interior node would have references to two child nodes. After the flattening, the nodes are ordered in a linear way in a coherent chunk of memory. The left child is implicitly referenced by the next node in the memory and the right child can be referenced via an offset. Obviously, with the non-linear implementation, our cache, memory and overall system performance could be extremely lacking in worst cases and will definitely be worse in average cases than our flattened version.
+The effect of calling this method on the root of the light BVH tree can be seen in \ref{fig:flattening}. Suppose we have a very simple tree with only five total nodes consisting of two interior nodes (A and B) and three leaf nodes (C, D and E) like in the drawing. In our pre-flattened version of our light BVH, the nodes do not necessarily need to be in a contiguous chunk of memory. Instead, every interior node would have references to two child nodes. After the flattening, the nodes are ordered in a linear way in a coherent chunk of memory. The left child is implicitly referenced by the next node in the memory and the right child can be referenced via an offset. In our example, the left child of A is implicitly referenced by the next node in memory, as well as the left child of B. The right child can be found with the sum of the offset and the base address. Obviously, with the non-linear implementation, our cache, memory and overall system performance could be extremely lacking in worst cases and will definitely be worse in average cases than our flattened version.
 
 \section{Light Bounding Volume Hierarchy Traversal}
 \label{sec:alg:tra}
@@ -367,6 +373,61 @@ L_o(p, \omega_o) = \int_{\varsigma^2}f(p, \omega_o, \omega_i)L_d(p, \omega_i)|co
 \end{equation}
 
 Both function can be sampled with Monte Carlo integration and while $f(p, \omega_o, \omega_i)$ depends on the BSDF of the material of the intersection point, $L_d(p, \omega_i)$ can be importance sampled when we choose an emitter that has a big contribution to the intersection point. Our goal, in summary, is to return light sources that have a high contribution to the intersection point more often. In most cases that would be done by creating a distribution that has a similar form to that of $L_d(p, \omega_i)$, but in our situation, that is not practicable. Calculating a distribution for every single new intersection point would not make a lot of sense since these distribution cannot be reused. In special scenes, we might sample light sources for a single point multiple times, but in general that will not be the case. Instead of generating distributions, we will make a decision at every branch of our tree to go left or right based on a random number.
+
+
+\begin{algorithm}
+	\caption{Sampling a single light source}
+	\label{alg:sample1}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{int sampleOneLight}{Intersection \&it, float *pdf}
+			\State float sample1D $\gets$ $UniformFloat()$;
+			\State *pdf $\gets$ 1;
+			\State \Return $TraverseNodeForOneLight$(nodes, sample1D, it, pdf);
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{Sampling multiple light source}
+		\label{alg:sample2}
+		\begin{algorithmic}[1] % The number tells where the line numbering should start
+			\Procedure{vector<pair<int, float>> sampleMultipleLights}{Intersection \&it}
+				\State vector<pair<int, float>> lightVector;
+				\State $TraverseNodeForMultipleLights$(nodes, it, \&lightVector);
+				\State \Return lightVector;
+				\EndProcedure
+			\end{algorithmic}
+		\end{algorithm}
+
+Our implementation offers two functions to call to sample a light source when passing an intersection point. The two functions are $SampleOneLight$ when not splitting and $SampleMultipleLights$ when splitting. The main reason for two different functions for a functionality that could be provided by a single function is that we want to avoid unnecessary work if possible. When sampling multiple lights, it is required to return a data structure that stores a collection of references to the emitters. That is not mandatory for sampling a single light source. Since this method is called every time we want to sample a light source, the additional overhead can add up to a substantial amount of extra rendering time. Our two implementations of the sampling functions can be seen in \ref{alg:sample1} and \ref{alg:sample2}. There are a few things to point out in our implementation. First, note that $nodes$ is a pointer to our root of our flattened tree and is a private member of our tree representation. Second, the $Intersection$ to be passed stores information about the intersection point, including its world space position, as well as its normal and BSDF representation. That is required for splitting and optimization later. Third, additionally to the number of the light source, we return a value of the probability density function (PDF) in both sampling functions. As we have explained in earlier sections, this is an integral part of importance sampling that cannot be skipped. When sampling a single light source, we generate a uniform random number between 0 and 1 and make branch decisions based on that number. This step is postponed when sampling multiple light sources for two different reasons. It is not required at this point and we want to draw a uniform random number for each light source to sample instead of using a single uniform random number. Instead, we will initialize a vector that will later be filled with the index numbers of the sampled light sources and their respective PDFs. Lastly, we have to mention an important detail about the return of these functions. In some cases, when traversing through the light BVH, it will be already evident, that not a single emitter in the branch we are current traversing though will have a contribution to the intersection point. In these situations, we will return -1 to signal that we did not sample a light.
+
+\subsection{Sampling a single light source}
+\label{subs:single}
+
+\begin{algorithm}
+	\caption{Sampling a single light source}
+	\label{alg:sample1}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{int TraverseNodeForOneLight}{LinearLightBVHNode *node, Intersection \&it, float *pdf}
+		\If{node->nLights == 1}
+		\State \Return node->lightNum;
+		\EndIf
+		\State float left $\gets$ calculateImportance(it, \&node[1]);
+		\State float right $\gets$ calculateImportance(it, nodes[node->secondChildOffset]);
+		\State float total $\gets$ left + right;
+		\If{total == 0}
+		\State \Return -1;
+		\EndIf
+		\State left /= total;
+		\State right /= total;
+				\State <branch according to importance and sample1D>
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+We will be talking about how we traverse through the light BVH when sampling a single light source in this subsection. First, we cover the base case when we already arrived at a leaf node of our tree representation. In this case, we have reached a node that contains only a single light source which represents the sampled light source. We simply return the index of the emitter stored in the current node, as well as the PDF that has been calculated while traversing through the tree.
+
+If we are currently in an interior node, we will have to calculate the importance values for both children. The left child is simply the next node in memory, while we will reference the right child explicitly with the $secondChildOffset$ of the current node. Then, we will normalize these importance values and check if their sum is zero. In this case, the current node we are working on, will have no contribution to the intersection point and we will return -1. If the total value is non-zero, we will make a decision to go left or right based on the importance values and the uniform random number we drew earlier.
 
 \subsection{Splitting}
 \label{subs:split}

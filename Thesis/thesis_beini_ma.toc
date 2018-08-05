@@ -73,12 +73,14 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3.5}Light Bounding Volume Hierarchy Traversal}{29}{section.3.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5.1}Splitting}{30}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.1}Sampling a single light source}{31}{subsection.3.5.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Evaluation}{31}{chapter.4}
+\contentsline {subsection}{\numberline {3.5.2}Splitting}{32}{subsection.3.5.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Conclusion}{33}{chapter.5}
+\contentsline {chapter}{\numberline {4}Evaluation}{33}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Bibliography}{33}{chapter.5}
+\contentsline {chapter}{\numberline {5}Conclusion}{35}{chapter.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{35}{chapter*.6}
+\contentsline {chapter}{Bibliography}{35}{chapter.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Bibliography}{37}{chapter*.6}
