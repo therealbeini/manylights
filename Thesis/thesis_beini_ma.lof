@@ -37,6 +37,10 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 3.10}{\ignorespaces Tree representation before and after flattening}}{29}{figure.3.10}
 \defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.11}{\ignorespaces General idea of the uncertainty angle}}{33}{figure.3.11}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.12}{\ignorespaces Uncertainty angle calculation by calculating the angle between a vector starting at the shading point and pointing to the centroid and the 4 corners on the intersected side of the cuboid}}{33}{figure.3.12}
+\defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }

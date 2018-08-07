@@ -429,5 +429,52 @@ We will be talking about how we traverse through the light BVH when sampling a s
 
 If we are currently in an interior node, we will have to calculate the importance values for both children. The left child is simply the next node in memory, while we will reference the right child explicitly with the $secondChildOffset$ of the current node. Then, we will normalize these importance values and check if their sum is zero. In this case, the current node we are working on, will have no contribution to the intersection point and we will return -1. If the total value is non-zero, we will make a decision to go left or right based on the importance values and the uniform random number we drew earlier.
 
+\subsection{Importance from a shading point}
+\label{subs:imp}
+
+We want to traverse the light BVH making random decisions at every branch. These random decisions come from a random uniform number we drew earlier in our implementation, but we will also need an importance measure to complete our importance sampling. Our importance measure for a given node and intersection point has to take multiple factors into consideration. The three factors are:
+
+\begin{itemize}
+	\item Contained Energy of the node
+	\item Inverse square distance from node centroid
+	\item Cosine factor to the orientation bounds
+\end{itemize}
+
+The first two factors are pretty self-explanatory. In a situation where two nodes are represented by the same world space bounds and orientation bounds, the contained energy of the node is proportional to the contribution of the nodes. The same logic can be used for our second factor. The further away a node is from our sampling point, the lower will its contribution be. Note, that we will have to use the centroid of the node as the replacement of the position of the sampled light source since we do not yet know the actual emitter to sample now.
+
+Our cosine factor to the orientation bounds requires us to look at our node representation more closely. First, notice that a single node can cover a big area in world space, which means that the actual position of the emitter to be sampled later and the centroid of the node can be very far away dependent on the size of the node. This is why we need a so-called "uncertainty factor" that considers this fact; otherwise it might be possible that we totally disregard nodes where emitters have a high contribution but where the emitters are very distant from the centroid of the node. But this uncertainty factor cannot be solely based on the size of the node, since this uncertainty factor will have a bigger input in nodes that are close to the sampling point. We decided to use an uncertainty angle $\theta_u$. The idea behind $\theta_u$ is that we try to find the biggest angle between a vector starting from the shading point and pointing to the centroid and a vector starting from the shading point and pointing to any point $p$ that lies inside of the node. A drawing of the uncertainty angle can be seen in \ref{fig:uncertainty1}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{uncertainty1.pdf}
+		\caption{General idea of the uncertainty angle}
+		\label{fig:uncertainty1}
+	\end{center}
+\end{figure}
+
+We could use the positions of the emitters to determine the uncertainty angle, since that would return exactly what we want: The maximum angle difference from the centroid and a light source in the node. But especially in nodes with very large amounts of emitters, so in nodes that are close to the root of our tree representation, that seems to be not very practical. Instead, we can estimate the uncertainty angle by defining the corners of our nodes world space bounds as the ending points of our vector. While this method does not yield perfect results, it is much faster than calculating the angle of potentially thousands of lights in every step. At this point, we have limited the giant number of angle calculations to only 8, one for each corner of the node. In practice, we can even further limit these angle calculations: The corner that yields us the biggest uncertainty angle will always be on the side of the cuboid that was intersected when we drew a vector from the shading point to the centroid. That means, we can reduce the angle calculations to only 4, one for each corner on the intersected side of the cuboid. A graphic illustration can be seen in \ref{fig:uncertainty2}. In some situations, the shading point will lie inside of the world space bounds of the node. In these cases, we will just set the uncertainty value as $\pi$, which will result to our cosine factor to the orientation bounds becoming 1.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{uncertainty2.pdf}
+		\caption{Uncertainty angle calculation by calculating the angle between a vector starting at the shading point and pointing to the centroid and the 4 corners on the intersected side of the cuboid}
+		\label{fig:uncertainty2}
+	\end{center}
+\end{figure}
+
+
+\begin{algorithm}
+	\caption{Calculating the importance of a sampling point with a given node}
+	\label{alg:imp}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{float calculateImportance}{Intersection \&it, LinearLightBVHNode* node}
+		\State <check if the bounding box of node is behind the shaded point>
+		\State <calculate the first side of the node we hit if we draw a vector from the shading point to the centroid of the node>
+		\State <calculate the uncertainty angle>
+		\State <calculate the importance value of the node>
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
 \subsection{Splitting}
 \label{subs:split}
