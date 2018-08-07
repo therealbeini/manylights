@@ -77,10 +77,10 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.5.2}Importance from a shading point}{32}{subsection.3.5.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5.3}Splitting}{33}{subsection.3.5.3}
+\contentsline {subsection}{\numberline {3.5.3}Splitting}{36}{subsection.3.5.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Evaluation}{35}{chapter.4}
+\contentsline {chapter}{\numberline {4}Evaluation}{37}{chapter.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Conclusion}{37}{chapter.5}
+\contentsline {chapter}{\numberline {5}Conclusion}{39}{chapter.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{39}{chapter*.6}
+\contentsline {chapter}{\nonumberline Bibliography}{41}{chapter*.6}

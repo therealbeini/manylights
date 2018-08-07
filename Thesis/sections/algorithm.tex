@@ -432,17 +432,35 @@ If we are currently in an interior node, we will have to calculate the importanc
 \subsection{Importance from a shading point}
 \label{subs:imp}
 
+TODO:Zeichnung
+
+Before we talk about our defined importance measure, we should point our that an emitter can only have a direct contribution to the shading point if there are no opaque objects blocking the view from the light source position and the shading point. Obviously, we cannot know if any arbitrary object is blocking this view without doing ray-intersection tests which would drastically worsen the runtime of our algorithm. But there is one implicit intersection test can be done very easily: whether the object of the shading point is blocking the view itself. Suppose we have a situation where the normal of the primitive at the shading point points away from the node that we are regarding right now like in \ref{TODO}. If we know that the primitive is opaque, and therefore there will be no light transmissions, the contribution of any emitter in the node will be zero for the shading point because the geometric representation of the primitive is blocking the incident lighting of the emitter itself. The check for this case is very trivial. We simply test if all of the 8 corners of the nodes bounding box are behind the shading point. In this situation, the importance value of this node for the given shading point is zero.
+
 We want to traverse the light BVH making random decisions at every branch. These random decisions come from a random uniform number we drew earlier in our implementation, but we will also need an importance measure to complete our importance sampling. Our importance measure for a given node and intersection point has to take multiple factors into consideration. The three factors are:
 
 \begin{itemize}
-	\item Contained Energy of the node
+	\item Contained energy of the node
 	\item Inverse square distance from node centroid
-	\item Cosine factor to the orientation bounds
+	\item Cosine factor to the orientation bounds $I_\theta$
 \end{itemize}
 
 The first two factors are pretty self-explanatory. In a situation where two nodes are represented by the same world space bounds and orientation bounds, the contained energy of the node is proportional to the contribution of the nodes. The same logic can be used for our second factor. The further away a node is from our sampling point, the lower will its contribution be. Note, that we will have to use the centroid of the node as the replacement of the position of the sampled light source since we do not yet know the actual emitter to sample now.
 
-Our cosine factor to the orientation bounds requires us to look at our node representation more closely. First, notice that a single node can cover a big area in world space, which means that the actual position of the emitter to be sampled later and the centroid of the node can be very far away dependent on the size of the node. This is why we need a so-called "uncertainty factor" that considers this fact; otherwise it might be possible that we totally disregard nodes where emitters have a high contribution but where the emitters are very distant from the centroid of the node. But this uncertainty factor cannot be solely based on the size of the node, since this uncertainty factor will have a bigger input in nodes that are close to the sampling point. We decided to use an uncertainty angle $\theta_u$. The idea behind $\theta_u$ is that we try to find the biggest angle between a vector starting from the shading point and pointing to the centroid and a vector starting from the shading point and pointing to any point $p$ that lies inside of the node. A drawing of the uncertainty angle can be seen in \ref{fig:uncertainty1}.
+TODO: Zeichnung
+
+Our cosine factor to the orientation bounds $I_\theta$ requires us to look at our node representation more closely. We will define $I_\theta$ as follows:
+
+\begin{equation}
+\label{eq:imp}
+I_\theta = \begin{cases} 
+\theta - \theta_o - \theta_u & \theta - \theta_o - \theta_u \leq \theta_e \\
+0 & \theta - \theta_o - \theta_u > \theta_e \\
+\end{cases}
+\end{equation}
+
+with $\theta$ being the angle between the axis of the node and a vector starting at the centroid of the node and the shading point and $\theta_u$ being the uncertainty angle that we will define in the next paragraph. An illustration of the individual angles can be seen in \ref{TODO}.
+
+First, notice that a single node can cover a big area in world space, which means that the actual position of the emitter to be sampled later and the centroid of the node can be very far away dependent on the size of the node. This is why we need a so-called "uncertainty factor" that considers this fact; otherwise it might be possible that we totally disregard nodes where emitters have a high contribution but where the emitters are very distant from the centroid of the node. But this uncertainty factor cannot be solely based on the size of the node, since this uncertainty factor will have a bigger input in nodes that are close to the sampling point. We decided to use an uncertainty angle $\theta_u$. The idea behind $\theta_u$ is that we try to find the biggest angle between a vector starting from the shading point and pointing to the centroid and a vector starting from the shading point and pointing to any point $p$ that lies inside of the node. A drawing of the uncertainty angle can be seen in \ref{fig:uncertainty1}.
 
 \begin{figure}
 	\begin{center}
@@ -452,7 +470,18 @@ Our cosine factor to the orientation bounds requires us to look at our node repr
 	\end{center}
 \end{figure}
 
-We could use the positions of the emitters to determine the uncertainty angle, since that would return exactly what we want: The maximum angle difference from the centroid and a light source in the node. But especially in nodes with very large amounts of emitters, so in nodes that are close to the root of our tree representation, that seems to be not very practical. Instead, we can estimate the uncertainty angle by defining the corners of our nodes world space bounds as the ending points of our vector. While this method does not yield perfect results, it is much faster than calculating the angle of potentially thousands of lights in every step. At this point, we have limited the giant number of angle calculations to only 8, one for each corner of the node. In practice, we can even further limit these angle calculations: The corner that yields us the biggest uncertainty angle will always be on the side of the cuboid that was intersected when we drew a vector from the shading point to the centroid. That means, we can reduce the angle calculations to only 4, one for each corner on the intersected side of the cuboid. A graphic illustration can be seen in \ref{fig:uncertainty2}. In some situations, the shading point will lie inside of the world space bounds of the node. In these cases, we will just set the uncertainty value as $\pi$, which will result to our cosine factor to the orientation bounds becoming 1.
+We could use the positions of the emitters to determine the uncertainty angle, since that would return exactly what we want: The maximum angle difference from the centroid and a light source in the node. But especially in nodes with very large amounts of emitters, so in nodes that are close to the root of our tree representation, that seems to be not very practical. Instead, we can estimate the uncertainty angle by defining the corners of our nodes world space bounds as the ending points of our vector. While this method does not yield perfect results, it is much faster than calculating the angle of potentially thousands of lights in every step. At this point, we have limited the giant number of angle calculations to only 8, one for each corner of the node. In practice, we can even further limit these angle calculations: The corner that yields us the biggest uncertainty angle will always be on the side of the cuboid that was intersected when we drew a vector from the shading point to the centroid. That means, we can reduce the angle calculations to only 4, one for each corner on the intersected side of the cuboid. A graphic illustration can be seen in \ref{fig:uncertainty2}. In some situations, the shading point will lie inside of the world space bounds of the node. In these cases, we will just set the uncertainty value as $\pi$, which will result to $I_\theta$ becoming $1$.
+
+TODO:Zeichnung
+
+As we can see in \ref{eq:imp}, $\theta_u$ is only one of our factors for our cosine factor to the orientation bounds. Our primary goal was it to give nodes a higher importance that have light sources directly emitting to the shading point. That means, we have to regard the axis, $\theta_o$ and $\theta_e$ of the node. In total, we prefer nodes with $\theta_o$ cones that comprise the shading point after we have defined a certain tolerance with our uncertainty angle. We will also set $I_\theta$ to a non-zero value if the shading point is included in the emission range $\theta_e$ of the orientation bounds of our node. In a case where $\theta - \theta_o - \theta_u > \theta_e$, it would mean that even after having a tolerance value defined by $\theta_u$, the shading point is not encircled in the orientation bounds of the node and thus the contribution of any light source in the node will be zero for the shading point. Suppose we have three different shading points and the orientation bounds of a node as illustrated in \ref{TODO}. The shading point $p1$ lies in the cone comprised by $\theta_o + \theta_u$ (cone that includes axes of all emitters in node plus tolerance) and thus its $I_\theta$ value will be 1. The world space coordinates of $p2$ are placed in the cone comprised by the emission range $\theta_e$ of the node and therefore its $I_\theta$ value will be between 0 and 1. Lastly, our shading point $p3$ is outside of the orientation bounds of the node even with the tolerance added to it, resulting to a $I_\theta$ value of 0.
+
+In summary, the importance value for a given node and shading point is defined as:
+
+\begin{equation}
+\label{eq:imp2}
+I = \frac{E * I_\theta}{d ^ 2}.
+\end{equation}
 
 \begin{figure}
 	\begin{center}
@@ -471,10 +500,41 @@ We could use the positions of the emitters to determine the uncertainty angle, s
 		\State <check if the bounding box of node is behind the shaded point>
 		\State <calculate the first side of the node we hit if we draw a vector from the shading point to the centroid of the node>
 		\State <calculate the uncertainty angle>
-		\State <calculate the importance value of the node>
+		\If{$\theta - \theta_o - \theta_u - \theta_e > 0$}
+		\State I\_theta $\gets$ $max$(0, $cos$($\theta - \theta_o - \theta_u$))
+		\Else
+		\State \Return 0;
+		\EndIf
+		\State \Return node->energy * I\_theta / (distance * distance);
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
+
+Our implementation of the importance calculation for a given node and intersection point (\ref{alg:imp}) basically follows the steps we have mentioned above. First, we will be checking if the node lies behind the shading point. If that's the case, we will simply return 0 for the current node. Next, we will be doing calculations for our uncertainty angle starting by intersecting the shading point to centroid vector with the bounding box of the node. After we have found the intersection, we will define the uncertainty angle $\theta_u$ as the maximum angle between the shading point to centroid vector and the shading point to corner vector. At the end, we will do the final $I_\theta$ and importance calculations that we have defined in \ref{eq:imp} and  \ref{eq:imp2}.
+
+\begin{algorithm}
+	\caption{Checking if the node is behind the shading point}
+	\label{alg:behind}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\State \textbf{bool} behind $\gets$ \textit{false};
+		\If {it.$isOpaque$()}
+		\For{int i $\gets$ 0; i < 8; i++}
+		\If{$dot$(n, node->corner[i] - o) > 0} 
+		\State behind $\gets$ \textbf(false);
+		\State \textbf{break};
+		\EndIf
+		\EndFor
+		\If {behind}
+		\State \Return 0;
+		\EndIf
+		\EndIf
+	\end{algorithmic}
+\end{algorithm}
+
+TODO: Zeichnung
+
+We want to avoid boring the reader with implementation details if possible but there are some things to note while checking if the current node is behind the shading point (\ref{behind}). The general idea is to calculate the angle the normal of the intersection $n$ with the vectors starting at the shading point and pointing to the corners of the bounding box of the nodes. The cosine of these angles become negative for an angle bigger than 180°, basically when the individual corners are behind the shading point (compare \ref{TODO}). Note that it is not required to normalize the vectors pointing to the corners since the signing does not change even for non-normalized vectors. If all of the corners are behind the shading point, we return an importance value of 0, otherwise we move on with our algorithm.
+
 
 \subsection{Splitting}
 \label{subs:split}
