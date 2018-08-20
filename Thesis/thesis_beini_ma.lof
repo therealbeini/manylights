@@ -7,39 +7,81 @@
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 2.1}{\ignorespaces Two-dimensional bounding box for two triangles}}{9}{figure.2.1}
+\contentsline {figure}{\numberline {\relax 2.1}{\ignorespaces Two-dimensional bounding box for two triangles\relax }}{9}{figure.caption.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 2.2}{\ignorespaces On the left side the geometric representation of the primitives in the room and on the right side the representation in the BVH}}{10}{figure.2.2}
+\contentsline {figure}{\numberline {\relax 2.2}{\ignorespaces On the left side the geometric representation of the primitives in the room and on the right side the representation in the BVH\relax }}{10}{figure.caption.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 2.3}{\ignorespaces Three different split strategies: "Middle" in the top, "EqualCounts" in the middle and SAH in the bottom}}{11}{figure.2.3}
+\contentsline {figure}{\numberline {\relax 2.3}{\ignorespaces Three different split strategies: "Middle" in the top, "EqualCounts" in the middle and SAH in the bottom\relax }}{11}{figure.caption.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 2.4}{\ignorespaces A typical path for the path tracer starting at the camera and sampling a light source as the last vertex.}}{14}{figure.2.4}
+\contentsline {figure}{\numberline {\relax 2.4}{\ignorespaces A typical path for the path tracer starting at the camera and sampling a light source as the last vertex.\relax }}{14}{figure.caption.8}
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.1}{\ignorespaces Our internal representation of the Bounds\_o struct}}{16}{figure.3.1}
+\contentsline {figure}{\numberline {\relax 3.1}{\ignorespaces Our internal representation of the Bounds\_o struct\relax }}{16}{figure.caption.9}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.2}{\ignorespaces geometric idea of the Bounds\_o struct}}{17}{figure.3.2}
+\contentsline {figure}{\numberline {\relax 3.2}{\ignorespaces geometric idea of the Bounds\_o struct\relax }}{17}{figure.caption.10}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.3}{\ignorespaces Our internal representation of the LightBVHNode struct}}{18}{figure.3.3}
+\contentsline {figure}{\numberline {\relax 3.3}{\ignorespaces Our spotlight orientation bounds\relax }}{18}{figure.caption.11}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.4}{\ignorespaces Our internal representation of the LinearLightBVHNode struct}}{18}{figure.3.4}
+\contentsline {figure}{\numberline {\relax 3.4}{\ignorespaces Our internal representation of the LightBVHNode struct\relax }}{19}{figure.caption.12}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.5}{\ignorespaces Bounding cone measure}}{19}{figure.3.5}
+\contentsline {figure}{\numberline {\relax 3.5}{\ignorespaces Our internal representation of the LinearLightBVHNode struct\relax }}{19}{figure.caption.13}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.6}{\ignorespaces Preferred split example}}{20}{figure.3.6}
+\contentsline {figure}{\numberline {\relax 3.6}{\ignorespaces Bounding cone measure\relax }}{20}{figure.caption.14}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.7}{\ignorespaces Axis calculation}}{23}{figure.3.7}
+\contentsline {figure}{\numberline {\relax 3.7}{\ignorespaces Preferred split example\relax }}{21}{figure.caption.15}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.8}{\ignorespaces Axis calculation}}{24}{figure.3.8}
+\contentsline {figure}{\numberline {\relax 3.8}{\ignorespaces Axis calculation\relax }}{24}{figure.caption.16}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.9}{\ignorespaces Bucket splits for area light sources, point light sources and spotlights}}{26}{figure.3.9}
+\contentsline {figure}{\numberline {\relax 3.9}{\ignorespaces Axis calculation\relax }}{24}{figure.caption.17}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.10}{\ignorespaces Tree representation before and after flattening}}{29}{figure.3.10}
+\contentsline {figure}{\numberline {\relax 3.10}{\ignorespaces Bucket splits for area light sources, point light sources and spotlights\relax }}{27}{figure.caption.18}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.11}{\ignorespaces General idea of the uncertainty angle}}{33}{figure.3.11}
+\contentsline {figure}{\numberline {\relax 3.11}{\ignorespaces Tree representation before and after flattening\relax }}{30}{figure.caption.19}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.12}{\ignorespaces Uncertainty angle calculation by calculating the angle between a vector starting at the shading point and pointing to the centroid and the 4 corners on the intersected side of the cuboid}}{35}{figure.3.12}
+\contentsline {figure}{\numberline {\relax 3.12}{\ignorespaces Our node lies behind the shading point\relax }}{31}{figure.caption.20}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.13}{\ignorespaces Importance of a node for a given shading point\relax }}{32}{figure.caption.21}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.14}{\ignorespaces General idea of the uncertainty angle\relax }}{33}{figure.caption.22}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.15}{\ignorespaces Uncertainty angle calculation by calculating the angle between a vector starting at the shading point and pointing to the centroid and the 4 corners on the intersected side of the cuboid\relax }}{33}{figure.caption.23}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.16}{\ignorespaces Different important values for points\relax }}{34}{figure.caption.24}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.17}{\ignorespaces Checking if the node lies behind the shading point\relax }}{36}{figure.caption.25}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.18}{\ignorespaces Two different cases of ray-bounding box intersection\relax }}{37}{figure.caption.26}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.19}{\ignorespaces PDF calculation. Values next to nodes are the current PDF values and values next to vertices are the importance values.\relax }}{41}{figure.caption.27}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.20}{\ignorespaces Sample1D stretching\relax }}{41}{figure.caption.28}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.21}{\ignorespaces Splitting example\relax }}{42}{figure.caption.29}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.22}{\ignorespaces Sampling a direction for the BSDF peak\relax }}{43}{figure.caption.30}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 3.23}{\ignorespaces Solid angle approximation\relax }}{45}{figure.caption.31}
+\defcounter {refsection}{0}\relax 
+\addvspace {10\p@ }
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.1}{\ignorespaces 20 spotlights\relax }}{48}{figure.caption.32}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.2}{\ignorespaces 1.6 million point lights on the ceiling\relax }}{48}{figure.caption.33}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.3}{\ignorespaces 12.000 point lights in a 3D-raster\relax }}{49}{figure.caption.34}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.4}{\ignorespaces 12.000 point lights randomly distributed\relax }}{50}{figure.caption.35}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.5}{\ignorespaces 12.000 spotlights randomly distributed\relax }}{50}{figure.caption.36}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.6}{\ignorespaces 2.000 area lights covering the ceiling\relax }}{51}{figure.caption.37}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.7}{\ignorespaces 2.000 area lights covering the ceiling\relax }}{52}{figure.caption.38}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.8}{\ignorespaces Mixed scene\relax }}{52}{figure.caption.39}
+\defcounter {refsection}{0}\relax 
+\contentsline {figure}{\numberline {\relax 4.9}{\ignorespaces Mixed scene\relax }}{53}{figure.caption.40}
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 

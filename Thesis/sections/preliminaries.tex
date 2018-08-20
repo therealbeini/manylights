@@ -16,13 +16,13 @@
 \section{Probability Theory Basics}
 \label{ch:preliminaries:ptb}
 
-In this section we will be discussing basic ideas and define certain terms from the probability theory. We will assume that the reader is already familiar with most of the concepts and therefore will only give a short introduction. If the reader struggles following the key parts of this section, he is heavily advised to read more extensive literature about this subject. We suggest E. T. Jaynes \textit{Probability Theory: The Logic of Science} for this matter. \cite{PTTLS}
+In this section we will be discussing basic ideas and define certain terms from the probability theory. We will assume that the reader is already familiar with most of the concepts and therefore will only give a short introduction. A thorough introduction into statistics is out of the scope of this thesis and we refer the reader to read  E. T. Jaynes \textit{Probability Theory: The Logic of Science} for introducing literature. \cite{PTTLS}
 
 \subsection{Random Variable}
 
-A random variable $X$ is a variable whose values are numerical outcomes chosen by a random process. There are discrete random variables, which can only take a countable set of possible outcomes and continuous random variables with an uncountable number of possible results. For instance, flipping a coin would be a random variable drawn from a discrete domain which can only result to heads or tails, while sampling a random direction over a unit sphere can produce infinite different directions. In rendering and particularly in path tracing, we are often sampling certain directions or light sources in order to illuminate the scene, therefore we will be handling both discrete and continuous random variables, albeit with the latter in the most cases.
+A random variable $X$ is a variable whose values are numerical outcomes chosen by a random process. There are discrete random variables, which can only take a countable set of possible outcomes and continuous random variables with an uncountable number of possible results. For instance, flipping a coin would be a random variable drawn from a discrete domain which can only result to heads or tails, while sampling a random direction over a unit sphere can produce infinite different directions. In rendering and particularly in path tracing, we often sample certain directions or light sources in order to illuminate the scene, therefore we will be handling both discrete and continuous random variables, albeit with the latter in the most cases.
 
-The so-called canonical uniform random variable $\xi$ is a special continuous random variable that is especially important for us. Every interval in its domain [0, 1) with equal length are assigned the same probability. This random variable makes it very easy to generate samples from arbitrary distributions. For example, if we would need to sample a direction to estimate the incident lighting on a point, we could draw two samples from $\xi$ and scale these two values with appropriate transformations so they reflect the polar coordinates of direction to sample.
+The so-called canonical uniform random variable $\xi$ is a special continuous random variable that is especially important for us. Every interval in its domain [0, 1) with equal length are assigned the same probability. This random variable makes it very easy to generate samples from arbitrary distributions. For example, if we would need to sample a direction to estimate the incident lighting on a point, we could draw two samples from $\xi$ and scale these two values with appropriate transformations so they reflect the polar coordinates of the direction to sample.
 
 \subsection{Probability Density Function}
 
@@ -73,10 +73,10 @@ When generating an image using path tracing, we will be dealing with integrals a
 Using random sampling methods, we want to evaluate the integral 
 
 \begin{equation}
-I = \int_{a}^{b}f(x)d(x)
+I = \int_{a}^{b}f(x)dx
 \end{equation}
 
-with Monte Carlo integration. Different to Las Vegas algorithms, Monte Carlo integration has a non-deterministic approach. Every iteration of the algorithm provides a different outcome and will only be an approximation of the actual integral. Imagine that we want to integrate a function $f:D \rightarrow \mathbb{R}$. The Monte Carlo estimator states that with samples of uniform random variables $Xi \in [a,b]$ and number of samples $N$ the expected value $E[F_N]$ of the estimator 
+with Monte Carlo integration. Different to Las Vegas algorithms, which are also randomized algorithms but always produce the correct results, Monte Carlo integration has a non-deterministic approach. Every iteration of the algorithm provides a different outcome and will only be an approximation of the actual integral. Imagine that we want to integrate a function $f:D \rightarrow \mathbb{R}$. The Monte Carlo estimator states that with samples of uniform random variables $Xi \in [a,b]$ and number of samples $N$ the expected value $E[F_N]$ of the estimator 
 \begin{equation}
 F_N = \frac{b-a}{N}\sum_{i = 1}^{N}f(X_i)
 \end{equation}
@@ -88,7 +88,7 @@ E[F_N] &= E\Bigg[\frac{b-a}{N}\sum_{i = 1}^{N}f(X_i)\Bigg] \\
 &= \frac{b-a}{N}\sum_{i = 1}^{N}E[f(X_i)] \\
 &= \frac{b-a}{N}\sum_{i = 1}^{N}\int_{a}^{b}f(x)p(x)dx \\
 &= \frac{1}{N}\sum_{i = 1}^{N}\int_{a}^{b}f(x)dx \\
-&= \int_{a}^{b}f(x)d(x)
+&= \int_{a}^{b}f(x)dx
 \end{split}
 \end{equation}
  
@@ -96,7 +96,7 @@ If we use a PDF $p(x)$ instead of an uniform distribution, the estimator
 \begin{equation}
 F_N = \frac{1}{N}\sum_{i = 1}^{N}\frac{f(X_i)}{p(X_i)}
 \end{equation} 
-is used to approximate the integral. Being able to use arbitrary PDFs is essential for solving the light transport problem and the importance of choosing a good PDF $p(x)$ will be explained in the next section.
+is used to approximate the integral. Being able to use arbitrary PDFs is essential for solving the light transport problem and the importance of choosing a good PDF $p(x)$ will be explained in the \ref{ch:preliminaries:is}.
 
 The Monto Carlo estimator is unbiased, because
 
@@ -109,7 +109,7 @@ b(F_N) &= E\Bigg[\frac{1}{N}\sum_{i = 1}^{N}\frac{f(X_i)}{p(X_i)} - I\Bigg] \\
 \end{split}
 \end{equation}
 
-While standard quadrature techniques converge faster than the Monte Carlo integration in low dimensions, the Monte Carlo integration is the only integration method that allows us to deal with higher dimensions of the integrand, since it's convergence rate is independent of the dimension. In fact, standard numerical integration techniques do not work very well on high-dimensional domains since their performance becomes exponentially worse as the dimension of the integral increases. Later, we will explain why the light transport problem of the path tracing algorithm is theoretically an infinite-dimensional problem and therefore we will estimating the integrals in our light transport equations with Monte Carlo integration at a convergence rate of $O(\sqrt{N})$. \cite{RMCM}
+While standard quadrature techniques converge faster than the Monte Carlo integration in low dimensions, the Monte Carlo integration is the only integration method that allows us to deal with higher dimensions of the integrand, since it's convergence rate is independent from the dimension. In fact, standard numerical integration techniques do not work very well on high-dimensional domains since their performance becomes exponentially worse as the dimension of the integral increases. Later, we will explain why the light transport problem of the path tracing algorithm is theoretically an infinite-dimensional problem and therefore we will be estimating the integrals in our light transport equations with Monte Carlo integration at a convergence rate of $O(\sqrt{N})$. \cite{RMCM}
 
 
 \section{Importance Sampling}
@@ -127,7 +127,7 @@ converges faster if we choose a sampling distribution $p(x)$ that is roughly pro
 \frac{f(X_i)}{p(X_i)} = \frac{1}{c} = \int{f(x)dx}.
 \end{equation}
 
-We would be getting a constant value and since the Monte Carlo estimator is unbiased, every single of our estimates would exactly return the value of the integral and our variance would be zero. Obviously, that does not work, since it requires us to know the value of the integral $\int{f(x)dx}$ before, and then using Monte Carlo techniques to evaluate the integral would be pointless. Nonetheless, if we are able to find a distribution $p(x)$ that has a similar shape to $f(x)$, we would be archive a faster convergence rate. To put it in relation to path tracing, assume we want to calculate the incident lighting for a given point on a diffuse surface. Imagine, the light sources of the scene are all focused on a certain direction of the point. It would make a lot of sense to mainly sample the directions that are similar to the vectors pointing to the light sources, since their contribution will be the biggest. In this case, we would want to use a distribution that is similar to the light source distribution in the scene given the position of the point.
+We would be getting a constant value and since the Monte Carlo estimator is unbiased, every single of our estimates would exactly return the value of the integral and our variance would be zero. Obviously, that does not work, since it requires us to know the value of the integral $\int{f(x)dx}$ in beforehand, and then using Monte Carlo techniques to evaluate the integral would be pointless. Nonetheless, if we are able to find a distribution $p(x)$ that has a similar shape to $f(x)$, we would archive a faster convergence rate. Therefore, when importance sampling, we are taking samples out of a distribution that is similar to the integral to estimate. To put it in relation to path tracing, assume we want to calculate the incident lighting for a given point on a diffuse surface. Imagine, the light sources of the scene are all focused on a certain direction of the point. It would make a lot of sense to mainly sample the directions that are similar to the vectors pointing to the light sources, since their contribution will be the biggest. In this case, we would want to use a distribution that is similar to the light source distribution in the scene given the position of the point.
 
 \section{Multiple Importance Sampling}
 \label{ch:preliminaries:mis}
@@ -138,9 +138,9 @@ We have been discussing how to deal with integrals of the form $\int{f(x)dx}$ wi
 L_o(p, \omega_o) = \int_{\varsigma^2}f(p, \omega_o, \omega_i)L_d(p, \omega_i)|cos\theta_i|d\omega_i
 \end{equation}
 
-$f(p, \omega_o, \omega_i)$ describes the reflectance of the surface at given point p, and the ingoing and outgoing directions $\omega_i$ and $\omega_o$. $L_d(p, \omega_i)$ specifies the incident lighting at given point and direction $\omega_i$. It is apparent, that using a single distribution function in every situation will not yield the optimal results. A specular surface would only reflect the light in very specific angles and in these cases, having a distribution, that has a similar form of $f(p, \omega_o, \omega_i)$ would be preferable. On the other hand, if the surface was diffuse, we would obtain better results, when using a distribution that has a similar shape of that of the incident lighting.
+$f(p, \omega_o, \omega_i)$ describes the reflectance of the surface at given point p, and the ingoing and outgoing directions $\omega_i$ and $\omega_o$. $L_d(p, \omega_i)$ specifies the incident lighting at given point and direction $\omega_i$. It is apparent, that using a single distribution function in every situation will not yield the optimal results. A specular surface would only reflect the light in very specific angles and in these cases, having a distribution, that has a similar form of $f(p, \omega_o, \omega_i)$ would be preferable. On the other hand, if the surface was diffuse, we would obtain better results, when using a distribution that has a similar shape of the distribution of light sources over the unit sphere.
 
-The solution to this dilemma is multiple importance sampling. When using multiple importance sampling, we will draw samples from multiple distributions to sample the given integral. The idea is that, although we do not know which PDF will have a similar shape to the integrand, we hope that one of the chosen distributions match it fairly well. If we want to evaluate the integral $\int{f(x)g(x)dx}$ and $p_f$ and $p_g$ are our distribution functions, then the Monte Carlo estimateor with multiple importance sampling is
+The solution to this dilemma is multiple importance sampling. When using multiple importance sampling, we will draw samples from multiple distributions to sample the given integral. The idea is that, although we do not know which PDF will have a similar shape to the integrand, we hope that one of the chosen distributions match it fairly well. If we want to evaluate the integral $\int{f(x)g(x)dx}$ and $p_f$ and $p_g$ are our distribution functions, then the Monte Carlo estimator with multiple importance sampling is
 
 \begin{equation}
 \frac{1}{n_f}\sum_{i = 1}^{n_f}{\frac{f(X_i)g(X_i)w_f(X_i)}{p_f(X_i)}}+ \frac{1}{n_g}\sum_{j = 1}^{n_g}{\frac{f(X_j)g(X_j)w_g(X_j)}{p_g(X_j)}},
@@ -151,13 +151,13 @@ where $n_f$ and $n_g$ are the number of samples taken from their respective dist
 A good way to reduce variance is the balance heuristic:
 
 \begin{equation}
-w_s(x) = \frac{n_s p_s(x)}{\sum_{i}n_i p_i(x)}
+w_b(x) = \frac{n_s p_s(x)}{\sum_{i}n_i p_i(x)}
 \end{equation}
 
 The power heuristic with exponent $\beta = 2$ is often a better heuristic to reduce variance:
 
 \begin{equation}
-w_s(x) = \frac{(n_s p_s(x))^2}{\sum_{i}(n_i p_i(x))^2}
+w_p(x) = \frac{(n_s p_s(x))^2}{\sum_{i}(n_i p_i(x))^2}
 \end{equation}
 
 For a more detailed explanation of the weighting heuristics, we recommend "Robust Monte Carlo Methods for Light Transport Simulation" by Veach to the reader. \cite{RMCM}
@@ -172,14 +172,14 @@ For a more detailed explanation of the weighting heuristics, we recommend "Robus
 	\end{center}
 \end{figure}
 
-A data structure we will be using frequently is minimum bounding boxes. A minimum bounding box for a set of geometric primitives is defined as the box with a certain smallest measure, that contains every single primitive in the set. While path tracing, these boxes can be two- or three-dimensional, making their respective measures the area and the volume. Because many parts of the path-tracing algorithm operate on axis-aligned regions of space, it makes sense to define use boxes, where the edges are parallel to the coordinate axes. These boxes are called axis-aligned bounding boxes (AABB) and we can see an example of it in {\ref{fig:aabb}}. Note, that in this case we have a two-dimensional bounding box but it is not hard to imagine, that AABBs work the same way in higher dimensions. To combine two AABBs, we just need to take the minimum and the maximum for each dimension of the two AABBs.
+A data structure we will be using frequently is minimum bounding boxes. A minimum bounding box for a set of geometric primitives is defined as the box with a certain smallest measure, that contains every single primitive in the set. While path tracing, these boxes can be two- or three-dimensional, making their respective measures the area and the volume. Because many parts of the path-tracing algorithm operate on axis-aligned regions of space, it makes sense to use boxes, whose edges are parallel to the coordinate axes. These boxes are called axis-aligned bounding boxes (AABB) and we can see an example of it in {\ref{fig:aabb}}. Note, that in this case we have a two-dimensional bounding box but it is not hard to imagine, that AABBs work the same way in higher dimensions. To combine two AABBs, we just need to take the minimum and the maximum for each dimension of the two AABBs.
 
 \section{Bounding Volume Hierarchies}
 \label{sec:preliminaries:bvh}
 
-Acceleration data structures are mandatory for path tracers. They reduce the amount of ray-primitive intersection tests can be reduced to logarithmic in the number of object. The basic idea of those data structures is to partition the primitives into sets and order those in a hierarchy, so only specific sets of primitives need to be tested for intersections. The two main approaches, when dividing the primitives, is to either split the room among the space or to choose a particular number of primitives and wrap a bounding box around these primitives. The acceleration data structure used in PBRT is the bounding volume hierarchy (BVH). It uses the latter approach.
+Acceleration data structures are mandatory for path tracers. They reduce the amount of ray-primitive intersection tests to logarithmic in the number of primitives. The basic idea of those data structures is to partition the primitives into sets and order those sets in a hierarchy, so only specific sets of primitives need to be tested for intersections. The two main approaches, when dividing the primitives, is to either split the room among the space or to choose a particular number of primitives and wrap a bounding box around these primitives. The acceleration data structure used in PBRT, the framework renderer we used, is the bounding volume hierarchy (BVH). It uses the latter approach. \cite{PBRT}
 
-An example to partition the space would be kd-trees that splits the space parallel to one of the axis in each step. Those two sets of primitives are split recursively again until every leaf has only a maximum amount of primitives.  While kd-trees offer slightly faster ray intersection tests than BVH, their disadvantages outweigh. BVHs can be built much faster and are generally more numerically robust, so it is less likely to happen to miss intersection duo to round-off errors than kd-trees are. Other desired traits of BVHs is that they require a maximum number of $2n - 1$ nodes for n primitives and, since we are splitting the primitives after a particular amount of primitives, we will never have the same primitive in two different nodes.
+An example to partition the space would be kd-trees that splits the space parallel to one of the axis in each step. Those two sets of primitives are split recursively again until every leaf has only a maximum amount of primitives.  While kd-trees offer slightly faster ray intersection tests than BVH, their disadvantages outweigh. BVHs can be built much faster and are generally more numerically robust, so it is less likely to happen to miss intersection due to round-off errors than kd-trees are. Other desired traits of BVHs is that they require a maximum number of $2n - 1$ nodes for n primitives and, since we are splitting the primitives after a particular amount of primitives, we will never have the same primitive in two different nodes.
 
 \begin{figure}
 	\begin{center}
@@ -191,10 +191,11 @@ An example to partition the space would be kd-trees that splits the space parall
 
 
 \subsection{BVH Construction}
+\label{subs:const}
 
-Obviously, the first step is the construction of the BVH data structure. The basic structure of BVH is a binary tree, with every node containing pointers to up to two children and every leaf holding a set maximum number of primitives. The construction technique that is most popular and also used in PBRT is the top-down construction. At the beginning of the construction we hold a set containing every single primitive of the scene. With each step, according to a split method we have chosen, we partition the primitives into two disjointed sets. Note that regardless of the split method, we chose, we will always split the primitives among a certain axis to retain locality. Examples for popular splitting heuristics are "Middle", which just partitions the room among the middle of a chosen axis, "EqualCounts", which partitions the primitives among a chosen axis so the disjointed sets have the same number of primitives, and SAH \ref{pre:sah}. While the first two split methods allow a easy and fast construction, their quality is very lacking. Recursively splitting a nodes into two disjointed sets of primitives constructs the tree. When a certain node holds less than a defined number of primitives, we do not split again and instead call the node a leaf.
+Obviously, the first step is the construction of the BVH data structure. The basic structure of BVH is a binary tree, with every node containing pointers to up to two children and every leaf holding a set maximum number of primitives. The construction technique that is most popular and also used in PBRT is the top-down construction. At the beginning of the construction we hold a set containing every single primitive of the scene. With each step, according to a split method we have chosen, we partition the primitives into two disjointed sets. Note that regardless of the split method we chose, we will always split the primitives among a certain axis to retain locality. Examples for popular splitting heuristics are "Middle", which just partitions the room among the middle of a chosen axis, "EqualCounts", which partitions the primitives among a chosen axis so the disjointed sets have the same number of primitives, and SAH (\ref{pre:sah}). While the first two split methods allow a easy and fast construction, their quality is very lacking. Recursively splitting the root into two disjointed sets of primitives constructs the tree. When a certain node holds less than a defined number of primitives, we do not split again and instead call the node a leaf.
 
-Every node needs to be holding onto some information in order to allow the intersection tests. Evidently, every inner node needs to have a reference to both of its children. As we have mentioned earlier, it also needs to store is a bounding volume that wraps around all its primitives. When testing, if we will need to intersect any of the primitives of a node with a ray, we will be instead, intersecting the box with the ray. Typically, we will be using minimum fit axis-aligned bounding boxes for this task.
+Every node needs to be holding onto some information in order to allow the intersection tests. Evidently, every inner node needs to have a reference to both of its children. As we have mentioned earlier, it also needs to store its bounding volume that wraps around all its primitives. When testing if we need to intersect any of the primitives of a node with a ray, we will be instead intersect the box with the ray. Typically, we will be using minimum fit axis-aligned bounding boxes for this task.
 
 \subsubsection{Surface Area Heuristics}
 \label{pre:sah}
@@ -208,29 +209,31 @@ Every node needs to be holding onto some information in order to allow the inter
 \end{figure}
 
 
-We have presented two split methods earlier in this paper. While they both do work well in some situations, they both have clear advantages, especially if the primitives are not evenly distributed over the scene. Looking at \ref{fig:sah}, it is obvious, that both the "Middle" and "EqualCounts" split the scene in a way that can lead to very inefficient intersection tests. In the "Middle" split, although the triangle mesh on the right child node are focused on a very small space, the drawn ray will still make intersection test with each of the triangles of the right child node. Similarly, in the "EqualCounts" split, many unnecessary intersection tests are made. A desirable split would be the third split and we will now introduce a split method that favors these kinds of splits.
+We have presented two split methods int \ref{subs:const}. While they both do work well in some situations, they both have clear advantages, especially if the primitives are not evenly distributed over the scene. Looking at \ref{fig:sah}, it is obvious, that both the "Middle" and "EqualCounts" split the scene in a way that can lead to very inefficient intersection tests. In the "Middle" split, although the triangle mesh on the right child node are focused on a very small space, the drawn ray will still make intersection test with each of the triangles of the right child node. Similarly, in the "EqualCounts" split, many unnecessary intersection tests are made. A desirable split would be the third split and we will now introduce a split method that favors these kinds of splits.
 
 The surface area heuristics (SAH) defines a model that assigns a quality to a given split. The idea behind the SAH cost model is actually very simple. When we want to decide the best possible split for given primitives, first, we have to decide if it is perhaps better not to split at all. That means, when a ray traverses through the bounding box of the node, we would have to make an ray-primitive intersection test with each primitive. That means the cost $c_g$ is 
 
 \begin{equation}
-\sum_{i = 1}^{N}t_isect(i),
+\sum_{i = 1}^{N}t_{isect}(i),
 \end{equation}
 
-where N is the number of primitives and $t_isect(i)$ the time required for the intersection test with the i-th primitive. For simplicity, we will assume, that every ray-primitive intersection test takes the same amount of time.
+where N is the number of primitives and $t_{isect}(i)$ the time required for the intersection test with the i-th primitive. For simplicity, we will assume, that every ray-primitive intersection test takes the same amount of time.
 
 Clearly, we can also split the primitives. The cost $c(A,B)$ would be
 
 \begin{equation}
-c(A,B) = t_trav + p_A\sum_{i=1}^{N_A}t_isect(a_i) + p_B\sum_{i=1}^{N_B}t_isect(b_i)
+c(A,B) = t_{trav} + p_A\sum_{i=1}^{N_A}t_{isect}(a_i) + p_B\sum_{j=1}^{N_B}t_{isect}(b_j)
 \end{equation}
 
-with $t_trav$ being the additional overhead time to traverse through a child, $p_A$ and $p_B$ being the probabilities that the ray passes through the respective child node. The probabilities $p_A$ and $p_B$ can be calculated using their respective surface areas:
+with $t_{trav}$ being the additional overhead time to traverse through a child, $p_A$ and $p_B$ being the probabilities that the ray passes through the respective child node. The probabilities $p_A$ and $p_B$ can be calculated using their respective surface areas:
 
 \begin{equation}
 p_C = \frac{s_G}{s_C},
 \end{equation}
 
 where $s_G$ is the surface area of the node and $s_C$ is the surface area of the child.
+
+Compared to the other two split strategies we presented, SAH actually adapts to the given geometry and tries to minimize the amount of ray-primitive intersection tests when traversing the tree. Therefore, SAH is much more versatile and performs better in most scenes.
 
 \subsection{BVH Traversal}
 
@@ -244,13 +247,13 @@ and save a lot of time.
 
 In this section we will discuss some of the basics of path tracing. Although most readers probably already have a good understanding of path tracing, it does not hurt to refresh the reader's mind and also helps the reader to understand what this thesis is exactly about. Still, we will try to keep this section as short as possible to avoid boring the reader.
 
-Path tracing was first introduced in 1986 by James Kajiya. The general idea is to generate paths along the scene that start at the camera and end at a light source of the scene. In the beginning, we will be spawning rays that start at the point of the camera. Each of these rays will gather the color at the respective pixel they represent. At the intersection of the ray with the scene, we will be evaluating the light transport equation we have mentioned earlier:
+Path tracing was first introduced in 1986 by James Kajiya in the proceedings of SIGGRAPH '86 \cite{JTK}. The general idea is to generate paths along the scene that start at the camera and end at a light source of the scene. In the beginning, we will be spawning rays that start at the point of the camera. Each of these rays will gather the color at the respective pixel they represent. At the intersection of the ray with the scene, we will be evaluating the light transport equation we have mentioned earlier:
 
 \begin{equation}
 L_o(p, \omega_o) = \int_{\varsigma^2}f(p, \omega_o, \omega_i)L_d(p, \omega_i)|cos\theta_i|d\omega_i
 \end{equation}
 
-We have mentioned earlier, that this problem is a infinite-dimensional problem. That is because in order to calculate the color at the point we hit, we have to evaluate this equation for different directions $\omega_i$ according to the Monte Carlo integration. The reason for that is, as we have mentioned earlier, it is impossible to calculate the result of this integral analytically. Instead, we will be sampling directions according to multiple distribution functions and estimate the contribution of these directions. Therefore, we have to spawn rays that will hit another point in the scene. Obviously, we will get more light transport equations that need to be evaluated. To render the perfect image with path tracing, we could not stop after a finite number of steps, but in practice, we will break after a certain number of bounces or after the contribution of the point would be too low to actually change the image for the human eye. Instead, we will connect the current point with a sampled light source and finish the path. Such a path can be seen in \ref{fig:path}.
+We have noticed earlier, that this problem is a infinite-dimensional problem. That is because in order to calculate the color at the point we hit, we have to evaluate this equation for different directions $\omega_i$ according to the Monte Carlo integration. The reason for that is, as we have acknowledged earlier, it is impossible to calculate the result of this integral analytically. Instead, we will be sampling directions according to multiple distribution functions and estimate the contribution of these directions. Therefore, we have to spawn rays that will hit another point in the scene. As the result, we will get more light transport equations that need to be evaluated. To render the perfect image with path tracing, we could not stop after a finite number of steps, but in practice, we will break after a certain number of bounces or after the contribution of the point would be too low to actually change the image for the human eye. Instead, we will connect the current point with a sampled light source and finish the path. Such a path can be seen in \ref{fig:path}.
 
 \begin{figure}
 	\begin{center}
@@ -260,4 +263,4 @@ We have mentioned earlier, that this problem is a infinite-dimensional problem. 
 	\end{center}
 \end{figure}
 
-We have already acknowledged the importance of using a sampling distribution that has a similar form to the functions of the integrand, when using Monte Carlo integration. In our light transport equation, we have two different functions. $f(p, \omega_o, \omega_i)$ is defined by the BSDF of the material of the point and consequently, we can use a distribution function similar to it to sample the directions $\omega_i$. The other function is the contribution of the light sources for the point $L_d(p, \omega_i)$. The sampling distribution needed to importance sample this function would be a distribution that reflects the amount of incident lighting from a given direction $\omega_i$. Now, suppose we have a situation where the scene has a substantial number of light sources, say 10.000 or even one million light sources. In this case, it would take a great time to estimate this distribution. In this thesis, our goal is to deal with these kinds of scenes with a gigantic number of light sources by creating an accelerator data structure, the light bounding volume hierarchy. This data structure importance samples a light given the intersection point that can be then used to estimate the light transport equation.
+We have already acknowledged the importance of using a sampling distribution that has a similar form to the functions of the integrand, when using Monte Carlo integration. In our light transport equation, we have two different functions. $f(p, \omega_o, \omega_i)$ is defined by the bidirectional scattering distribution function (BSDF) of the material of the point, basically a function that defines how the material reflects incident lighting, and consequently, we can use a distribution function similar to it to sample the directions $\omega_i$. The other function is the contribution of the light sources for the point $L_d(p, \omega_i)$. The sampling distribution needed to importance sample this function would be a distribution that reflects the amount of incident lighting from a given direction $\omega_i$. Now, suppose we have a situation where the scene has a substantial number of light sources, say 10.000 or even one million light sources. In this case, it would take a great time to estimate this distribution. In this thesis, our goal is to deal with these kinds of scenes with a gigantic number of light sources by creating an accelerator data structure, the light bounding volume hierarchy. This data structure importance samples a light given the intersection point that can be then used to estimate the light transport equation.

@@ -19,6 +19,105 @@
 
 \refsection{0}
   \datalist[entry]{anyt/global//global/global}
+    \entry{RBI1}{online}{}
+      \name{author}{1}{}{%
+        {{hash=b1e06012fdee08d548920848e3d2c29c}{%
+           family={Barnes},
+           familyi={B\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{fullhash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{bibnamehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{authorbibnamehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{authornamehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{authorfullhash}{b1e06012fdee08d548920848e3d2c29c}
+      \field{labelalpha}{Bar11}
+      \field{sortinit}{B}
+      \field{sortinithash}{276475738cc058478c1677046f857703}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Fast, branchless Ray/Bounding Box Intersections}}
+      \field{urlday}{9}
+      \field{urlmonth}{8}
+      \field{urlyear}{2018}
+      \field{year}{2011}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://tavianator.com/fast-branchless-raybounding-box-intersections/
+      \endverb
+      \verb{url}
+      \verb https://tavianator.com/fast-branchless-raybounding-box-intersections/
+      \endverb
+    \endentry
+    \entry{RBI2}{online}{}
+      \name{author}{1}{}{%
+        {{hash=b1e06012fdee08d548920848e3d2c29c}{%
+           family={Barnes},
+           familyi={B\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{fullhash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{bibnamehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{authorbibnamehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{authornamehash}{b1e06012fdee08d548920848e3d2c29c}
+      \strng{authorfullhash}{b1e06012fdee08d548920848e3d2c29c}
+      \field{labelalpha}{Bar15}
+      \field{sortinit}{B}
+      \field{sortinithash}{276475738cc058478c1677046f857703}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Fast, branchless Ray/Bounding Box Intersections, Part 2: Nans}}
+      \field{urlday}{9}
+      \field{urlmonth}{8}
+      \field{urlyear}{2018}
+      \field{year}{2015}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
+      \endverb
+      \verb{url}
+      \verb https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
+      \endverb
+    \endentry
+    \entry{MLA}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=5369b95a4694ecdb5fde735a2b99f1f6}{%
+           family={Conty},
+           familyi={C\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=a6bb0c5c083125ebb19a06aff95d1dc7}{%
+           family={Kulla},
+           familyi={K\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{fullhash}{21cf11d445db59805d128253faadfbe9}
+      \strng{bibnamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authorbibnamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authornamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authorfullhash}{21cf11d445db59805d128253faadfbe9}
+      \field{labelalpha}{CK17}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{extraalpha}{1}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{SIGGRAPH '17 Talks}
+      \field{title}{{Importance Sampling of many Lights with Adaptive Tree Splitting}}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NjNmMDkxZmRjZDQ5NWY0MQ
+      \endverb
+      \verb{url}
+      \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NjNmMDkxZmRjZDQ5NWY0MQ
+      \endverb
+    \endentry
     \entry{MLS}{misc}{}
       \name{author}{2}{}{%
         {{hash=5369b95a4694ecdb5fde735a2b99f1f6}{%
@@ -41,6 +140,7 @@
       \field{labelalpha}{CK17}
       \field{sortinit}{C}
       \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{extraalpha}{2}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{Presentation in SIGGRAPH '17}
@@ -79,6 +179,33 @@
       \field{title}{Probability Theory: The Logic of Science}
       \field{year}{2003}
     \endentry
+    \entry{JTK}{proceedings}{}
+      \name{author}{1}{}{%
+        {{hash=8a2a7fa8e083b89f4c56b87c49c67597}{%
+           family={Kajiya},
+           familyi={K\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM SIGGRAPH 1986 conference proceedings}%
+      }
+      \strng{namehash}{8a2a7fa8e083b89f4c56b87c49c67597}
+      \strng{fullhash}{8a2a7fa8e083b89f4c56b87c49c67597}
+      \strng{bibnamehash}{8a2a7fa8e083b89f4c56b87c49c67597}
+      \strng{authorbibnamehash}{8a2a7fa8e083b89f4c56b87c49c67597}
+      \strng{authornamehash}{8a2a7fa8e083b89f4c56b87c49c67597}
+      \strng{authorfullhash}{8a2a7fa8e083b89f4c56b87c49c67597}
+      \field{labelalpha}{Kaj86}
+      \field{sortinit}{K}
+      \field{sortinithash}{9fd838a31ba64d981e8f44562bd33f89}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{The rendering question}}
+      \field{year}{1986}
+      \field{pages}{143\bibrangedash 150}
+      \range{pages}{8}
+    \endentry
     \entry{PBR}{book}{}
       \name{author}{3}{}{%
         {{hash=a2006d70c19e09c81fc664505c12247d}{%
@@ -115,6 +242,48 @@
       \field{title}{{Physically Based Rendering, From Theory to Implementation}}
       \field{year}{2016}
     \endentry
+    \entry{PBRT}{online}{}
+      \name{author}{3}{}{%
+        {{hash=a2006d70c19e09c81fc664505c12247d}{%
+           family={Pharr},
+           familyi={P\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=9cbbff396ca703a70d9b53875d732735}{%
+           family={Jakob},
+           familyi={J\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+        {{hash=6613319527e4f1f8ce39c6693f4cb8d8}{%
+           family={Humphreys},
+           familyi={H\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{fullhash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{bibnamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{authorbibnamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{authornamehash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \strng{authorfullhash}{ba07ec7ea251f8a07cc1c8a86185bf33}
+      \field{labelalpha}{PJH18}
+      \field{sortinit}{P}
+      \field{sortinithash}{8d51b3d5b78d75b54308d706b9bbe285}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{PBRT source code}
+      \field{urlday}{13}
+      \field{urlmonth}{8}
+      \field{urlyear}{2018}
+      \field{year}{2018}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.pbrt.org/resources.html
+      \endverb
+      \verb{url}
+      \verb https://www.pbrt.org/resources.html
+      \endverb
+    \endentry
     \entry{RMCM}{thesis}{}
       \name{author}{1}{}{%
         {{hash=c0b11f85a4d5b80efa92f13d616b84ea}{%
@@ -136,6 +305,118 @@
       \field{labeltitlesource}{title}
       \field{title}{Robust Monte Carlo Methods for Light Transport Simulation}
       \field{year}{1997}
+    \endentry
+    \entry{BH6}{online}{}
+      \name{author}{1}{}{%
+        {{hash=cfb4d24298235219db4cff7054f98b0e}{%
+           family={Volpe},
+           familyi={V\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{cfb4d24298235219db4cff7054f98b0e}
+      \strng{fullhash}{cfb4d24298235219db4cff7054f98b0e}
+      \strng{bibnamehash}{cfb4d24298235219db4cff7054f98b0e}
+      \strng{authorbibnamehash}{cfb4d24298235219db4cff7054f98b0e}
+      \strng{authornamehash}{cfb4d24298235219db4cff7054f98b0e}
+      \strng{authorfullhash}{cfb4d24298235219db4cff7054f98b0e}
+      \field{labelalpha}{Vol14}
+      \field{sortinit}{V}
+      \field{sortinithash}{75dd7385c90b2252c3ae853a80ca853b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Disney rendered its new animated film on a 55,000-core supercomputer}
+      \field{urlday}{13}
+      \field{urlmonth}{8}
+      \field{urlyear}{2018}
+      \field{year}{2014}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.engadget.com/2014/10/18/disney-big-hero-6/
+      \endverb
+      \verb{url}
+      \verb https://www.engadget.com/2014/10/18/disney-big-hero-6/
+      \endverb
+    \endentry
+    \entry{SAPT}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=b8c7295cc6dfc358f9ce8cd645300f56}{%
+           family={Van\bibnamedelima Oosterom},
+           familyi={V\bibinitperiod\bibinitdelim O\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=ce21d5a6f088f404b11dba58bb29cb16}{%
+           family={Strackee},
+           familyi={S\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{795ec09215c14bef15917d16b395daea}
+      \strng{fullhash}{795ec09215c14bef15917d16b395daea}
+      \strng{bibnamehash}{795ec09215c14bef15917d16b395daea}
+      \strng{authorbibnamehash}{795ec09215c14bef15917d16b395daea}
+      \strng{authornamehash}{795ec09215c14bef15917d16b395daea}
+      \strng{authorfullhash}{795ec09215c14bef15917d16b395daea}
+      \field{labelalpha}{VS83}
+      \field{sortinit}{V}
+      \field{sortinithash}{75dd7385c90b2252c3ae853a80ca853b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{published in IEEE Transactions on Biomedical Engineering, Volume BME-30}
+      \field{title}{{The Solid Angle of a Plane Triangle}}
+      \field{year}{1983}
+      \field{pages}{125\bibrangedash 126}
+      \range{pages}{2}
+    \endentry
+    \entry{LCT}{proceedings}{}
+      \name{author}{6}{}{%
+        {{hash=2f8b2bda8393e2558e1508c9f1eda1c6}{%
+           family={Walter},
+           familyi={W\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=7c706cc0d4de44a20cc9f83a9fad3e5b}{%
+           family={Fernandez},
+           familyi={F\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=e90ec5643fd8a4f17237efff1093a9e2}{%
+           family={Adam},
+           familyi={A\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=ed421c3636d48bf6eafaf2e94522eb74}{%
+           family={Bala},
+           familyi={B\bibinitperiod},
+           given={K.},
+           giveni={K\bibinitperiod}}}%
+        {{hash=4c81e1629d036672bd17893cb7c3953c}{%
+           family={Donikian},
+           familyi={D\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=b4cdb576f40504f107f369505971359d}{%
+           family={Greenberg},
+           familyi={G\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM SIGGRAPH 2005 conference proceedings}%
+      }
+      \strng{namehash}{50dda873b849b117b996256ab8f61e8e}
+      \strng{fullhash}{23e14c3f495416a7cff1b138b94d3aee}
+      \strng{bibnamehash}{50dda873b849b117b996256ab8f61e8e}
+      \strng{authorbibnamehash}{50dda873b849b117b996256ab8f61e8e}
+      \strng{authornamehash}{50dda873b849b117b996256ab8f61e8e}
+      \strng{authorfullhash}{23e14c3f495416a7cff1b138b94d3aee}
+      \field{labelalpha}{Wal+05}
+      \field{sortinit}{W}
+      \field{sortinithash}{ecb89ff85896a47dc313960773ac311d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Lightcuts: a scalable approach to illumination}}
+      \field{year}{2005}
     \endentry
   \enddatalist
 \endrefsection

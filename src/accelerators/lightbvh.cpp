@@ -142,7 +142,7 @@ namespace pbrt {
 
 	LightBVHNode* LightBVHAccel::recursiveBuild(MemoryArena &arena, std::vector<LightBVHLightInfo> &lightInfo, int start, int end, int *totalNodes) {
 		CHECK_NE(start, end);
-		LightBVHNode *node = arena.Alloc<LightBVHNode>();
+		LightBVHNode *node = (LightBVHNode*)malloc(sizeof LightBVHNode);
 		(*totalNodes)++;
 		// number of lights under this node
 		int nLights = end - start;
@@ -174,7 +174,12 @@ namespace pbrt {
 			for (int i = start; i < end; i++) {
 				axis += lightInfo[i].bounds_o.axis;
 			}
-			axis = Normalize(axis);
+			if (axis == Vector3f(0.f, 0.f, 0.f)) {
+				axis = lightInfo[start].bounds_o.axis;
+			}
+			else {
+				axis = Normalize(axis);
+			}
 
 			// calculate theta_o and theta_e for the node before the possible split
 			float maxE = 0.f;
@@ -254,8 +259,20 @@ namespace pbrt {
 						for (int j = intervalEnd + 1; j < end; j++) {
 							rightAxis += lightInfo[j].bounds_o.axis;
 						}
-						leftAxis = Normalize(leftAxis);
-						rightAxis = Normalize(rightAxis);
+
+						if (leftAxis == Vector3f(0.f, 0.f, 0.f)) {
+							leftAxis = lightInfo[start].bounds_o.axis;
+						}
+						else {
+							leftAxis = Normalize(leftAxis);
+						}
+
+						if (rightAxis == Vector3f(0.f, 0.f, 0.f)) {
+							rightAxis = lightInfo[intervalEnd + 1].bounds_o.axis;
+						}
+						else {
+							rightAxis = Normalize(rightAxis);
+						}
 
 						// left side Theta_e and Theta_o calculations
 						calculateThetas(lightInfo, start, intervalEnd, leftAxis, &leftO, &leftE);
@@ -347,15 +364,12 @@ namespace pbrt {
 	void LightBVHAccel::calculateThetas(std::vector<LightBVHLightInfo> &lightInfo, int startIndex, int endIndex, Vector3f axis, float *theta_o, float *theta_e) {
 		for (int j = startIndex; j < endIndex + 1; j++) {
 			LightBVHLightInfo l = lightInfo[j];
-			float o = 0.f;
-			float e = 0.f;
-			float angle = acos(Dot(axis, l.bounds_o.axis));
-
-
-			*theta_e = std::max(*theta_e, o + l.bounds_o.theta_e);
+			*theta_o = std::max(*theta_o, acos(Dot(axis, l.bounds_o.axis)) + l.bounds_o.theta_o);
+			*theta_e = std::max(*theta_e, *theta_o + l.bounds_o.theta_e);
 		}
 		*theta_e -= *theta_o;
-		*theta_e = std::min(*theta_e, Pi - *theta_o);
+		*theta_e = std::max(0.f, std::min(*theta_e, Pi - *theta_o));
+		*theta_o = std::min(Pi, *theta_o);
 	}
 
 	std::shared_ptr<LightBVHAccel> CreateLightBVHAccelerator(
@@ -426,6 +440,7 @@ namespace pbrt {
 			BxDFType sampledType;
 			isect.bsdf->Sample_f(isect.wo, &wi, uScattering, &scatteringPdf,
 				bsdfFlags, &sampledType);
+			scatteringPdf /= Pi;
 			//Normal3f n = it.n;
 			//if (Dot(it.wo, n) < 0) {
 			//	n *= -1;
@@ -445,7 +460,7 @@ namespace pbrt {
 					}
 				}
 				maxAngle /= Pi;
-				if (maxAngle * maxCos * scatteringPdf / Pi > splitThreshold) {
+				if (maxAngle * maxCos * scatteringPdf > splitThreshold) {
 					split = true;
 				}
 				//}
@@ -494,26 +509,17 @@ namespace pbrt {
 		// numeric inaccuracies?
 		float ep = 0.0001;
 
-		float t0 = -std::numeric_limits<float>::infinity(), t1 = std::numeric_limits<float>::infinity();
+		float t0 = -std::numeric_limits<float>::infinity();
 		for (int i = 0; i < 3; ++i) {
-			// Update interval for _i_th bounding box slab
 			float invRayDir = 1 / d[i];
-			float tNear = (node->bounds_w.pMin[i] - o[i]) * invRayDir;
-			float tFar = (node->bounds_w.pMax[i] - o[i]) * invRayDir;
-
-			// Update parametric interval from slab intersection $t$ values
-			if (tNear > tFar) std::swap(tNear, tFar);
-
-			// Update _tFar_ to ensure robust ray--bounds intersection
-			tFar *= 1 + 2 * gamma(3);
-			t0 = tNear > t0 ? tNear : t0;
-			t1 = tFar < t1 ? tFar : t1;
+			float tNear = std::min((node->bounds_w.pMin[i] - o[i]) * invRayDir, (node->bounds_w.pMax[i] - o[i]) * invRayDir);
+			t0 = std::max(t0, tNear);
 		}
 
 		// shading point is already in the box -> can always find a theta_u with 1 --> angleImportance is always 1
 		float angleImportance = 1;
 		// shading point is not in the box
-		if (t0 > 0 && t1 > 0) {
+		if (t0 > 0) {
 			Point3f is = o + d * t0;
 			int side;
 			Point3f pMin = node->bounds_w.pMin;
@@ -572,10 +578,13 @@ namespace pbrt {
 				theta_u = std::max(theta_u, acos(Dot(d, Normalize(c[i] - o))));
 			}
 			// experimental: test if point is in the cone of the sampled light
-			//if (theta - theta_o - theta_u - theta_e > 0) {
-			//	angleImportance = std::max(0.f, cos(theta - theta_o - theta_u));
-			//}
-			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
+			if (theta - theta_o - theta_u - theta_e < 0) {
+				angleImportance = cos(std::max(0.f, theta - theta_o - theta_u));
+			}
+			else {
+				return 0;
+			}
+			//angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
 		}
 		return node->energy * angleImportance / (distance * distance);
 	}

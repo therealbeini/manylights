@@ -13,23 +13,22 @@
 \chapter{Our Algorithm}
 \label{ch:alg}
 
-The algorithm and the underlying acceleration data structure we chose is inspired by the tree construction and traversal algorithm of the bounding volume hierarchy. Similarly to the BVH, we will construct a binary tree before rendering, and traverse through the tree to find the appropriate light when we are given the point of the intersection in the scene. Analogous to most BVH algorithms, our light BVH construction runs on a single thread, while the traversal can run on concurrent threads. Since the construction of the tree only a small fraction of the rendering time, this does not pose a problem even on scenes with over one million light sources.
-
-\section{Informal Description of the Algorithm}
-\label{sec:alg:idea}
+The algorithm and the underlying acceleration data structure we chose is inspired by the tree construction and traversal algorithm of the bounding volume hierarchy. Similarly to the BVH, we will construct a binary tree before rendering, and traverse through the tree to find the appropriate light when we are given the point of the intersection in the scene. Analogous to most BVH algorithms, our light BVH construction runs on a single thread, while the traversal can run on concurrent threads. Since the construction of the tree takes only a small fraction of the rendering time, this does not pose a problem even on scenes with over one million light sources.
 
 In this section we will give rough overview of the ideas of our algorithm. We have thought about jumping straight into the in-depth implementation part and skipping the informal description of the algorithm but some parts of the implementation decisions are hard to understand without having at least a rudimentary overview of the algorithm. For instance, when we talk about the information every node of the tree needs to store, it is much easier for the reader to comprehend our train of thought when he has a general idea how our tree traversal algorithm works.
 
-First, when we have access to all of the light sources of the scene, we want to create a binary tree data structure that includes every single light source of the scene. We call our tree the light bounding volume hierarchy (light BVH), because similarly to the BVH construction, we will also split the scene spatially parallel to coordinate axis. We will also use a heuristic to find the best split of all three dimensions, comparable to the surface area heuristic. Our heuristic, the surface area orientation heuristic (SAOH) has some crucial difference to the SAH. First, instead of amounting the number of primitives, we will factor in the total emission power of the lights. Second, we have added an orientation factor. This orientation factor tries to keep light sources with similar orientations in the same node. This way, we have split the branches so different orientations most likely branch to different children of the tree and thus, finding the more likely child when traversing through the light BVH later will be clearer. When we have a node with only a single light source, this node is a leaf.
+First, when we have access to all of the light sources of the scene, we want to create a binary tree data structure that includes every single light source of the scene. We call our tree the light bounding volume hierarchy (light BVH), because similarly to the BVH construction, we will also split the scene spatially parallel to coordinate axis. We will also use a heuristic to find the best split of all three dimensions, comparable to the surface area heuristic. Our heuristic, the surface area orientation heuristic (SAOH) has some crucial differences to the SAH. Firstly, instead of amounting the number of primitives, we will factor in the total emission power of the lights. Second, we have added an orientation factor. This orientation factor tries to keep light sources with similar orientations in the same node. This way, we split the branches in a way so different orientations most likely branch to different children of the tree and thus, finding the more likely child when traversing through the light BVH later will be clearer. When we have a node with only a single light source, this node is a leaf.
 
-After we have constructed our light BVH, the next step would be traversing through the tree when we want to sample a light given an intersection point. Obviously, we don't just want to return a random light source which would make this algorithm pointless, but instead we want to importance sample a light that has most likely a strong contribution to the point. Therefore, we will define an importance measure for every node given the intersection point, that factors in the distance between the point and the node, the emission power of the node and an angle importance factor. We will start at the root of the light BVH and generate a uniform random number. Then, for every branch, a decision has to be made which child to take based on the importance measure and that random number. When we have arrived at a leaf node, that will be the light source we return.
+After we have constructed our light BVH, the next step would be traversing through the tree when we want to sample a light given an intersection point. Obviously, we don't just want to return a random light source which would make this algorithm pointless, but instead we want to importance sample a light that probably has a strong contribution to the point. Therefore, we will define an importance measure for every node given the intersection point, that factors in the distance between the point and the node, the emission power of the node and an angle importance factor. We will start at the root of the light BVH and generate a uniform random number. Then, for every branch, a decision has to be made which child to take based on the importance measure and that random number. When we have arrived at a leaf node, that will be the light source we return.
 
-What I have just described was our algorithm when we only want to sample a single light source. Conty and Kulla have shown in \cite{MLS}, that there are situations, where it is desirable to sample multiple light sources for one intersection point. That is the reason why we allow the user to define a split threshold. Based on the split threshold and a score which we calculate for every branch, instead of sampling only the left or the right child, we will sample both nodes. At the end, return one or multiple sampled lights. Afterwards, the sampled lights are used for the path tracing algorithm.
+What I have just described was our algorithm when we only want to sample a single light source. Conty and Kulla have shown in their paper (\cite{MLS}), that there are situations, where it is desirable to sample multiple light sources for one intersection point. That is the reason why we allow the user to define a split threshold. Based on the split threshold and a score which we calculate for every node, instead of sampling only the left or the right child, it is possible to sample both nodes. At the end of our algorithm, we will return one or multiple sampled lights. Afterwards, the sampled lights are used for the path tracing algorithm.
+
+Note that the general ideas presented in our algorithm are heavily influenced by the works of Conty and Kulla (\cite{MLA,MLS}), a contribution by Sony Pictures in SIGGRAPH 2017. However, our algorithm has received several changes which we will remark in the upcoming sections.
 
 \section{Own Data Structures}
 \label{sec:alg:ows}
 
-In this section we will be discussing our own data structures. We will show our internal representation of our data structures now and reason why they are represented like this.
+In this section we will be discussing our own data structures. We will show our internal representation of our data structures now and reason why they are represented in the way they are.
 
 \subsection{Bounds\_o}
 
@@ -41,7 +40,15 @@ In this section we will be discussing our own data structures. We will show our 
 	\end{center}
 \end{figure}
 
-First we will introduce the Bounds\_o struct (\ref{fig:boundso}). This struct represents the orientation bounds of a certain light source or a whole node. For a single light, the axis defines the orientation direction of the light source, while for a node, the axis represents the interpolated axes of all light sources included in the node. Theta\_o defines the maximum angle between the axis of the node and any light source included in this node. Theta\_e defines the additional emission range added to theta\_o for spotlights or area light sources. How we have pictured the geometric representation can be seen in \ref{fig:boundsogeo}. In our implementation, we accept point lights, spotlights and area light sources as light sources. This is how we initialize the Bounds\_o struct for single lights:
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{bounds_o.pdf}
+		\caption{geometric idea of the Bounds\_o struct}
+		\label{fig:boundsogeo}
+	\end{center}
+\end{figure}
+
+First, we will introduce the Bounds\_o struct (\ref{fig:boundso}). This struct represents the orientation bounds of a certain light source or a whole node. For a single light, the axis defines the orientation direction of the light source, while for a node, the axis represents the interpolated axes of all light sources included in the node. Theta\_o defines the maximum angle between the axis of the node and any light source included in this node. Theta\_e defines the additional emission range added to theta\_o for spotlights or area light sources. How we have pictured the geometric representation can be seen in \ref{fig:boundsogeo}. In our implementation, we accept point lights, spotlights and area light sources as light sources. This is how we initialize the Bounds\_o struct for single lights:
 
 \begin{itemize}
 	  \setlength\itemsep{0em}
@@ -50,14 +57,14 @@ First we will introduce the Bounds\_o struct (\ref{fig:boundso}). This struct re
 		  \setlength\itemsep{0em}
 		\item Axis = (1, 0, 0)
 		\item theta\_o = $\pi$
-		\item theta\_e = $\pi/2$
+		\item theta\_e = 0
 	\end{itemize}
-	\item Spot light
+	\item Spotlight
 	\begin{itemize}
 		  \setlength\itemsep{0em}
 		\item Axis = spot direction
-		\item theta\_o = 0
-		\item theta\_e = spot's apperture
+		\item theta\_o = spot's aperture angle until falloff
+		\item theta\_e = spot's falloff angle
 	\end{itemize}
 	\item Area light
 	\begin{itemize}
@@ -68,17 +75,19 @@ First we will introduce the Bounds\_o struct (\ref{fig:boundso}). This struct re
 	\end{itemize}
 \end{itemize}
 
+In general, we defined the axes, orientation and emission ranges in the same way Conty and Kulla did (\Cite{MLS}). We have made two small changes: First, we set theta\_e for point lights to zero because the angle over a sphere is completely covered by $2 * \pi$ which is already comprised by theta\_o. The second change we made are changes to the orientation bounds of spotlights. Conty and Kulla did not make a difference between a spotlights aperture angle and their falloff angle. We make this distinction which can be seen in our illustration \ref{fig:spotlight}.
+
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=0.6\textwidth]{bounds_o.pdf}
-		\caption{geometric idea of the Bounds\_o struct}
-		\label{fig:boundsogeo}
+		\includegraphics[width=0.5\textwidth]{spotlight.pdf}
+		\caption{Our spotlight orientation bounds}
+		\label{fig:spotlight}
 	\end{center}
 \end{figure}
 
 \subsection{Node representation}
 
-We used two different implementations to represent a node in our light BVH tree (\ref{fig:lightbvhnode} and \ref{fig:linearlightbvhnode}). Both implementations are very similar, containing the two bounding bounds $bounds_w$ for the world space bounds and $bounds_o$ for the orientation bounds, as well as other other information that we will need for the tree traversal later. $Energy$ defines the combined energy of the lights under this node, $nLights$ describes the number of lights under this node, $centroid$ stores the centroid of the world space bounds, and $splitAxis$ stores the coordinate axis that splits the two children of this node. 
+We used two different implementations to represent a node in our light BVH tree (\ref{fig:lightbvhnode} and \ref{fig:linearlightbvhnode}). Both implementations are very similar, containing the two bounding members $bounds\_w$ for the world space bounds and $bounds\_o$ for the orientation bounds, as well as other other information that we will need for the tree traversal later. $Energy$ defines the combined energy of the lights under this node, $nLights$ describes the number of lights under this node, $centroid$ stores the centroid of the world space bounds, and $splitAxis$ stores the coordinate axis that splits the two children of this node. 
 
 The main difference between the two implementations is the way to access the children of the nodes. In our $LightBVHNode$, we have explicit pointers to the two children, while we define the children implicitly in out $LinearLightBVHNode$. Since all of our $LinearLightBVHNodes$ are stored in aligned memory, the way we access the left child is just by incrementing the pointer of the current $LinearLightBVHNode$ by 1. The index needed to access the right child is stored in $secondChildOffset$. To access the second child, we just add $secondChildOffset$ to the base pointer of the root of the tree. If the node is a leaf of the tree and thus only contains one light source, $lightNum$ stores the index of that light source in both implementations.
 
@@ -121,7 +130,7 @@ M_A(C) = 2(lw + wh + hl).
 	\end{center}
 \end{figure}
 
-We used a weighted definition for our bounding cone measure. Remember that we have defined $\theta\_o$ as the bounding angle that encloses the orientation vectors of all the light sources in the cluster, while $\theta_e$ describes their emission range. Obviously, the cone enclosed with $\theta_o$ will most likely have a greater in emission power and thus, we will weight the volume confined by $\theta_o$ with a cosine. A drawing of the individual cones can be seen in \ref{fig:cone}. The measure we have used and has been described in \Cite{MLS} is as follows:
+We used a weighted definition for our bounding cone measure. Remember that we have defined $\theta_o$ as the bounding angle that encloses the orientation vectors of all the light sources in the cluster, while $\theta_e$ describes their emission range. Obviously, the cone enclosed with $\theta_o$ will most likely have a greater emission power and thus, we will weight the volume confined by $\theta_o$ with a cosine. A drawing of the individual cones can be seen in \ref{fig:cone}. The measure we have used and has been described by Kulla and Conty (\Cite{MLS}) is as follows:
 
 \begin{equation}\label{eq:cone}
 M_\Omega(C) = 2\pi * \bigg[(1-\cos(\theta_o)) + \int_{\theta_o}^{\theta_o + \theta_e}\cos(\omega - \theta_o) * sin(\omega)d\omega\bigg]
@@ -150,12 +159,12 @@ It is notable that our heuristic tries to find out the possible split in all thr
 \end{figure}
 
 
-Now, what does our heuristic exactly do for specific clusters? The general idea is that we try find splits in a way that the orientation cones of both children are as focused as possible. Suppose we have a great number of small triangle emitters that shape up together as two spheres like modelled in \ref{fig:idealsplit}. Obviously, the normals of the triangle emitters of a single sphere point to all possible directions in the scene. If we would have a cluster containing every single triangle emitter of the two spheres, our $\theta_o$ value of that cluster would be $\pi$; the normals over the unit sphere of $2\pi$ or 360°. Making the bottom split which splits the two spheres would result in not much change: The axis of the emitters would still cover every possible direction and the $\theta_o$ values of both children would still be $\pi$. In this case, we would definitely prefer the top split that splits both spheres in half, resulting in the normals over covering half of the unit sphere. We reduced $\theta_o$ to $\pi/2$. SAH alone would have not told the difference between those two splits and that's why the bounding cone measure is a very integral part of our cost calculation algorithm
+Now, what does our heuristic exactly do for specific clusters? The general idea is that we try find splits in a way that the orientation cones of both children are as focused as possible. Suppose we have a great number of small triangle emitters that shape up together as two spheres like modelled in \ref{fig:idealsplit}. Obviously, the normals of the triangle emitters of a single sphere point to all possible directions in the scene. If we would have a cluster containing every single triangle emitter of the two spheres, our $\theta_o$ value of that cluster would be $\pi$; the normals over the unit sphere of $2\pi$ or 360°. Making the bottom split which splits the two spheres would result in not much change: The axis of the emitters would still cover every possible direction and the $\theta_o$ values of both children would still be $\pi$. In this case, we would definitely prefer the top split that splits both spheres in half, resulting in the normals covering half of the unit sphere. We reduced $\theta_o$ to $\pi/2$. SAH alone would have not told the difference between those two splits and that's why the bounding cone measure is a very integral part of our cost calculation algorithm.
 
 \section{Light Bounding Volume Hierarchy Construction}
 \label{sec:alg:con}
 
-In this section we will be talking about our in-depth implementation of the tree construction. The tree constructor method takes two parameters. First, a vector containing all the light sources in the scene. Second, we will take a parameter defining the split threshold that describes if we want to sample multiple light sources when traversing the light BVH later (\ref{subs:split}). The split threshold is a normalized value between 0.0 and 1.0. A split threshold of 1.0 never splits, we would only shade one light per point and a split threshold of 0.0 always splits, which means all lights of the scene are shaded. Note that our algorithm is implemented to work with any combination of point light sources, area light sources and spotlights.
+In this section we will be talking about our in-depth implementation of the tree construction. The tree constructor method takes two parameters. First, a vector containing all the light sources in the scene. Second, we will take a parameter defining the split threshold that describes if we want to sample multiple light sources when traversing the light BVH later (\ref{subs:mult}). The split threshold is a normalized value between 0.0 and 1.0. A split threshold of 1.0 never splits, we would only shade one light per point and a split threshold of 0.0 always splits, which means all lights of the scene are shaded. Note that our algorithm is implemented to work with any combination of point light sources, area light sources and spotlights.
 
 \begin{algorithm}
 	\caption{LightBVHAccelerator constructor}
@@ -169,7 +178,7 @@ In this section we will be talking about our in-depth implementation of the tree
 	\end{algorithmic}
 \end{algorithm}
 
-The $lightBVHAccel$ constructor initializes the tree construction. First, we will be using a recursive approach to build the light BVH. We will pass the light sources of the scene in an array and the starting and ending indices of the current node, obviously for the root of the light BVH we will pass the whole range of our vector. Then, after we have constructed our tree represented by $LightBVHNode$ objects, we will flatten the tree in a compacter form represented by $LinearLightBVHNode$ objects to ensure that our tree requires as little memory as possible and to improve cache locality. $Nodes$ will later be our object to run our tree traversal on.
+The $lightBVHAccel$ constructor initializes the tree construction. First, we will be using a recursive approach to build the light BVH. We will pass the light sources of the scene in an array and the starting and ending indices of the current node, obviously for the root of the light BVH we will pass the whole range of our vector. Then, after we have constructed our tree represented by $LightBVHNode$ objects, we will flatten the tree in a more compact form represented by $LinearLightBVHNode$ objects to ensure that our tree requires as little memory as possible and to improve cache locality. $Nodes$ will later be our object to run our tree traversal on.
 
 \begin{algorithm}
 	\caption{LightBVHAccelerator recursive build}
@@ -192,9 +201,9 @@ The $lightBVHAccel$ constructor initializes the tree construction. First, we wil
 	\end{algorithmic}
 \end{algorithm}
 
-Our recursive implementation of the light BVH construction take a vector including all lights of the scene, as well as start and end indices for the current node. The implementation can be split into multiple sections. Obviously, we want to cover the base case first, when we only have a single light source under the node. In this case, we cannot split further, so we will just initialize a leaf node with the one light source and return this leaf node. Next, we will be calculating the axis and $\theta$ values for the whole node for all three dimensions. This is required for the split cost calculations for every split in the current dimension we are working on. After we have computed the split qualities for every individual split in all dimensions, we will find out the best possible split among these we have calculated and initialize the left and right child, which we will reference as children of the current node.
+Our recursive implementation of the light BVH construction takes a vector including all lights of the scene, as well as start and end indices for the current node. The implementation can be split into multiple sections. Obviously, we want to cover the base case first, when we only have a single light source under the node. In this case, we cannot split further, so we will just initialize a leaf node with the one light source and return this leaf node. Next, we will be calculating the axis and $\theta$ values for the whole node for all three dimensions. This is required for the split cost calculations for every split in the current dimension we are working on. After we have computed the split qualities for every individual split in all dimensions, we will find out the best possible split among these we have calculated and initialize the left and right child, which we will reference as children of the current node.
 
-The reader may have already realized that our implementation is very close to popular implementations of BVH constructions; that makes sense since our implementation was heavily influenced by BVH constructions the structure of our tree is analogical to that of BVHs. It should be also noted that we count the number of nodes we create. This number is required for the flattening of our tree later (\ref{subs:flat}).
+The reader may have already realized that our implementation is very close to popular implementations of BVH constructions; that makes sense since our implementation was heavily influenced by BVH constructions, the structure of our tree is analogical to that of BVHs. It should be also noted that we count the number of nodes we create. This number is required for the flattening of our tree later (\ref{subs:flat}).
 
 \subsection{Axis Calculation}
 \label{subs:axis}
@@ -207,7 +216,7 @@ The reader may have already realized that our implementation is very close to po
 	\end{center}
 \end{figure}
 
-Next, we will do axis calculations for the whole cluster for a specific dimension. We have tried two different approaches for the axis calculations. Our first approach used the median of the individual axes of all lights included in the cluster sorted by the specific dimension we are working on. So, if we wanted to find out the qualities of the individual splits if we split the lights at a particular x-coordinate, we would take the axis of the median light if we sorted them according the x-coordinate of their axes. This approach leads to a major problem. Since our geometric representation is three-dimensional, taking the median axis sorted by a single dimension does not always represent the ideal axis that we are looking for. Suppose we have a scene as modelled in \ref{fig:axis} and suppose we have chose to split the sphere in half along the axis y. Like previously discussed in \ref{fig:idealsplit}, the axis of our hemisphere should be $a$ or at least close to $a$. Calculating the cluster axis like just described would result to a very different and unexpected result. Instead of finding $a$ as the axis, instead, we would find one of the other two axis plotted in the image. Those are the two median axis if you sort the axis of the individual emitters according to their y-value. It is evident, that this approach does not archive the desired results. 
+Next, we will do axis calculations for the whole cluster for a specific dimension. We have tried two different approaches for the axis calculations. Our first approach used the median of the individual axes of all lights included in the cluster sorted by the specific dimension we are working on. So, if we wanted to find out the qualities of the individual splits, splitting the lights at a particular x-coordinate, we would take the axis of the median light if we sorted them according the x-coordinate of their axes. This approach leads to a major problem. Since our geometric representation is three-dimensional, taking the median axis sorted by a single dimension does not always represent the ideal axis that we are looking for. Suppose we have a scene as modelled in \ref{fig:axis} and suppose we have chose to split the sphere in half along the axis y. Like previously discussed in \ref{fig:idealsplit}, the axis of our hemisphere should be $a$ or at least close to $a$. Calculating the cluster axis like just described would result to a very different and unexpected result. Instead of finding $a$ as the axis, instead, we would find one of the other two axis plotted in the image. Those are the two median axis if you sort the axis of the individual emitters according to their y-value. It is evident, that this approach does not achieve the desired results. 
 
 \begin{figure}
 	\begin{center}
@@ -226,6 +235,8 @@ C_{axis} = \frac{\sum_{i = 0} a_i}{|\sum_{i = 0} a_i|},
 
 with $a_i$ being the axis of the i-th light source in the cluster. This axis definition for a cluster eliminates the problem presented in \ref{fig:axis}. Both median and average calculations have $O(n)$ time complexity, but especially in scenes with symmetric objects that represent light sources, our current approach leads to much better results.
 
+Obviously, this approach is not perfect either. If you could divide the axes in the cluster in two groups so for every emitter in one group there is another emitter in the other group with a complementary axis, the cluster axis we calculate with our method would result in a vector that is zero in all three dimensions. Clearly, we cannot work with this vector, so in these situations, we just choose an arbitrary light source axis as the cluster axis. Another problem is that we will not compute the "ideal" axis in general. With the way we calculate the importance of a cluster for a certain sampling point later, the ideal axis for our algorithm would be an axis that minimizes $\theta_e + \theta_o$. Is it not hard to think of an example where our calculated axis is not the ideal axis, but on average, our approach computes a decent axis to work with.
+
 \subsection{Theta Calculations}
 \label{subs:theta}
 
@@ -236,25 +247,24 @@ with $a_i$ being the axis of the i-th light source in the cluster. This axis def
 		\Procedure{calculateThetas}{vector<Light> \$lights, 3DVector axis, float *theta\_o, float *theta\_e}
 		\For{\texttt{int i = 0; i < vector.$size$(); i++}}
 			\State Light l $\gets$ lights[i];
-			\State float current\_o $\gets$ 0.f;
-			\State float current\_e $\gets$ 0.f;	
 			\State 	*theta\_o $\gets$ $max$(*theta\_o, $radianAngle$(axis, l.axis) + l.theta\_o);
-			\State *theta\_e $\gets$ $max$(*theta\_e, o + l.theta\_e);
+			\State *theta\_e $\gets$ $max$(*theta\_e, l.theta\_o + l.theta\_e);
 		\EndFor
 		\State *theta\_e -= *theta\_o;
-		\State *theta\_e $\gets$ $min$(*theta\_e, $\pi$ - *theta\_o);
+		\State *theta\_e $\gets$ $clamp$(*theta\_e, 0, Pi - *theta\_o);
+		\State *theta\_o $\gets$ $min$(*theta\_o, Pi);
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-We have listed our the calculations for $\theta_o$ and $\theta_e$ in \ref{thetacalculations}. The procedure takes the base address of a vector containing of the lights that define the specific cluster, as well as the axis of the cluster. Also, pointer to two floats are passed to return the $\theta$-values. The calculations made are very simple; we iterate through the lights that were passed to us and calculate the individual $\theta_o$ and $\theta_e$ values of the given axis with the axis of the whole cluster. If any of the $\theta$ values are greater than the current maximum $\theta$ values we have stored, we update our maximum $\theta$ values. At the end, when we have processed all light sources, we have to first subtract $\theta_o$ from $\theta_e$ as we only store the additional angle to $\theta_o$ in $\theta_e$. Next, we will also need to limit $\theta_e$ with $\pi - \theta_o$, otherwise it is possible to get a negative integral in our bounding cone measure \ref{eq:cone}. This is something we want to avoid because the measured volume of the bounding cone should always be non-negative.
+We have listed our calculations for $\theta_o$ and $\theta_e$ in \ref{thetacalculations}. The procedure takes the base address of a vector containing the lights that define the specific cluster, as well as the axis of the cluster. Also, pointer to two floats are passed to return the $\theta$-values. The calculations made are very simple; we iterate through the lights that were passed to us and calculate the individual $\theta_o$ and $\theta_e$ values of the given axis with the axis of the whole cluster. If any of the $\theta$ values are greater than the current maximum $\theta$ values we have stored, we update our maximum $\theta$ values. At the end, when we have processed all light sources, we have to first subtract $\theta_o$ from $\theta_e$ as we only store the additional angle to $\theta_o$ in $\theta_e$. Next, we will also need to clamp $\theta_e$ with 0 and $\pi - \theta_o$, since a negative angle does not make sense and otherwise it is possible to get a negative integral in our bounding cone measure \ref{eq:cone}. This is something we want to avoid because the measured volume of the bounding cone should always be non-negative. $\theta_o$ will also be limited by $\pi$ for the same reasons.
 
 \subsection{Buckets}
 \label{subs:buckets}
 
-Before we jump into our split cost implementation, we want to talk about a design decision we made. The first approach we tried was to split the light sources after every single light source, which means, if we had 1.000 lights, we would have 999 different splits in each dimension. We realized that this approach does not scale well for very large amounts of light sources. We measured the time for building the light BVH on different scenes with varying amounts of emitters on a computer with a Intel® Core™ i7-4770K processor and 16 gigabyte of main memory. For instance, a scene with 10.000 emitters works just fine with a rendering time of TODO. On the other hand, the tree construction time of another scene with one million light sources takes TODO. Obviously, this construction time is way too long and not useful for practical uses. 
+Before we jump into our split cost implementation, we want to talk about a design decision we made. The first approach we tried was to split the light sources after every single light source, which means, if we had 1.000 lights, we would have 999 different splits in each dimension. We realized that this approach does not scale well for very large amounts of light sources. We measured the time for building the light BVH on different scenes with varying amounts of emitters on a computer with a Intel® Core™ i7-4770K processor and 16 gigabyte of main memory. For instance, a scene with 10.000 point light sources works just fine with a building time of 21 seconds. On the other hand, the tree construction time of another scene with one million light sources takes up to 3 hours. Obviously, this construction time is way too long and not useful for practical uses. 
 
-Therefore, we decided to use specific amounts of buckets that determine the position where we split the light sources. At the start, we will define a maximum amount of splits that we want to calculate for any cluster. What has worked well for us is to calculate a maximum number of 10.000 splits. This way, we have an acceptable rendering time of TODO for the scene with one million light sources, while the split quality stays roughly the same like if we would calculate every possible split. When we have settled on $b$, the amount of buckets to use, we will define the number of light sources in each bucket as:
+Therefore, we decided to use specific amounts of buckets that determine the position where we split the light sources. At the start, we will define a maximum amount of splits that we want to calculate for any cluster. What has worked well for us is to calculate a maximum number of 1.000 splits. This way, we have an acceptable building time of 43 seconds for the scene with one million light sources, while the split quality stays roughly the same as if we would calculate every possible split. When we have settled on $b$, the amount of buckets to use, we will define the number of light sources in each bucket as:
 
 \begin{equation}
 n = \frac{b}{N},
@@ -339,7 +349,7 @@ At this point, we have found out the dimension of our optimal split, as well as 
 	\end{algorithmic}
 \end{algorithm}
 
-We have a representation of all light sources of the scene in a binary tree now and at this point, we say that we are finished with our tree construction and use this tree as the acceleration data structure to do the sampling on. At first, we did exactly that and did not bother to flatten the tree. But when traversing the tree, we have realized that the nodes were not ordered in a linear way in our memory. That leads to more cache misses, worse memory usage and just worse performance overall, which is why we looked for a way to change this aspect of our light BVH representation. We chose to use a implementation that uses a contiguous chunk of memory. How we modelled a single node in our code can be seen in \ref{fig:linearlightbvhnode}. The general idea is that the left child node is implicitly referenced because it is stored as the next child in the memory. Therefore, we only need to store the offset to the right child of each interior node explicitly. The pseudo code of our implementation can be seen in \ref{alg:treeflattening}. Remember that we call this method on the root of our light BVH tree before flattening with the base address of our pre-allocated memory passed in $*nodes$ (\ref{LightBVHAccelerator}) The offset passed is obviously 0 at the beginning.
+We have a representation of all light sources of the scene in a binary tree now and at this point, we say that we are finished with our tree construction and use this tree as the acceleration data structure to do the sampling on. But when traversing the tree, we have realized that the nodes were not ordered in a linear way in our memory. That leads to more cache misses, worse memory usage and just worse performance overall, which is why decided to flatten our representation to change this aspect of our light BVH representation. We chose to use a implementation that uses a contiguous chunk of memory. How we modelled a single node in our code can be seen in \ref{fig:linearlightbvhnode}. The general idea is that the left child node is implicitly referenced because it is stored as the next child in the memory. Therefore, we only need to store the offset to the right child of each interior node explicitly. The pseudo code of our implementation can be seen in \ref{alg:treeflattening}. Remember that we call this method on the root of our light BVH tree before flattening with the base address of our pre-allocated memory passed in $*nodes$ (\ref{LightBVHAccelerator}) The offset passed is obviously 0 at the beginning.
 
 The function returns the offset for the current node we are working on. First, we will creating a $LinearLightBVHNode$ at the address given by $\&nodes + offset$ and will be copying the data from $*node$ that are used for all nodes, regardless if the node is an interior node or a leaf node. That includes:
 
@@ -362,6 +372,185 @@ After incrementing the offset, so $\&nodes + offset$ points to the address where
 \end{figure}
 
 The effect of calling this method on the root of the light BVH tree can be seen in \ref{fig:flattening}. Suppose we have a very simple tree with only five total nodes consisting of two interior nodes (A and B) and three leaf nodes (C, D and E) like in the drawing. In our pre-flattened version of our light BVH, the nodes do not necessarily need to be in a contiguous chunk of memory. Instead, every interior node would have references to two child nodes. After the flattening, the nodes are ordered in a linear way in a coherent chunk of memory. The left child is implicitly referenced by the next node in the memory and the right child can be referenced via an offset. In our example, the left child of A is implicitly referenced by the next node in memory, as well as the left child of B. The right child can be found with the sum of the offset and the base address. Obviously, with the non-linear implementation, our cache, memory and overall system performance could be extremely lacking in worst cases and will definitely be worse in average cases than our flattened version.
+
+\section{Importance from a shading point}
+\label{sec:imp}
+
+\subsection{General idea}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.3\textwidth]{wrongorientation.pdf}
+		\caption{Our node lies behind the shading point}
+		\label{fig:wrongorientation}
+	\end{center}
+\end{figure}
+
+In this section we will define an importance measure for a given node and intersection point. We will need this importance measure when traversing the tree later, to be able to make decisions whether to sample the left or right child.
+
+Before we talk about our defined importance measure, we should point our that an emitter can only have a direct contribution to the shading point if there are no opaque objects blocking the view from the light source position and the shading point. Obviously, we cannot know if any arbitrary object is blocking this view without doing ray-intersection tests which would drastically worsen the runtime of our algorithm. But there is one implicit intersection test can be done very easily: whether the object of the shading point is blocking the view itself. Suppose we have a situation where the normal of the primitive at the shading point points away from the node that we are regarding right now like in \ref{fig:wrongorientation}. If we know that the primitive is opaque, and therefore there will be no light transmissions, the contribution of any emitter in the node will be zero for the shading point because the geometric representation of the primitive is blocking the incident lighting of the emitter itself. The check for this case is very trivial. We simply test if all of the 8 corners of the nodes bounding box are behind the shading point. In this situation, the importance value of this node for the given shading point is zero.
+
+We want to traverse the light BVH making random decisions at every branch. These random decisions come from a random uniform number we drew earlier in our implementation, but we will also need an importance measure to complete our importance sampling. Our importance measure for a given node and intersection point has to take multiple factors into consideration. The three factors are:
+
+\begin{itemize}
+	\item Contained energy of the node
+	\item Inverse square distance from node centroid
+	\item Cosine factor to the orientation bounds $I_\theta$
+\end{itemize}
+
+The first two factors are pretty self-explanatory. In a situation where two nodes are represented by the same world space bounds and orientation bounds, the contained energy of the node is proportional to the contribution of the nodes. The same logic can be used for our second factor. The further away a node is from our sampling point, the lower will its contribution be. Note, that we will have to use the centroid of the node as the replacement of the position of the sampled light source since we do not yet know the actual emitter to sample now.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{importance.pdf}
+		\caption{Importance of a node for a given shading point}
+		\label{fig:importance}
+	\end{center}
+\end{figure}
+
+Our cosine factor to the orientation bounds $I_\theta$ requires us to look at our node representation more closely. We will define $I_\theta$ as follows:
+
+\begin{equation}
+\label{eq:imp}
+I_\theta = \begin{cases} 
+cos(\theta - \theta_o - \theta_u) & \theta - \theta_o - \theta_u \leq \theta_e \\
+0 & \theta - \theta_o - \theta_u > \theta_e \\
+\end{cases}
+\end{equation}
+
+with $\theta$ being the angle between the axis of the node and a vector starting at the centroid of the node and the shading point and $\theta_u$ being the uncertainty angle that we will define in the next paragraph. An illustration of the individual angles can be seen in \ref{fig:importance}. This is a point, where our algorithm vastly differs from the algorithm presented by Conty and Kulla \cite{MLA,MLS}. They defined $I_\theta$ as:
+
+\begin{equation}
+I_\theta = cos(clamp(\theta - \theta_o - \theta_u, 0, \theta_e)),
+\end{equation}
+
+which did not make much sense to us since a smaller emission range $\theta_e$ could lead to a bigger importance value $I_\theta$. We rendered different scenes with our and their algorithm and the results can be seen in \ref{TODO:eval}. It is evident, that our algorithm yields far better results with the same rendering time, so we believe that perhaps there has been a mistake in Conty and Kulla's algorithm.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{uncertainty1.pdf}
+		\caption{General idea of the uncertainty angle}
+		\label{fig:uncertainty1}
+	\end{center}
+\end{figure}
+
+First, notice that a single node can cover a big area in world space, which means that the actual position of the emitter to be sampled later and the centroid of the node can be very far away dependent on the size of the node. This is why we need a so-called "uncertainty factor" that considers this fact; otherwise it might be possible that we totally disregard nodes where emitters have a high contribution but where the emitters are very distant from the centroid of the node. But this uncertainty factor cannot be solely based on the size of the node, since this uncertainty factor will have a bigger input in nodes that are close to the sampling point. We decided to use an uncertainty angle $\theta_u$. The idea behind $\theta_u$ is that we try to find the biggest angle between a vector starting from the shading point and pointing to the centroid and a vector starting from the shading point and pointing to any point $p$ that lies inside of the node. A drawing of the uncertainty angle can be seen in \ref{fig:uncertainty1}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{uncertainty2.pdf}
+		\caption{Uncertainty angle calculation by calculating the angle between a vector starting at the shading point and pointing to the centroid and the 4 corners on the intersected side of the cuboid}
+		\label{fig:uncertainty2}
+	\end{center}
+\end{figure}
+
+We could use the positions of the emitters to determine the uncertainty angle, since that would return exactly what we want: The maximum angle difference from the centroid and a light source in the node. But especially in nodes with very large amounts of emitters, so in nodes that are close to the root of our tree representation, that seems to be not very practical. Instead, we can estimate the uncertainty angle by defining the corners of our nodes world space bounds as the ending points of our vector. While this method does not yield perfect results, it is much faster than calculating the angle of potentially thousands of lights in every step. At this point, we have limited the giant number of angle calculations to only 8, one for each corner of the node. In practice, we can even further limit these angle calculations: The corner that yields us the biggest uncertainty angle will always be on the side of the cuboid that was intersected when we drew a vector from the shading point to the centroid. That means, we can reduce the angle calculations to only 4, one for each corner on the intersected side of the cuboid. A graphic illustration can be seen in \ref{fig:uncertainty2}. In some situations, the shading point will lie inside of the world space bounds of the node. In these cases, we will just set the uncertainty value as $\pi$, which will result to $I_\theta$ becoming $1$.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{threepoints.pdf}
+		\caption{Different important values for points}
+		\label{fig:threepoints}
+	\end{center}
+\end{figure}
+
+As we can see in \ref{eq:imp}, $\theta_u$ is only one of our factors for our cosine factor to the orientation bounds. Our primary goal was it to give nodes a higher importance that have light sources directly emitting to the shading point. That means, we have to regard the axis, $\theta_o$ and $\theta_e$ of the node. In total, we prefer nodes with $\theta_o$ cones that comprise the shading point after we have defined a certain tolerance with our uncertainty angle. We will also set $I_\theta$ to a non-zero value if the shading point is included in the emission range $\theta_e$ of the orientation bounds of our node. In a case where $\theta - \theta_o - \theta_u > \theta_e$, it would mean that even after having a tolerance value defined by $\theta_u$, the shading point is not encircled in the orientation bounds of the node and thus the contribution of any light source in the node will be zero for the shading point. Suppose we have three different shading points and the orientation bounds of a node as illustrated in \ref{fig:threepoints}. The shading point $p1$ lies in the cone comprised by $\theta_o + \theta_u$ (cone that includes axes of all emitters in node plus tolerance) and thus its $I_\theta$ value will be 1. The world space coordinates of $p2$ are placed in the cone comprised by the emission range $\theta_e$ of the node and therefore its $I_\theta$ value will be between 0 and 1. Lastly, our shading point $p3$ is outside of the orientation bounds of the node even with the tolerance added to it, resulting to a $I_\theta$ value of 0.
+
+In summary, the importance value for a given node and shading point is defined as:
+
+\begin{equation}
+\label{eq:imp2}
+I = \frac{E * I_\theta}{d ^ 2}.
+\end{equation}
+
+\subsection{Implementation details}
+
+\begin{algorithm}
+	\caption{Calculating the importance of a sampling point with a given node}
+	\label{alg:imp}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\Procedure{float calculateImportance}{Intersection \&it, LinearLightBVHNode* node}
+		\State <check if the bounding box of node is behind the shaded point>
+		\State <calculate the first side of the node we hit if we draw a vector from the shading point to the centroid of the node>
+		\State <calculate the uncertainty angle>
+		\If{$\theta - \theta_o - \theta_u - \theta_e > 0$}
+		\State I\_theta $\gets$ $cos$($max$(0, $\theta - \theta_o - \theta_u$));
+		\Else
+		\State \Return 0;
+		\EndIf
+		\State \Return node->energy * I\_theta / (distance * distance);
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+Our implementation of the importance calculation for a given node and intersection point (\ref{alg:imp}) basically follows the steps we have mentioned above. First, we will be checking if the node lies behind the shading point. If that's the case, we will simply return 0 for the current node. Next, we will be doing calculations for our uncertainty angle starting by intersecting the shading point to centroid vector with the bounding box of the node. After we have found the intersection, we will define the uncertainty angle $\theta_u$ as the maximum angle between the shading point to centroid vector and the shading point to corner vector. At the end, we will do the final $I_\theta$ and importance calculations that we have defined in \ref{eq:imp} and  \ref{eq:imp2}.
+
+\subsubsection{Checking if the node is behind the shading point}
+
+\begin{algorithm}
+	\caption{Checking if the node is behind the shading point}
+	\label{alg:behind}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\State \textbf{bool} behind $\gets$ \textit{false};
+		\If {it.$isOpaque$()}
+		\For{int i $\gets$ 0; i < 8; i++}
+		\If{$dot$(n, node->corner[i] - o) > 0} 
+		\State behind $\gets$ \textbf(false);
+		\State \textbf{break};
+		\EndIf
+		\EndFor
+		\If {behind}
+		\State \Return 0;
+		\EndIf
+		\EndIf
+	\end{algorithmic}
+\end{algorithm}
+
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{wrongorientation2.pdf}
+		\caption{Checking if the node lies behind the shading point}
+		\label{fig:wrongorientation2}
+	\end{center}
+\end{figure}
+
+We want to avoid boring the reader with implementation details if possible but there are some things to note while checking if the current node is behind the shading point. The general idea is to calculate the angle the normal of the intersection $n$ with the vectors starting at the shading point and pointing to the corners of the bounding box of the nodes. The cosine of these angles become negative for an angle bigger than 180°, basically when the individual corners are behind the shading point (compare \ref{fig:wrongorientation2}). Note that it is not required to normalize the vectors pointing to the corners since the signing does not change even for non-normalized vectors. If all of the corners are behind the shading point, we return an importance value of 0, otherwise we move on with our algorithm.
+
+\subsubsection{Calculating the uncertainty angle}
+
+\begin{algorithm}
+	\caption{Ray-bounding box intersection test}
+	\label{alg:intersection}
+	\begin{algorithmic}[1] % The number tells where the line numbering should start
+		\State Vector3D d = $normalize$(node->centroid - p);
+		\State float t $\gets$ $-infinity$;
+		\For{int i $\gets$ 0; i < 3; i++}
+		\State float invRayDir $\gets$ d[i];
+		\State float tNear $\gets$ $min$((node->pMin[i] - p[i] * invRayDir), (node->pMax[i] - p[i] * invRayDir));
+		\State t $\gets$ $max$(t0, tNear);
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{intersection.pdf}
+		\caption{Two different cases of ray-bounding box intersection}
+		\label{fig:intersection}
+	\end{center}
+\end{figure}
+
+
+We have mentioned earlier, that our first step for our uncertainty angle calculation will be the intersecting the vector starting from the shading point and pointing to the centroid with the world space bounding box of the node. This test is similar to the ray-bounding box intersection tests as the one that has been implemented in PBRT or has been described in \Cite{RBI1,RBI2}. As you can see in \ref{alg:intersection}, we use a very simplified version of the ray-bounding box intersection test since we only need the first intersection. Now, we have the distance $t$ to our first intersection point and there are two possible cases. Either, $t$ has a positive value, which means that the intersection point lies between the shading point and the centroid of the node or $t$ has a negative value meaning that the intersection point is behind the shading point. In this case, the shading point lies inside of the bounding box and we will set $I_\theta$ to 1. An illustration of the two different cases can be seen in \ref{fig:intersection}. $p1$ has lies outside of the box and thus has a positive $t$ value, while $p2$ is inside the box and returns a positive $t$ value.
+
+Now, we can calculate the actual intersection point $is$:
+
+\begin{equation}
+is = p + d * t,
+\end{equation}
+
+and find out the 4 corners that belong to this side of the bounding box. For these 4 corners, we calculate the maximum angle as described in \ref{fig:uncertainty2}. We will not show our implementation here because most of it just consists of a trivial switch-case statement.
 
 \section{Light Bounding Volume Hierarchy Traversal}
 \label{sec:alg:tra}
@@ -408,7 +597,7 @@ Our implementation offers two functions to call to sample a light source when pa
 	\caption{Sampling a single light source}
 	\label{alg:sample1}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{int TraverseNodeForOneLight}{LinearLightBVHNode *node, Intersection \&it, float *pdf}
+		\Procedure{int TraverseNodeForOneLight}{LinearLightBVHNode *node, float sample1D Intersection \&it, float *pdf}
 		\If{node->nLights == 1}
 		\State \Return node->lightNum;
 		\EndIf
@@ -429,112 +618,119 @@ We will be talking about how we traverse through the light BVH when sampling a s
 
 If we are currently in an interior node, we will have to calculate the importance values for both children. The left child is simply the next node in memory, while we will reference the right child explicitly with the $secondChildOffset$ of the current node. Then, we will normalize these importance values and check if their sum is zero. In this case, the current node we are working on, will have no contribution to the intersection point and we will return -1. If the total value is non-zero, we will make a decision to go left or right based on the importance values and the uniform random number we drew earlier.
 
-\subsection{Importance from a shading point}
-\label{subs:imp}
-
-TODO:Zeichnung
-
-Before we talk about our defined importance measure, we should point our that an emitter can only have a direct contribution to the shading point if there are no opaque objects blocking the view from the light source position and the shading point. Obviously, we cannot know if any arbitrary object is blocking this view without doing ray-intersection tests which would drastically worsen the runtime of our algorithm. But there is one implicit intersection test can be done very easily: whether the object of the shading point is blocking the view itself. Suppose we have a situation where the normal of the primitive at the shading point points away from the node that we are regarding right now like in \ref{TODO}. If we know that the primitive is opaque, and therefore there will be no light transmissions, the contribution of any emitter in the node will be zero for the shading point because the geometric representation of the primitive is blocking the incident lighting of the emitter itself. The check for this case is very trivial. We simply test if all of the 8 corners of the nodes bounding box are behind the shading point. In this situation, the importance value of this node for the given shading point is zero.
-
-We want to traverse the light BVH making random decisions at every branch. These random decisions come from a random uniform number we drew earlier in our implementation, but we will also need an importance measure to complete our importance sampling. Our importance measure for a given node and intersection point has to take multiple factors into consideration. The three factors are:
-
-\begin{itemize}
-	\item Contained energy of the node
-	\item Inverse square distance from node centroid
-	\item Cosine factor to the orientation bounds $I_\theta$
-\end{itemize}
-
-The first two factors are pretty self-explanatory. In a situation where two nodes are represented by the same world space bounds and orientation bounds, the contained energy of the node is proportional to the contribution of the nodes. The same logic can be used for our second factor. The further away a node is from our sampling point, the lower will its contribution be. Note, that we will have to use the centroid of the node as the replacement of the position of the sampled light source since we do not yet know the actual emitter to sample now.
-
-TODO: Zeichnung
-
-Our cosine factor to the orientation bounds $I_\theta$ requires us to look at our node representation more closely. We will define $I_\theta$ as follows:
-
-\begin{equation}
-\label{eq:imp}
-I_\theta = \begin{cases} 
-\theta - \theta_o - \theta_u & \theta - \theta_o - \theta_u \leq \theta_e \\
-0 & \theta - \theta_o - \theta_u > \theta_e \\
-\end{cases}
-\end{equation}
-
-with $\theta$ being the angle between the axis of the node and a vector starting at the centroid of the node and the shading point and $\theta_u$ being the uncertainty angle that we will define in the next paragraph. An illustration of the individual angles can be seen in \ref{TODO}.
-
-First, notice that a single node can cover a big area in world space, which means that the actual position of the emitter to be sampled later and the centroid of the node can be very far away dependent on the size of the node. This is why we need a so-called "uncertainty factor" that considers this fact; otherwise it might be possible that we totally disregard nodes where emitters have a high contribution but where the emitters are very distant from the centroid of the node. But this uncertainty factor cannot be solely based on the size of the node, since this uncertainty factor will have a bigger input in nodes that are close to the sampling point. We decided to use an uncertainty angle $\theta_u$. The idea behind $\theta_u$ is that we try to find the biggest angle between a vector starting from the shading point and pointing to the centroid and a vector starting from the shading point and pointing to any point $p$ that lies inside of the node. A drawing of the uncertainty angle can be seen in \ref{fig:uncertainty1}.
-
-\begin{figure}
-	\begin{center}
-		\includegraphics[width=0.5\textwidth]{uncertainty1.pdf}
-		\caption{General idea of the uncertainty angle}
-		\label{fig:uncertainty1}
-	\end{center}
-\end{figure}
-
-We could use the positions of the emitters to determine the uncertainty angle, since that would return exactly what we want: The maximum angle difference from the centroid and a light source in the node. But especially in nodes with very large amounts of emitters, so in nodes that are close to the root of our tree representation, that seems to be not very practical. Instead, we can estimate the uncertainty angle by defining the corners of our nodes world space bounds as the ending points of our vector. While this method does not yield perfect results, it is much faster than calculating the angle of potentially thousands of lights in every step. At this point, we have limited the giant number of angle calculations to only 8, one for each corner of the node. In practice, we can even further limit these angle calculations: The corner that yields us the biggest uncertainty angle will always be on the side of the cuboid that was intersected when we drew a vector from the shading point to the centroid. That means, we can reduce the angle calculations to only 4, one for each corner on the intersected side of the cuboid. A graphic illustration can be seen in \ref{fig:uncertainty2}. In some situations, the shading point will lie inside of the world space bounds of the node. In these cases, we will just set the uncertainty value as $\pi$, which will result to $I_\theta$ becoming $1$.
-
-TODO:Zeichnung
-
-As we can see in \ref{eq:imp}, $\theta_u$ is only one of our factors for our cosine factor to the orientation bounds. Our primary goal was it to give nodes a higher importance that have light sources directly emitting to the shading point. That means, we have to regard the axis, $\theta_o$ and $\theta_e$ of the node. In total, we prefer nodes with $\theta_o$ cones that comprise the shading point after we have defined a certain tolerance with our uncertainty angle. We will also set $I_\theta$ to a non-zero value if the shading point is included in the emission range $\theta_e$ of the orientation bounds of our node. In a case where $\theta - \theta_o - \theta_u > \theta_e$, it would mean that even after having a tolerance value defined by $\theta_u$, the shading point is not encircled in the orientation bounds of the node and thus the contribution of any light source in the node will be zero for the shading point. Suppose we have three different shading points and the orientation bounds of a node as illustrated in \ref{TODO}. The shading point $p1$ lies in the cone comprised by $\theta_o + \theta_u$ (cone that includes axes of all emitters in node plus tolerance) and thus its $I_\theta$ value will be 1. The world space coordinates of $p2$ are placed in the cone comprised by the emission range $\theta_e$ of the node and therefore its $I_\theta$ value will be between 0 and 1. Lastly, our shading point $p3$ is outside of the orientation bounds of the node even with the tolerance added to it, resulting to a $I_\theta$ value of 0.
-
-In summary, the importance value for a given node and shading point is defined as:
-
-\begin{equation}
-\label{eq:imp2}
-I = \frac{E * I_\theta}{d ^ 2}.
-\end{equation}
-
-\begin{figure}
-	\begin{center}
-		\includegraphics[width=0.5\textwidth]{uncertainty2.pdf}
-		\caption{Uncertainty angle calculation by calculating the angle between a vector starting at the shading point and pointing to the centroid and the 4 corners on the intersected side of the cuboid}
-		\label{fig:uncertainty2}
-	\end{center}
-\end{figure}
-
-
 \begin{algorithm}
-	\caption{Calculating the importance of a sampling point with a given node}
-	\label{alg:imp}
+	\caption{Choosing left or right child traversal}
+	\label{alg:child}
 	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\Procedure{float calculateImportance}{Intersection \&it, LinearLightBVHNode* node}
-		\State <check if the bounding box of node is behind the shaded point>
-		\State <calculate the first side of the node we hit if we draw a vector from the shading point to the centroid of the node>
-		\State <calculate the uncertainty angle>
-		\If{$\theta - \theta_o - \theta_u - \theta_e > 0$}
-		\State I\_theta $\gets$ $max$(0, $cos$($\theta - \theta_o - \theta_u$))
+		\If{sample1D < left}
+		\State *pdf *= first;
+		\State \Return $TraverseNodeForOneLight$(\&node[1], sample1D / first, it, *pdf);
 		\Else
-		\State \Return 0;
+		\State *pdf *= second;
+		\State \Return $TraverseNodeForOneLight$(\&nodes[node->secondChildOffset], (sample1D - first) / second, it, *pdf);
 		\EndIf
-		\State \Return node->energy * I\_theta / (distance * distance);
-		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-Our implementation of the importance calculation for a given node and intersection point (\ref{alg:imp}) basically follows the steps we have mentioned above. First, we will be checking if the node lies behind the shading point. If that's the case, we will simply return 0 for the current node. Next, we will be doing calculations for our uncertainty angle starting by intersecting the shading point to centroid vector with the bounding box of the node. After we have found the intersection, we will define the uncertainty angle $\theta_u$ as the maximum angle between the shading point to centroid vector and the shading point to corner vector. At the end, we will do the final $I_\theta$ and importance calculations that we have defined in \ref{eq:imp} and  \ref{eq:imp2}.
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.2\textwidth]{pdf.pdf}
+		\caption{PDF calculation. Values next to nodes are the current PDF values and values next to vertices are the importance values.}
+		\label{fig:pdf}
+	\end{center}
+\end{figure}
+
+A few things are to note when choosing the left or right child node for the next node to traverse through. First, since we do not have an explicit distribution function for importance sampling, we do not have a probability density function either. A PDF value is required to get a reasonable result when using importance sampling. In our case, we will calculate the PDF value of the sampled light by cumulatively multiplicating with the importance values of the nodes on the path to the final sampled light. Just like the PDF of a distribution, this technique yields us the possibility of sampling a certain emitter. An example of our PDF calculation can be seen in \ref{fig:pdf}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{sample1d.pdf}
+		\caption{Sample1D stretching}
+		\label{fig:sample1d}
+	\end{center}
+\end{figure}
+
+
+The next thing to talk about is the way we stretch the random number $sample1D$ in the course of the traversal. Remember that $sample1D$ is a uniform random number between 0 and 1. When traversing, we want to keep stretching sample1D by projecting the importance of the child node that we take to [0; 1]. An illustration of that can be seen in \ref{fig:sample1d} for the left child traversal and is analogous for the right child traversal. In that way, it is possible for us to keep $sample1D$ pointing at the same node of the tree at all times until we have arrived at our leaf node with a single emitter and return the index of that light source.
+
+\subsection{Sampling multiple light sources}
+\label{subs:mult}
+
+A traversal strategy that we have mentioned earlier was to sample multiple light sources by splitting. In some situations, the cluster we are regarding right now might be too close to the shading point or too big. In these situations, it might be desirable to sample light sources from both children of the node instead of just to sample a single light source.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{split.pdf}
+		\caption{Splitting example}
+		\label{fig:split}
+	\end{center}
+\end{figure}
+
+Suppose we have a shading point and a tree as illustrated in \ref{fig:split}. First, we will choose the root node A for splitting because it is so big that it contains the shading point. B is not selected for splitting afterwards, which means we just sample a single light source from B. We will then again sample multiple light sources from C, because it is too close to the shading point. A single emitter is then returned by D and E respectively, which results to 3 sampled light sources instead of just 1, if we didn't split during the traversal. 
+
+There are multiple things to note when splitting. First, once we have chosen not to split for a certain node, we will only sample a single light source for that node and thus, we will not split one of the child nodes of that parent node. Second, as you can see in our introductory example, splitting is applied recursively and when we split the first time, that means we will at least sample two different light sources. Due to it's recursive nature, if we chose to split at every interior node, it would also be possible to sample every light stored in our tree.
+
+\subsubsection{Split Heuristic}
+
+In this subsection we will define the split heuristic that returns for a certain node if we split at that node or not. We acknowledged earlier, that we will split if the current cluster is either too close to the shading point or too big. An easy check if the cluster is too close would be obviously checking if the bounding box of the cluster comprises the shading point. In these situations, we will always split. We decided to use an approximation of the solid angle of the cluster's bounding box as one of the factors for our splitting heuristic. This basically is a combination of how close and big the cluster is relative to the shading point. Another factor we regarded was the BSDF peak. It is computed as follows. First, we sample a random direction from the BSDF and calculate the cosine with the vector from the shading point to the cluster's center (\ref{fig:split2}). Then, we will evaluate the PDF value of the sampled direction for the BSDF of the shading point.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{split2.pdf}
+		\caption{Sampling a direction for the BSDF peak}
+		\label{fig:split2}
+	\end{center}
+\end{figure}
+
+In total, the split value of a cluster with solid angle $\alpha$ and a randomly sampled direction with conservative maximum cosine with the vector to the cluster's center $\beta$ and the PDF value $c$ is:
+
+\begin{equation}
+I_{split} = normalize(\alpha * \beta * c),
+\end{equation}
+
+when normalize is a function that normalizes the value to between 0.0 and 1.0. A split value of 0.0 means that we split at every node and a value of 1.0 means that we will never split, only one light will be shaded per point.
+
+\newpage
+
+\subsubsection{Implementation details}
 
 \begin{algorithm}
-	\caption{Checking if the node is behind the shading point}
-	\label{alg:behind}
-	\begin{algorithmic}[1] % The number tells where the line numbering should start
-		\State \textbf{bool} behind $\gets$ \textit{false};
-		\If {it.$isOpaque$()}
-		\For{int i $\gets$ 0; i < 8; i++}
-		\If{$dot$(n, node->corner[i] - o) > 0} 
-		\State behind $\gets$ \textbf(false);
-		\State \textbf{break};
-		\EndIf
-		\EndFor
-		\If {behind}
-		\State \Return 0;
-		\EndIf
-		\EndIf
-	\end{algorithmic}
+	\caption{Sampling multiple lights}
+	\label{alg:mult}
+\begin{algorithmic}[1] % The number tells where the line numbering should start
+\Procedure{TraverseNodeForMultipleLights}{LinearLightBVHNode *node, Intersection &it, vector<pair<int, float>> *lightVector}
+	\If{node->nLights == 1}
+	\State lightVector->push(pair(node->lightNum, 1.f));
+	\State \Return;
+	\EndIf
+	\State bool split $\gets$ false;
+	\If{point is in node}
+	\State split $\gets$ true;
+	\Else
+	\State <approximate solid angle>
+	\State <sample random direction and calculate BSDF peak>
+	\State <calculate normalized split value>
+	\If{splitValue > splitThreshold}
+	\State split $\gets$ true;
+	\EndIf
+	\EndIf
+	\If{split}
+	\State <recursively traverse left and right child>
+	\Else
+	\State <call TraverseNodeForOneLight for current node and store return in vector>
+	\EndIf
+	\EndProcedure
+\end{algorithmic}
 \end{algorithm}
 
-TODO: Zeichnung
+Pseudo code of our implementation of $TraverseNodeForMultipleLights$ can be seen in \ref{alg:mult}. The procedure is pretty self-explanatory. First, we cover the base case when we are already in a leaf node by simply pushing the index of the emitter in our vector. Note that in this case, the PDF of the light is 1.0 because we haven't made a branch decision at any node in the path to the leaf node. Then, if the bounding box of the node contains the shading point, we will split, otherwise we will calculate the split value and compare it to the split threshold. Note that when we decide not to split, we will call $TraverseNodeForOneLight$ for the current node to make a decision to go left or right. 
 
-We want to avoid boring the reader with implementation details if possible but there are some things to note while checking if the current node is behind the shading point (\ref{behind}). The general idea is to calculate the angle the normal of the intersection $n$ with the vectors starting at the shading point and pointing to the corners of the bounding box of the nodes. The cosine of these angles become negative for an angle bigger than 180°, basically when the individual corners are behind the shading point (compare \ref{TODO}). Note that it is not required to normalize the vectors pointing to the corners since the signing does not change even for non-normalized vectors. If all of the corners are behind the shading point, we return an importance value of 0, otherwise we move on with our algorithm.
+Since most of our code for splitting is pretty trivial, we decided to exclude most of it. The only section we wanted to talk about is the section where we approximate the solid angle of the node. Van Oosterom and Strackee \cite{SAPT} showed us analytical ways to calculate the exact solid angle of triangles. By defining the sides of the bounding box as triangles, we could use this approach to compute the precise solid angle of a given node. We decided that these calculations take too much time and the difference between an approximation and an exact calculation would not make a worthwhile difference. Instead, we approximated the solid angle by the maximum pairwise angle of two vectors starting at the shading point and pointing to a corner of the node. Obviously, this is not an accurate representation of the solid angle but it is a good approximation (\ref{fig:solid}).
 
-
-\subsection{Splitting}
-\label{subs:split}
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{solid.pdf}
+		\caption{Solid angle approximation}
+		\label{fig:solid}
+	\end{center}
+\end{figure}

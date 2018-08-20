@@ -13,4 +13,8 @@
 \chapter{Conclusion}
 \label{ch:Conclusion}
 
-\dots
+We have introduced the light BVH as an acceleration data structure for scenes with many light sources. In images that have been rendered with similar rendering times, our algorithm outperforms typical sampling strategies by a good margin. The differences of the image quality can be seen directly. Surprisingly, compared to simple light sampling strategies like power sampling, our algorithm already performs better in scenes with as little as 20 light sources. In addition to that, our algorithm scales very well in gigantic numbers of light sources with over 1.5 million emitters.
+
+Our algorithm works on scenes that include point light sources, spotlights and area light sources. We showed scenes where we only had a single type of light sources or where we have combined multiple types. Additionally, we ordered these emitters in symmetrical and random ways to showcase that it works well under arbitrary conditions.
+
+Sadly, we were not archive a better imagine quality when using splitting. As we have mentioned when we talked about future works, that is a spot we would prioritize to improve in the future.

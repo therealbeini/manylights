@@ -48,6 +48,7 @@ namespace pbrt {
 		pLight(LightToWorld(Point3f(0, 0, 0))),
 		I(I),
 		totalWidth(totalWidth),
+		falloffStart(falloffStart),
 		cosTotalWidth(std::cos(Radians(totalWidth))),
 		cosFalloffStart(std::cos(Radians(falloffStart))) {}
 
@@ -103,16 +104,15 @@ namespace pbrt {
 	}
 
 	Vector3f SpotLight::Axis() const {
-		Vector3f vector = LightToWorld(Vector3f(0.f, 0.f, 1.f));
-		return vector;
+		return LightToWorld(Vector3f(0.f, 0.f, 1.f));
 	}
 
 	float SpotLight::Theta_o() const {
-		return 0;
+		return falloffStart / 180 * Pi;
 	}
 
 	float SpotLight::Theta_e() const {
-		return totalWidth / 180 * Pi;
+		return (totalWidth - falloffStart) / 180 * Pi;
 	}
 
 	Bounds3f SpotLight::Bounds() const {

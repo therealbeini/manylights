@@ -19,6 +19,9 @@
 \usepackage{graphicx}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{subcaption}
+\usepackage{graphicx}
+
 \graphicspath{
 	{images/}
 }
@@ -27,6 +30,14 @@
 
 \algnewcommand\algorithmicforeach{\textbf{for each}}
 \algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+}
 
 %% ---------------------------------
 %% | Information about the thesis  |
@@ -124,7 +135,6 @@
 	\tableofcontents
 	
 	\listoffigures
-	\listoftables
 	
 	%% -----------------
 	%% |   Main part   |
@@ -136,6 +146,7 @@
 	\input{sections/preliminaries.tex}
 	\input{sections/algorithm.tex}
 	\input{sections/evaluation.tex}
+	\input{sections/related.tex}
 	\input{sections/conclusion.tex}
 	
 	%% --------------------

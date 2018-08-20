@@ -45,42 +45,78 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {3}Our Algorithm}{15}{chapter.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Informal Description of the Algorithm}{15}{section.3.1}
+\contentsline {section}{\numberline {3.1}Own Data Structures}{16}{section.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Own Data Structures}{16}{section.3.2}
+\contentsline {subsection}{\numberline {3.1.1}Bounds\_o}{16}{subsection.3.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2.1}Bounds\_o}{16}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.1.2}Node representation}{18}{subsection.3.1.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2.2}Node representation}{18}{subsection.3.2.2}
+\contentsline {section}{\numberline {3.2}Surface Area Orientation Heuristic}{19}{section.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.3}Surface Area Orientation Heuristic}{19}{section.3.3}
+\contentsline {section}{\numberline {3.3}Light Bounding Volume Hierarchy Construction}{22}{section.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.4}Light Bounding Volume Hierarchy Construction}{21}{section.3.4}
+\contentsline {subsection}{\numberline {3.3.1}Axis Calculation}{23}{subsection.3.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.1}Axis Calculation}{22}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.3.2}Theta Calculations}{25}{subsection.3.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.2}Theta Calculations}{24}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.3.3}Buckets}{26}{subsection.3.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.3}Buckets}{25}{subsection.3.4.3}
+\contentsline {subsection}{\numberline {3.3.4}Split Cost Calculation}{28}{subsection.3.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.4}Split Cost Calculation}{27}{subsection.3.4.4}
+\contentsline {subsection}{\numberline {3.3.5}Choosing the best split}{28}{subsection.3.3.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.5}Choosing the best split}{27}{subsection.3.4.5}
+\contentsline {subsection}{\numberline {3.3.6}Creating the children nodes}{28}{subsection.3.3.6}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.6}Creating the children nodes}{27}{subsection.3.4.6}
+\contentsline {subsection}{\numberline {3.3.7}Tree Flattening}{29}{subsection.3.3.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.7}Tree Flattening}{28}{subsection.3.4.7}
+\contentsline {section}{\numberline {3.4}Importance from a shading point}{30}{section.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.5}Light Bounding Volume Hierarchy Traversal}{29}{section.3.5}
+\contentsline {subsection}{\numberline {3.4.1}General idea}{30}{subsection.3.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5.1}Sampling a single light source}{31}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.4.2}Implementation details}{35}{subsection.3.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5.2}Importance from a shading point}{32}{subsection.3.5.2}
+\contentsline {subsubsection}{\numberline {3.4.2.1}Checking if the node is behind the shading point}{35}{subsubsection.3.4.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.5.3}Splitting}{36}{subsection.3.5.3}
+\contentsline {subsubsection}{\numberline {3.4.2.2}Calculating the uncertainty angle}{37}{subsubsection.3.4.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Evaluation}{37}{chapter.4}
+\contentsline {section}{\numberline {3.5}Light Bounding Volume Hierarchy Traversal}{38}{section.3.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {5}Conclusion}{39}{chapter.5}
+\contentsline {subsection}{\numberline {3.5.1}Sampling a single light source}{39}{subsection.3.5.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\nonumberline Bibliography}{41}{chapter*.6}
+\contentsline {subsection}{\numberline {3.5.2}Sampling multiple light sources}{42}{subsection.3.5.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.5.2.1}Split Heuristic}{43}{subsubsection.3.5.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.5.2.2}Implementation details}{44}{subsubsection.3.5.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {4}Evaluation}{47}{chapter.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.1}20 spot lights}{47}{section.4.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.2}1.6 million point light sources on the ceiling}{47}{section.4.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.3}12.000 point light sources in a 3D-raster covering the whole room}{47}{section.4.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.4}12.000 point light sources randomly distributed}{49}{section.4.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.5}12.000 spotlights randomly distributed}{49}{section.4.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.6}2.000 area lights covering the ceiling}{51}{section.4.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.7}6.000 triangle emitters shaping 3 spheres}{51}{section.4.7}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.8}Mixed scene with 6.000 triangle emitters, 4.000 spotlights and 4.000 point lights}{51}{section.4.8}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.9}Splitting versus not splitting}{53}{section.4.9}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Related Work and Future Work}{55}{chapter.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.1}Lightcuts}{55}{section.5.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.2}Importance Sampling of Many Lights with Adaptive Tree Splitting}{56}{section.5.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.3}Future Work}{56}{section.5.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Conclusion}{57}{chapter.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Bibliography}{59}{chapter*.41}
