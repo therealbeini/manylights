@@ -11,7 +11,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.1}Problem/Motivation}{1}{section.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.2}Content}{1}{section.1.2}
+\contentsline {section}{\numberline {1.2}Content}{2}{section.1.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {2}Preliminaries}{3}{chapter.2}
 \defcounter {refsection}{0}\relax 
@@ -39,11 +39,11 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {2.6.1.1}Surface Area Heuristics}{11}{subsubsection.2.6.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.6.2}BVH Traversal}{12}{subsection.2.6.2}
+\contentsline {subsection}{\numberline {2.6.2}BVH Traversal}{13}{subsection.2.6.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.7}Path Tracing Basics}{13}{section.2.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}Our Algorithm}{15}{chapter.3}
+\contentsline {chapter}{\numberline {3}The Algorithm}{15}{chapter.3}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3.1}Own Data Structures}{16}{section.3.1}
 \defcounter {refsection}{0}\relax 
@@ -51,17 +51,17 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.1.2}Node representation}{18}{subsection.3.1.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Surface Area Orientation Heuristic}{19}{section.3.2}
+\contentsline {section}{\numberline {3.2}Surface Area Orientation Heuristic}{20}{section.3.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3.3}Light Bounding Volume Hierarchy Construction}{22}{section.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.1}Axis Calculation}{23}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.1}Axis Calculation}{24}{subsection.3.3.1}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.3.2}Theta Calculations}{25}{subsection.3.3.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.3.3}Buckets}{26}{subsection.3.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.4}Split Cost Calculation}{28}{subsection.3.3.4}
+\contentsline {subsection}{\numberline {3.3.4}Split Cost Calculation}{27}{subsection.3.3.4}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.3.5}Choosing the best split}{28}{subsection.3.3.5}
 \defcounter {refsection}{0}\relax 
@@ -69,13 +69,13 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.3.7}Tree Flattening}{29}{subsection.3.3.7}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.4}Importance from a shading point}{30}{section.3.4}
+\contentsline {section}{\numberline {3.4}Importance from a vertex to be shaded}{30}{section.3.4}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.4.1}General idea}{30}{subsection.3.4.1}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.4.2}Implementation details}{35}{subsection.3.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.4.2.1}Checking if the node is behind the shading point}{35}{subsubsection.3.4.2.1}
+\contentsline {subsubsection}{\numberline {3.4.2.1}Checking if the node is behind the vertex to be shaded}{35}{subsubsection.3.4.2.1}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {3.4.2.2}Calculating the uncertainty angle}{37}{subsubsection.3.4.2.2}
 \defcounter {refsection}{0}\relax 

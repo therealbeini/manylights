@@ -29,27 +29,27 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 3.6}{\ignorespaces Bounding cone measure\relax }}{20}{figure.caption.14}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.7}{\ignorespaces Preferred split example\relax }}{21}{figure.caption.15}
+\contentsline {figure}{\numberline {\relax 3.7}{\ignorespaces Preferred split example\relax }}{22}{figure.caption.15}
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 3.8}{\ignorespaces Axis calculation\relax }}{24}{figure.caption.16}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.9}{\ignorespaces Axis calculation\relax }}{24}{figure.caption.17}
+\contentsline {figure}{\numberline {\relax 3.9}{\ignorespaces Axis calculation\relax }}{25}{figure.caption.17}
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 3.10}{\ignorespaces Bucket splits for area light sources, point light sources and spotlights\relax }}{27}{figure.caption.18}
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 3.11}{\ignorespaces Tree representation before and after flattening\relax }}{30}{figure.caption.19}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.12}{\ignorespaces Our node lies behind the shading point\relax }}{31}{figure.caption.20}
+\contentsline {figure}{\numberline {\relax 3.12}{\ignorespaces Our node lies behind the vertex to be shaded\relax }}{31}{figure.caption.20}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.13}{\ignorespaces Importance of a node for a given shading point\relax }}{32}{figure.caption.21}
+\contentsline {figure}{\numberline {\relax 3.13}{\ignorespaces Importance of a node for a given vertex to be shaded\relax }}{32}{figure.caption.21}
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 3.14}{\ignorespaces General idea of the uncertainty angle\relax }}{33}{figure.caption.22}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.15}{\ignorespaces Uncertainty angle calculation by calculating the angle between a vector starting at the shading point and pointing to the centroid and the 4 corners on the intersected side of the cuboid\relax }}{33}{figure.caption.23}
+\contentsline {figure}{\numberline {\relax 3.15}{\ignorespaces Uncertainty angle calculation by calculating the angle between a vector starting at the vertex to be shaded and pointing to the centroid and the 4 corners on the intersected side of the cuboid\relax }}{33}{figure.caption.23}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.16}{\ignorespaces Different important values for points\relax }}{34}{figure.caption.24}
+\contentsline {figure}{\numberline {\relax 3.16}{\ignorespaces Different importance values for vertices\relax }}{34}{figure.caption.24}
 \defcounter {refsection}{0}\relax 
-\contentsline {figure}{\numberline {\relax 3.17}{\ignorespaces Checking if the node lies behind the shading point\relax }}{36}{figure.caption.25}
+\contentsline {figure}{\numberline {\relax 3.17}{\ignorespaces Checking if the node lies behind the vertex to be shaded\relax }}{36}{figure.caption.25}
 \defcounter {refsection}{0}\relax 
 \contentsline {figure}{\numberline {\relax 3.18}{\ignorespaces Two different cases of ray-bounding box intersection\relax }}{37}{figure.caption.26}
 \defcounter {refsection}{0}\relax 

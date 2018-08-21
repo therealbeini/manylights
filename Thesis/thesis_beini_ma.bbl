@@ -19,6 +19,24 @@
 
 \refsection{0}
   \datalist[entry]{anyt/global//global/global}
+    \entry{NVIDIA}{online}{}
+      \field{labelalpha}{18}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labeltitlesource}{title}
+      \field{title}{NVIDIA developer website}
+      \field{urlday}{21}
+      \field{urlmonth}{8}
+      \field{urlyear}{2018}
+      \field{year}{2018}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.nvidia.com/rtx
+      \endverb
+      \verb{url}
+      \verb https://developer.nvidia.com/rtx
+      \endverb
+    \endentry
     \entry{RBI1}{online}{}
       \name{author}{1}{}{%
         {{hash=b1e06012fdee08d548920848e3d2c29c}{%
@@ -151,6 +169,39 @@
       \endverb
       \verb{url}
       \verb https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxja3VsbGF8Z3g6NWM0NmU2YWVlNjE3ODk1Yw
+      \endverb
+    \endentry
+    \entry{MLP}{proceedings}{}
+      \name{author}{2}{}{%
+        {{hash=5369b95a4694ecdb5fde735a2b99f1f6}{%
+           family={Conty},
+           familyi={C\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=a6bb0c5c083125ebb19a06aff95d1dc7}{%
+           family={Kulla},
+           familyi={K\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{fullhash}{21cf11d445db59805d128253faadfbe9}
+      \strng{bibnamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authorbibnamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authornamehash}{21cf11d445db59805d128253faadfbe9}
+      \strng{authorfullhash}{21cf11d445db59805d128253faadfbe9}
+      \field{labelalpha}{CK18}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Importance Sampling of Many Lights with Adaptive Tree Splitting}}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb http://www.aconty.com/pdf/many-lights-hpg2018.pdf
+      \endverb
+      \verb{url}
+      \verb http://www.aconty.com/pdf/many-lights-hpg2018.pdf
       \endverb
     \endentry
     \entry{PTTLS}{book}{}
