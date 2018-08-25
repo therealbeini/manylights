@@ -150,7 +150,7 @@ namespace pbrt {
 		int mid = (end + start - 1) / 2;
 		// split the lights in a certain number of intervals with the same size and compute the cost for each split
 		// at the moment we are using the amount of lights as the number of buckets but I do not know how well it scales
-		int buckets = std::min(nLights, nLights);
+		int buckets = std::min(12, nLights);
 		// cost vector for each split + dim
 		std::vector<float> cost = std::vector<float>((buckets - 1) * 3);
 		// a float defining the amount of lights that goes in every bucket
@@ -578,13 +578,13 @@ namespace pbrt {
 				theta_u = std::max(theta_u, acos(Dot(d, Normalize(c[i] - o))));
 			}
 			// experimental: test if point is in the cone of the sampled light
-			if (theta - theta_o - theta_u - theta_e < 0) {
-				angleImportance = cos(std::max(0.f, theta - theta_o - theta_u));
-			}
-			else {
-				return 0;
-			}
-			//angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
+			//if (theta - theta_o - theta_u - theta_e < 0) {
+			//	angleImportance = cos(std::max(0.f, theta - theta_o - theta_u));
+			//}
+			//else {
+			//	return 0;
+			//}
+			angleImportance = cos(std::max(0.f, std::min(theta - theta_o - theta_u, theta_e)));
 		}
 		return node->energy * angleImportance / (distance * distance);
 	}

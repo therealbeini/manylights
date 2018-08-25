@@ -5,7 +5,7 @@ Camera "perspective" "float fov" 45
 
 Sampler "halton" "integer pixelsamples" 32
 Integrator "pathtree" "string lightsamplestrategy" "1.0"
-Film "image" "string filename" "area_many_sphere.png"
+Film "image" "string filename" "area_many_sphere2.png"
      "integer xresolution" [800] "integer yresolution" [800]
 
 WorldBegin

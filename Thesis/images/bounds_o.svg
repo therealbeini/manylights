@@ -220,7 +220,7 @@
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
-     inkscape:window-x="1912"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      fit-margin-top="0"
@@ -336,7 +336,7 @@
          x="-412.83597"
          y="-87.976212"
          style="stroke-width:0.26458332"
-         id="tspan3093">theta_o</tspan></text>
+         id="tspan3093">$theta_o$</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.60000002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker3199);marker-end:url(#marker3111)"
        d="m -334.29749,-54.681627 c 6.88957,-25.181757 41.1301,-44.897718 41.1301,-44.897718"
@@ -357,6 +357,6 @@
          x="-362.41748"
          y="-124.48405"
          style="stroke-width:0.26458332"
-         id="tspan3333">theta_e</tspan></text>
+         id="tspan3333">$theta_e$</tspan></text>
   </g>
 </svg>
